@@ -1,6 +1,7 @@
-# 🌍 Sims 4 String Relocator
 
 <div align="center">
+# 🌍 Sims 4 String Relocator
+
 
 ![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![CustomTkinter](https://img.shields.io/badge/CustomTkinter-GUI-00D9FF?style=for-the-badge)
