@@ -23,8 +23,8 @@ namespace ModernDesign.MVVM.View
         private bool _isInitializing = true;
 
         // ===== CONFIGURA ESTAS VARIABLES =====
-        private const string CURRENT_VERSION = "1.3.0";
-        private const string VERSION_CHECK_URL = "https://zeroauno.blob.core.windows.net/leuan/TheSims4/version.txt";
+        private const string CURRENT_VERSION = "1.4.0";
+        private const string VERSION_CHECK_URL = "https://raw.githubusercontent.com/Johnn-sin/leuansin-dlcs/refs/heads/main/version.txt";
         // =====================================
 
         public SettingsView()
@@ -185,6 +185,7 @@ namespace ModernDesign.MVVM.View
                 LoadDLCImagesCheckBox.IsChecked = true;
             }
         }
+
         private void LoadPreloadImagesFromProfile()
         {
             try
@@ -224,8 +225,6 @@ namespace ModernDesign.MVVM.View
         {
             try
             {
-
-
                 var lines = File.ReadAllLines(_profileIniPath).ToList();
                 bool found = false;
                 bool inMiscSection = false;
@@ -283,7 +282,6 @@ namespace ModernDesign.MVVM.View
             }
         }
 
-
         private void PreloadImagesCheckBox_Changed(object sender, RoutedEventArgs e)
         {
             if (_isInitializing) return;
@@ -314,6 +312,11 @@ namespace ModernDesign.MVVM.View
             SubtitleText.Text = es
                 ? "Configura tus preferencias y visualiza el estado del sistema"
                 : "Configure your preferences and view system status";
+
+            AppearanceSectionTitle.Text = es ? "🎨 Apariencia" : "🎨 Appearance";
+            ThemeLabel.Text = es ? "Tema de la Interfaz" : "UI Theme";
+            ThemeDesc.Text = es ? "Personaliza el esquema de colores de la aplicación" : "Customize the color scheme of the application";
+            ChangeThemeBtn.Content = es ? "Cambiar Tema" : "Change Theme";
 
             LanguageSectionTitle.Text = es ? "🌐 Idioma" : "🌐 Language";
             LanguageLabel.Text = es ? "Idioma de la Aplicación" : "Application Language";
@@ -495,6 +498,61 @@ Language = en-US
             else
             {
                 InitLocalization();
+            }
+        }
+
+        private void ChangeThemeBtn_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                ThemeSelector themeSelector = new ThemeSelector();
+                bool? result = themeSelector.ShowDialog();
+
+                if (result == true && themeSelector.SelectedTheme != null)
+                {
+                    SaveThemeConfig(themeSelector.SelectedTheme);
+
+                    bool es = _languageCode.StartsWith("es", StringComparison.OrdinalIgnoreCase);
+
+                    var restartResult = MessageBox.Show(
+                        es ? $"Tema '{themeSelector.SelectedTheme.Name}' guardado exitosamente.\n\n¿Reiniciar la aplicación para aplicar los cambios?"
+                           : $"Theme '{themeSelector.SelectedTheme.Name}' saved successfully.\n\nRestart the application to apply changes?",
+                        es ? "Tema Actualizado" : "Theme Updated",
+                        MessageBoxButton.YesNo,
+                        MessageBoxImage.Question);
+
+                    if (restartResult == MessageBoxResult.Yes)
+                    {
+                        RestartApplication();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error opening theme selector: {ex.Message}", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void SaveThemeConfig(ThemeData theme)
+        {
+            try
+            {
+                string settingsPPath = Path.Combine(_appDataFolder, "settingsp.ini");
+                string[] lines = new string[]
+                {
+                    $"background1={theme.Color1}",
+                    $"background2={theme.Color2}",
+                    $"background3={theme.Color3}",
+                    "avatar=👤"
+                };
+
+                File.WriteAllLines(settingsPPath, lines);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error saving theme: {ex.Message}", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -796,8 +854,9 @@ Language = en-US
 
                 Process.Start(new ProcessStartInfo
                 {
-                    FileName = _appDataFolder,
-                    UseShellExecute = true
+                    FileName = "explorer.exe",
+                    Arguments = _appDataFolder,
+                    UseShellExecute = false
                 });
             }
             catch { }

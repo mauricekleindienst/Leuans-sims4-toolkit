@@ -142,8 +142,9 @@ namespace ModernDesign.MVVM.View
                 {
                     Process.Start(new ProcessStartInfo
                     {
-                        FileName = url,
-                        UseShellExecute = true
+                        FileName = "explorer.exe",
+                        Arguments = url,
+                        UseShellExecute = false
                     });
 
                     // Pequeño delay para no saturar el navegador
@@ -156,7 +157,7 @@ namespace ModernDesign.MVVM.View
 
                 // Mostrar mensaje de confirmación
                 string message = isSpanish
-                    ? "✅ Se abrió en tu navegador para descargar todas las partes.\n\n" +
+                    ? " Se abrió en tu navegador para descargar todas las partes.\n\n" +
                       "IMPORTANTE:\n" +
                       "1. Descarga TODAS las 7 partes en la MISMA carpeta\n" +
                       "2. Espera a que todas terminen de descargar\n" +
@@ -165,7 +166,7 @@ namespace ModernDesign.MVVM.View
                       "5. Ejecuta el juego desde la carpeta extraída\n" +
                       "6. Vuelve a este ToolKit para instalar DLCs\n\n" +
                       "¿Estas listo?"
-                    : "✅ Website opened in your browser to download all parts.\n\n" +
+                    : " Website opened in your browser to download all parts.\n\n" +
                       "IMPORTANT:\n" +
                       "1. Download ALL 7 parts to the SAME folder\n" +
                       "2. Wait for all downloads to complete\n" +

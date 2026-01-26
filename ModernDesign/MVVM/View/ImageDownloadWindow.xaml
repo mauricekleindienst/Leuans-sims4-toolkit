@@ -1,0 +1,85 @@
+﻿<Window x:Class="ModernDesign.MVVM.View.ImageDownloadWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Downloading DLC Images"
+        Height="300" Width="500"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize">
+
+    <Border Background="#1E1E2E" CornerRadius="10" BorderBrush="#6C63FF" BorderThickness="2">
+        <Grid Margin="30">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Título -->
+            <TextBlock x:Name="TitleText" Grid.Row="0" 
+                       Text="Downloading DLC Images"
+                       FontSize="22" 
+                       FontWeight="Bold" 
+                       Foreground="White" 
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,20"/>
+
+            <!-- Explicación -->
+            <TextBlock x:Name="ExplanationText" Grid.Row="1" 
+                       TextWrapping="Wrap"
+                       FontSize="13" 
+                       Foreground="#B0B0B0" 
+                       HorizontalAlignment="Center"
+                       TextAlignment="Center"
+                       Margin="0,0,0,25">
+                <Run Text="This process only needs to be done once."/>
+                <LineBreak/>
+                <Run Text="Images will be cached locally for future use."/>
+            </TextBlock>
+
+            <!-- Progreso texto -->
+            <TextBlock x:Name="ProgressText" Grid.Row="2" 
+                       Text="Downloading: 0 / 0"
+                       FontSize="15" 
+                       Foreground="White" 
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,10"/>
+
+            <!-- Barra de progreso -->
+            <Border Grid.Row="3" 
+                    Background="#2A2A3E" 
+                    CornerRadius="10" 
+                    Height="30"
+                    VerticalAlignment="Center">
+                <Grid>
+                    <Border x:Name="ProgressBar" 
+                            Background="#6C63FF" 
+                            CornerRadius="10" 
+                            HorizontalAlignment="Left"
+                            Width="0"/>
+                    <TextBlock x:Name="PercentText" 
+                               Text="0%"
+                               FontSize="13" 
+                               FontWeight="SemiBold"
+                               Foreground="White" 
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+                </Grid>
+            </Border>
+
+            <!-- Nombre de archivo actual -->
+            <TextBlock x:Name="CurrentFileText" Grid.Row="4" 
+                       Text=""
+                       FontSize="11" 
+                       Foreground="#808080" 
+                       HorizontalAlignment="Center"
+                       Margin="0,15,0,0"
+                       TextTrimming="CharacterEllipsis"
+                       MaxWidth="400"/>
+        </Grid>
+    </Border>
+</Window>

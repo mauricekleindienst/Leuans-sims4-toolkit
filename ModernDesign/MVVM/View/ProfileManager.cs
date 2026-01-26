@@ -171,7 +171,6 @@ namespace ModernDesign.Profile
                     "randomizeLoadingScreen = false",
                     "PreloadImages = false",
                     "LoadDLCImages = false",
-                    "HelpWithTelemetria = true",
                     "",
                     "[Medals]"
                 };

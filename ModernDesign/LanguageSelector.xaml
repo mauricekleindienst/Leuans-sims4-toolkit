@@ -5,12 +5,13 @@
         AllowsTransparency="True"
         Background="Transparent"
         ResizeMode="CanResizeWithGrip"
-        Width="500"
-        Height="650"
-        MinWidth="400"
-        MinHeight="500"
+        Width="480"
+        Height="580"
+        MinWidth="380"
+        MinHeight="520"
         WindowStartupLocation="CenterScreen"
-        Title="Leuan's Sims 4 Toolkit - Setup">
+        Title="Leuan's Sims 4 Toolkit - Setup"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown">
 
     <Window.Resources>
         <!-- Animación de hover suave -->
@@ -33,8 +34,8 @@
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="BorderBrush" Value="#00D9FF"/>
             <Setter Property="BorderThickness" Value="2"/>
-            <Setter Property="Padding" Value="15,12"/>
-            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="CaretBrush" Value="#00D9FF"/>
             <Setter Property="Template">
@@ -43,7 +44,7 @@
                         <Border Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="10">
+                                CornerRadius="8">
                             <Border.Effect>
                                 <DropShadowEffect Color="#00D9FF" BlurRadius="8" ShadowDepth="0" Opacity="0.3"/>
                             </Border.Effect>
@@ -61,14 +62,47 @@
             </Style.Triggers>
         </Style>
 
+        <!-- Botón de Cerrar -->
+        <Style x:Key="CloseButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#8B95A8"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Width" Value="35"/>
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                x:Name="closeBorder">
+                            <TextBlock Text="✕"
+                                     Foreground="{TemplateBinding Foreground}"
+                                     FontSize="{TemplateBinding FontSize}"
+                                     FontWeight="{TemplateBinding FontWeight}"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="closeBorder" Property="Background" Value="#FF4444"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <!-- Botón Principal -->
         <Style x:Key="PrimaryButton" TargetType="Button">
             <Setter Property="Background" Value="#00D9FF"/>
             <Setter Property="Foreground" Value="#0A0E1A"/>
             <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontSize" Value="13"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
-            <Setter Property="Padding" Value="25,14"/>
+            <Setter Property="Padding" Value="20,11"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
@@ -81,10 +115,10 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border Background="{TemplateBinding Background}"
-                                CornerRadius="10"
+                                CornerRadius="8"
                                 Padding="{TemplateBinding Padding}">
                             <Border.Effect>
-                                <DropShadowEffect Color="#00D9FF" BlurRadius="15" ShadowDepth="0" Opacity="0.6"/>
+                                <DropShadowEffect Color="#00D9FF" BlurRadius="12" ShadowDepth="0" Opacity="0.5"/>
                             </Border.Effect>
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
@@ -108,9 +142,9 @@
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontSize" Value="13"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
-            <Setter Property="Padding" Value="20,12"/>
+            <Setter Property="Padding" Value="18,10"/>
             <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="BorderBrush" Value="#3A4556"/>
             <Setter Property="Cursor" Value="Hand"/>
@@ -120,7 +154,7 @@
                         <Border Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="10"
+                                CornerRadius="8"
                                 Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
@@ -138,7 +172,7 @@
         <!-- RadioButton Moderno -->
         <Style TargetType="RadioButton">
             <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
@@ -147,8 +181,8 @@
                         <Border Background="#1A1F2E"
                                 BorderBrush="#2A3244"
                                 BorderThickness="2"
-                                CornerRadius="10"
-                                Padding="15,12"
+                                CornerRadius="8"
+                                Padding="12,10"
                                 x:Name="border">
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -156,22 +190,22 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
-                                <Ellipse Width="20" Height="20"
+                                <Ellipse Width="18" Height="18"
                                         Stroke="#3A4556"
                                         StrokeThickness="2"
                                         Fill="Transparent"
                                         x:Name="radioCircle"
                                         Grid.Column="0"
-                                        Margin="0,0,12,0"/>
+                                        Margin="0,0,10,0"/>
 
-                                <Ellipse Width="10" Height="10"
+                                <Ellipse Width="9" Height="9"
                                         Fill="#00D9FF"
                                         x:Name="radioCheck"
                                         Grid.Column="0"
-                                        Margin="0,0,12,0"
+                                        Margin="0,0,10,0"
                                         Visibility="Collapsed">
                                     <Ellipse.Effect>
-                                        <DropShadowEffect Color="#00D9FF" BlurRadius="10" ShadowDepth="0" Opacity="0.8"/>
+                                        <DropShadowEffect Color="#00D9FF" BlurRadius="8" ShadowDepth="0" Opacity="0.7"/>
                                     </Ellipse.Effect>
                                 </Ellipse>
 
@@ -198,154 +232,171 @@
     </Window.Resources>
 
     <!-- Contenedor Principal -->
-    <Border CornerRadius="25" Background="#0A0E1A" Margin="10">
+    <Border CornerRadius="20" Background="#0A0E1A" Margin="8">
         <Border.Effect>
-            <DropShadowEffect BlurRadius="40" ShadowDepth="0" Opacity="0.7" Color="#00D9FF"/>
+            <DropShadowEffect BlurRadius="30" ShadowDepth="0" Opacity="0.6" Color="#00D9FF"/>
         </Border.Effect>
 
-        <ScrollViewer VerticalScrollBarVisibility="Hidden" 
-                      HorizontalScrollBarVisibility="Disabled"
-                      Padding="5"
-                      PanningMode="VerticalOnly"
-                      CanContentScroll="True">
-            <Grid Margin="40,40,40,40">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+        <Grid>
+            <!-- Botón Cerrar (X) -->
+            <Button x:Name="btnClose"
+                    Style="{StaticResource CloseButton}"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Margin="0,15,15,0"
+                    Panel.ZIndex="999"
+                    Click="Exit_Click"
+                    ToolTip="Close"/>
 
-                <!-- Header con Logo -->
-                <StackPanel Grid.Row="0" HorizontalAlignment="Center">
-                    <Image Source="/LogoMain.png"
-                       Width="80"
-                       Height="80"
-                       Margin="0,0,0,20">
-                        <Image.Effect>
-                            <DropShadowEffect Color="#00D9FF" BlurRadius="20" ShadowDepth="0" Opacity="0.5"/>
-                        </Image.Effect>
-                    </Image>
+            <!-- Contenido Principal -->
+            <ScrollViewer VerticalScrollBarVisibility="Hidden" 
+                          HorizontalScrollBarVisibility="Disabled"
+                          Padding="3"
+                          PanningMode="VerticalOnly"
+                          CanContentScroll="True">
+                <Grid Margin="25,20,25,20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
 
-                    <TextBlock Text="Welcome to"
-                           FontSize="16"
-                           Foreground="#8B95A8"
-                           HorizontalAlignment="Center"
-                           FontFamily="Segoe UI"
-                           Margin="0,0,0,5"/>
+                    <!-- Header con Logo -->
+                    <StackPanel Grid.Row="0" HorizontalAlignment="Center">
+                        <Image Source="/LogoMain.png"
+                           Width="60"
+                           Height="60"
+                           Margin="0,0,0,12">
+                            <Image.Effect>
+                                <DropShadowEffect Color="#00D9FF" BlurRadius="15" ShadowDepth="0" Opacity="0.4"/>
+                            </Image.Effect>
+                        </Image>
 
-                    <TextBlock Text="Leuan's Sims 4 Toolkit"
-                           FontSize="28"
-                           Foreground="White"
-                           FontWeight="Bold"
-                           HorizontalAlignment="Center"
-                           FontFamily="Segoe UI"
-                           Margin="0,0,0,8">
-                        <TextBlock.Effect>
-                            <DropShadowEffect Color="#00D9FF" BlurRadius="15" ShadowDepth="0" Opacity="0.4"/>
-                        </TextBlock.Effect>
-                    </TextBlock>
+                        <TextBlock Text="Welcome to"
+                               FontSize="13"
+                               Foreground="#8B95A8"
+                               HorizontalAlignment="Center"
+                               FontFamily="Segoe UI"
+                               Margin="0,0,0,3"/>
 
-                    <TextBlock Text="Let's personalize your experience"
-                           FontSize="14"
-                           Foreground="#6B7280"
-                           HorizontalAlignment="Center"
-                           FontFamily="Segoe UI"/>
-                </StackPanel>
+                        <TextBlock Text="Leuan's Sims 4 Toolkit"
+                               FontSize="22"
+                               Foreground="White"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"
+                               FontFamily="Segoe UI"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"
+                               Margin="0,0,0,5">
+                            <TextBlock.Effect>
+                                <DropShadowEffect Color="#00D9FF" BlurRadius="12" ShadowDepth="0" Opacity="0.3"/>
+                            </TextBlock.Effect>
+                        </TextBlock>
 
-                <!-- Content -->
-                <StackPanel Grid.Row="1" Margin="0,40,0,20">
+                        <TextBlock Text="Let's personalize your experience"
+                               FontSize="12"
+                               Foreground="#6B7280"
+                               HorizontalAlignment="Center"
+                               FontFamily="Segoe UI"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"/>
+                    </StackPanel>
 
-                    <!-- Sección Nombre -->
-                    <Border Background="#0D1117"
-                        BorderBrush="#1F2937"
-                        BorderThickness="1"
-                        CornerRadius="15"
-                        Padding="25,20"
-                        Margin="0,0,0,20">
-                        <StackPanel>
-                            <TextBlock Text="👤  What's your name?"
-                                   FontSize="16"
-                                   FontWeight="SemiBold"
-                                   Foreground="White"
-                                   FontFamily="Segoe UI"
-                                   TextWrapping="Wrap"
-                                   Margin="0,0,0,6"/>
+                    <!-- Content -->
+                    <StackPanel Grid.Row="1" Margin="0,25,0,15">
 
-                            <TextBlock Text="We'll use this to personalize your experience"
-                                   FontSize="12"
-                                   Foreground="#6B7280"
-                                   FontFamily="Segoe UI"
-                                   TextWrapping="Wrap"
-                                   Margin="0,0,0,15"/>
+                        <!-- Sección Nombre -->
+                        <Border Background="#0D1117"
+                            BorderBrush="#1F2937"
+                            BorderThickness="1"
+                            CornerRadius="12"
+                            Padding="18,15"
+                            Margin="0,0,0,15">
+                            <StackPanel>
+                                <TextBlock Text="👤  What's your name?"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="White"
+                                       FontFamily="Segoe UI"
+                                       TextWrapping="Wrap"
+                                       Margin="0,0,0,4"/>
 
-                            <TextBox x:Name="txtUserName"
-                                 Style="{StaticResource ModernTextBox}"
-                                 MaxLength="30"
-                                 TextChanged="TxtUserName_TextChanged"/>
+                                <TextBlock Text="We'll use this to personalize your experience"
+                                       FontSize="11"
+                                       Foreground="#6B7280"
+                                       FontFamily="Segoe UI"
+                                       TextWrapping="Wrap"
+                                       Margin="0,0,0,12"/>
 
-                            <TextBlock x:Name="txtNameHint"
-                                   Text="Enter your name or nickname"
-                                   FontSize="11"
-                                   Foreground="#4B5563"
-                                   FontFamily="Segoe UI"
-                                   TextWrapping="Wrap"
-                                   Margin="5,8,0,0"/>
-                        </StackPanel>
-                    </Border>
+                                <TextBox x:Name="txtUserName"
+                                     Style="{StaticResource ModernTextBox}"
+                                     MaxLength="30"
+                                     TextChanged="TxtUserName_TextChanged"/>
 
-                    <!-- Sección Idioma -->
-                    <Border Background="#0D1117"
-                        BorderBrush="#1F2937"
-                        BorderThickness="1"
-                        CornerRadius="15"
-                        Padding="25,20">
-                        <StackPanel>
-                            <TextBlock Text="🌍  Choose your language"
-                                   FontSize="16"
-                                   FontWeight="SemiBold"
-                                   Foreground="White"
-                                   FontFamily="Segoe UI"
-                                   TextWrapping="Wrap"
-                                   Margin="0,0,0,15"/>
+                                <TextBlock x:Name="txtNameHint"
+                                       Text="Enter your name or nickname"
+                                       FontSize="10"
+                                       Foreground="#4B5563"
+                                       FontFamily="Segoe UI"
+                                       TextWrapping="Wrap"
+                                       Margin="4,6,0,0"/>
+                            </StackPanel>
+                        </Border>
 
-                            <RadioButton x:Name="rbEnglish"
-                                     Content="🇺🇸  English"
-                                     GroupName="Language"
-                                     Margin="0,0,0,10"/>
+                        <!-- Sección Idioma -->
+                        <Border Background="#0D1117"
+                            BorderBrush="#1F2937"
+                            BorderThickness="1"
+                            CornerRadius="12"
+                            Padding="18,15">
+                            <StackPanel>
+                                <TextBlock Text="🌍  Choose your language"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="White"
+                                       FontFamily="Segoe UI"
+                                       TextWrapping="Wrap"
+                                       Margin="0,0,0,12"/>
 
-                            <RadioButton x:Name="rbSpanish"
-                                     Content="🇪🇸  Español"
-                                     GroupName="Language"/>
-                        </StackPanel>
-                    </Border>
-                </StackPanel>
+                                <RadioButton x:Name="rbEnglish"
+                                         Content="🇺🇸  English"
+                                         GroupName="Language"
+                                         Margin="0,0,0,8"/>
 
-                <!-- Footer Buttons -->
-                <Grid Grid.Row="2" Margin="0,20,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
+                                <RadioButton x:Name="rbSpanish"
+                                         Content="🇪🇸  Español"
+                                         GroupName="Language"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
 
-                    <Button x:Name="btnExit"
-                        Content="Exit"
-                        Grid.Column="0"
-                        HorizontalAlignment="Left"
-                        Width="110"
-                        MinWidth="80"
-                        Style="{StaticResource SecondaryButton}"
-                        Click="Exit_Click"/>
+                    <!-- Footer Buttons -->
+                    <Grid Grid.Row="2" Margin="0,15,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
 
-                    <Button x:Name="btnContinue"
-                        Content="Continue →"
-                        Grid.Column="1"
-                        Width="150"
-                        MinWidth="120"
-                        Style="{StaticResource PrimaryButton}"
-                        Click="Continue_Click"
-                        IsEnabled="False"/>
+                        <Button x:Name="btnExit"
+                            Content="Exit"
+                            Grid.Column="0"
+                            HorizontalAlignment="Left"
+                            Width="100"
+                            MinWidth="75"
+                            Style="{StaticResource SecondaryButton}"
+                            Click="Exit_Click"/>
+
+                        <Button x:Name="btnContinue"
+                            Content="Continue →"
+                            Grid.Column="1"
+                            Width="135"
+                            MinWidth="110"
+                            Style="{StaticResource PrimaryButton}"
+                            Click="Continue_Click"
+                            IsEnabled="False"/>
+                    </Grid>
                 </Grid>
-            </Grid>
-        </ScrollViewer>
+            </ScrollViewer>
+        </Grid>
     </Border>
 </Window>

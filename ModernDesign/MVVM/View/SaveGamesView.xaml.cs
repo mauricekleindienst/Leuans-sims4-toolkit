@@ -388,8 +388,8 @@ namespace ModernDesign.MVVM.View
                     ScanSavesFolder();
 
                     MessageBox.Show(
-                        es ? "✅ Savegame restaurado correctamente."
-                           : "✅ Savegame restored successfully.",
+                        es ? " Savegame restaurado correctamente."
+                           : " Savegame restored successfully.",
                         es ? "Restauración completada" : "Restore completed",
                         MessageBoxButton.OK,
                         MessageBoxImage.Information);

@@ -62,7 +62,7 @@ namespace ModernDesign.MVVM.View
 
                 if (_modsFolderPath != null)
                 {
-                    ShowSuccess(es ? $"✅ Se encontró una carpeta Mods válida:\n{_modsFolderPath}\n\nTu juego soporta mods correctamente." : $"✅ A valid Mods folder was found:\n{_modsFolderPath}\n\nYour game supports mods correctly.");
+                    ShowSuccess(es ? $" Se encontró una carpeta Mods válida:\n{_modsFolderPath}\n\nTu juego soporta mods correctamente." : $" A valid Mods folder was found:\n{_modsFolderPath}\n\nYour game supports mods correctly.");
                     OpenModsFolderButton.Visibility = Visibility.Visible;
                 }
                 else
@@ -119,7 +119,7 @@ namespace ModernDesign.MVVM.View
                     if (Directory.Exists(modsPath))
                     {
                         _modsFolderPath = modsPath;
-                        ShowSuccess(es ? $"✅ Se encontró una carpeta Mods válida:\n{_modsFolderPath}\n\nTu juego soporta mods correctamente." : $"✅ A valid Mods folder was found:\n{_modsFolderPath}\n\nYour game supports mods correctly.");
+                        ShowSuccess(es ? $" Se encontró una carpeta Mods válida:\n{_modsFolderPath}\n\nTu juego soporta mods correctamente." : $" A valid Mods folder was found:\n{_modsFolderPath}\n\nYour game supports mods correctly.");
                         OpenModsFolderButton.Visibility = Visibility.Visible;
                     }
                     else
@@ -135,7 +135,7 @@ namespace ModernDesign.MVVM.View
                             {
                                 Directory.CreateDirectory(modsPath);
                                 _modsFolderPath = modsPath;
-                                ShowSuccess(es ? $"✅ Se creó la carpeta Mods:\n{_modsFolderPath}\n\nTu juego ahora soporta mods correctamente." : $"✅ Mods folder was created:\n{_modsFolderPath}\n\nYour game now supports mods correctly.");
+                                ShowSuccess(es ? $" Se creó la carpeta Mods:\n{_modsFolderPath}\n\nTu juego ahora soporta mods correctamente." : $" Mods folder was created:\n{_modsFolderPath}\n\nYour game now supports mods correctly.");
                                 OpenModsFolderButton.Visibility = Visibility.Visible;
                             }
                             catch (Exception ex)
@@ -163,7 +163,7 @@ namespace ModernDesign.MVVM.View
                 if (!Directory.Exists(modsPath)) Directory.CreateDirectory(modsPath);
 
                 _modsFolderPath = modsPath;
-                ShowSuccess(es ? $"✅ Se ha validado la carpeta de documentos:\n{basePath}\n\nSe creó/confirmó la carpeta Mods:\n{modsPath}\n\nTu juego ahora soporta mods correctamente." : $"✅ Documents folder was validated:\n{basePath}\n\nMods folder was created/confirmed:\n{modsPath}\n\nYour game now supports mods correctly.");
+                ShowSuccess(es ? $" Se ha validado la carpeta de documentos:\n{basePath}\n\nSe creó/confirmó la carpeta Mods:\n{modsPath}\n\nTu juego ahora soporta mods correctamente." : $" Documents folder was validated:\n{basePath}\n\nMods folder was created/confirmed:\n{modsPath}\n\nYour game now supports mods correctly.");
                 OpenModsFolderButton.Visibility = Visibility.Visible;
             }
             catch (Exception ex)
@@ -176,7 +176,7 @@ namespace ModernDesign.MVVM.View
         {
             if (!string.IsNullOrEmpty(_modsFolderPath) && Directory.Exists(_modsFolderPath))
             {
-                try { Process.Start(new ProcessStartInfo { FileName = _modsFolderPath, UseShellExecute = true }); }
+                try { Process.Start(new ProcessStartInfo { FileName = "explorer.exe", Arguments = _modsFolderPath, UseShellExecute = false }); }
                 catch (Exception ex)
                 {
                     System.Windows.MessageBox.Show(LanguageManager.IsSpanish ? $"No se pudo abrir la carpeta:\n{ex.Message}" : $"Could not open folder:\n{ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);

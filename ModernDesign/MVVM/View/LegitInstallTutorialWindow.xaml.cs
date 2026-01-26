@@ -59,7 +59,7 @@ namespace ModernDesign.MVVM.View
 
             if (isSpanish)
             {
-                HeaderText.Text = "✅ Guía de Instalación Legítima";
+                HeaderText.Text = " Guía de Instalación Legítima";
                 SubHeaderText.Text = "Sigue estos pasos para instalar The Sims 4 legítimamente";
 
                 Step1Title.Text = "📥 Paso 1: Descarga el Juego Base";
@@ -84,11 +84,11 @@ namespace ModernDesign.MVVM.View
                 VideoDescription.Text = "Para una guía detallada paso a paso, mira nuestro video tutorial:";
                 VideoBtn.Content = "🎬 Abrir Tutorial de YouTube";
 
-                CloseBtn.Content = "✅ ¡Entendido!";
+                CloseBtn.Content = " ¡Entendido!";
             }
             else
             {
-                HeaderText.Text = "✅ Legit Installation Guide";
+                HeaderText.Text = " Legit Installation Guide";
                 SubHeaderText.Text = "Follow these steps to install The Sims 4 legitimately";
 
                 Step1Title.Text = "📥 Step 1: Download the Base Game";
@@ -113,7 +113,7 @@ namespace ModernDesign.MVVM.View
                 VideoDescription.Text = "For a detailed step-by-step guide, watch our video tutorial:";
                 VideoBtn.Content = "🎬 Open YouTube Tutorial";
 
-                CloseBtn.Content = "✅ Got It!";
+                CloseBtn.Content = " Got It!";
             }
         }
 
@@ -154,8 +154,9 @@ namespace ModernDesign.MVVM.View
             {
                 Process.Start(new ProcessStartInfo
                 {
-                    FileName = _legitInstallUrl, // ✅ USA EL LINK DINÁMICO
-                    UseShellExecute = true
+                    FileName = "explorer.exe",
+                    Arguments = _legitInstallUrl, //  USA EL LINK DINÁMICO
+                    UseShellExecute = false
                 });
             }
             catch (Exception ex)

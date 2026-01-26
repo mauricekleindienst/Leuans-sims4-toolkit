@@ -19,7 +19,7 @@ namespace ModernDesign.MVVM.View
         private string screenshotsPath = "";
         private List<string> photoFiles = new List<string>();
         private List<string> albumFolders = new List<string>();
-        private const string COMPRESSOR_URL = "https://zeroauno.blob.core.windows.net/leuan/TheSims4/Utility/leuan-compressor.exe";
+        private const string COMPRESSOR_URL = "https://github.com/Johnn-sin/leuansin-dlcs/releases/download/Misc/leuan-compressor.exe";
         private string compressorPath = "";
         private string currentAlbum = null;
 
@@ -154,8 +154,9 @@ namespace ModernDesign.MVVM.View
                 {
                     Process.Start(new ProcessStartInfo
                     {
-                        FileName = "https://www.youtube.com/watch?v=9DPKt9lZPbg&t=24s",
-                        UseShellExecute = true
+                        FileName = "explorer.exe",
+                        Arguments = "https://www.youtube.com/watch?v=9DPKt9lZPbg&t=24s",
+                        UseShellExecute = false
                     });
                 }
                 catch (Exception ex)
@@ -821,8 +822,9 @@ namespace ModernDesign.MVVM.View
 
                 Process.Start(new ProcessStartInfo
                 {
-                    FileName = $"mailto:?subject={(es ? "Captura de Los Sims 4" : "Sims 4 Screenshot")}&body={(es ? "¡Mira esta captura!" : "Check out this screenshot!")}",
-                    UseShellExecute = true
+                    FileName = "explorer.exe",
+                    Arguments = $"mailto:?subject={(es ? "Captura de Los Sims 4" : "Sims 4 Screenshot")}&body={(es ? "¡Mira esta captura!" : "Check out this screenshot!")}",
+                    UseShellExecute = false
                 });
 
                 MessageBox.Show(
@@ -973,8 +975,9 @@ namespace ModernDesign.MVVM.View
             {
                 Process.Start(new ProcessStartInfo
                 {
-                    FileName = "https://github.com/Leuansin/PNG-to-JPG-Bulk-Compresser",
-                    UseShellExecute = true
+                    FileName = "explorer.exe",
+                    Arguments = "https://github.com/Leuansin/PNG-to-JPG-Bulk-Compresser",
+                    UseShellExecute = false
                 });
             }
             catch (Exception ex)

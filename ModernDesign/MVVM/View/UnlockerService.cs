@@ -19,7 +19,7 @@ namespace ModernDesign.MVVM.View
         private static readonly string _unlockerFolder;
 
         // Unlocker package URL (.zip with setup + config + g_The Sims 4.ini)
-        private const string UnlockerPackageUrl = "https://zeroauno.blob.core.windows.net/leuan/TheSims4/Unlocker.zip";
+        private const string UnlockerPackageUrl = "https://github.com/Leuansin/leuan-dlcs/releases/download/unlocker/Unlocker.zip";
 
         // AppData folder structure
         private const string CommonDir = @"anadius\EA DLC Unlocker v2";
@@ -86,18 +86,24 @@ namespace ModernDesign.MVVM.View
         }
 
         /// <summary>
-        /// Downloads the unlocker package and runs setup.bat auto
+        /// Downloads the unlocker package and runs setup.bat in AUTO mode
         /// </summary>
         public static async Task InstallUnlockerAsync()
         {
             await DownloadUnlockerPackageAsync();
+
+            // Descargar g_The Sims 4.ini desde GitHub
+            await DownloadGameConfigAsync();
+
+            // Ejecutar setup.bat en modo AUTO (parámetro "auto")
             RunUnlockerScriptAuto();
 
-            // Wait for setup to complete (it runs with admin elevation internally)
-            await Task.Delay(10000);
+            // Esperar más tiempo para que complete la instalación automática
+            // En modo auto es más rápido porque no hay interacción del usuario
+            await Task.Delay(15000);
 
-            // Clean up after installation
-            CleanupUnlockerFiles();
+            // NO limpiar archivos aquí - el usuario puede necesitar ejecutar setup.bat manualmente después
+            // Solo limpia cuando confirmes que está instalado
         }
 
         // ===================== INTERNAL HELPERS =====================
@@ -117,6 +123,8 @@ namespace ModernDesign.MVVM.View
                 {
                     // Clean old files first
                     DeleteFileSafe(Path.Combine(_unlockerFolder, "setup.bat"));
+                    DeleteFileSafe(Path.Combine(_unlockerFolder, "setup_macos.sh"));
+                    DeleteFileSafe(Path.Combine(_unlockerFolder, "setup_linux.sh"));
                     DeleteFileSafe(Path.Combine(_unlockerFolder, "setup.exe"));
                     DeleteFileSafe(Path.Combine(_unlockerFolder, "g_The Sims 4.ini"));
                     DeleteFileSafe(Path.Combine(_unlockerFolder, "config.ini"));
@@ -132,18 +140,49 @@ namespace ModernDesign.MVVM.View
                 DeleteFileSafe(tempZip);
             }
 
-            var iniPath = Path.Combine(_unlockerFolder, "g_The Sims 4.ini");
-            if (!File.Exists(iniPath))
+            var batPath = Path.Combine(_unlockerFolder, "setup.bat");
+            if (!File.Exists(batPath))
             {
                 throw new FileNotFoundException(
-                    "The unlocker package was extracted, but 'g_The Sims 4.ini' was not found.",
-                    iniPath);
+                    "The unlocker package was extracted, but 'setup.bat' was not found.",
+                    batPath);
             }
         }
 
         /// <summary>
-        /// Runs setup.bat with "auto" argument
-        /// The script will request admin rights internally via Start-Process -Verb RunAs
+        /// Descarga g_The Sims 4.ini desde GitHub
+        /// </summary>
+        private static async Task DownloadGameConfigAsync()
+        {
+            var gameConfigPath = Path.Combine(_unlockerFolder, "g_The Sims 4.ini");
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.Timeout = TimeSpan.FromSeconds(30);
+                    var gameConfigContent = await client.GetStringAsync(
+                        "https://raw.githubusercontent.com/Leuansin/Leuans-sims4-toolkit/main/Misc/g_s4_db.ini");
+
+                    File.WriteAllText(gameConfigPath, gameConfigContent);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to download game configuration: {ex.Message}", ex);
+            }
+
+            if (!File.Exists(gameConfigPath))
+            {
+                throw new FileNotFoundException(
+                    "Failed to download 'g_The Sims 4.ini'.",
+                    gameConfigPath);
+            }
+        }
+
+        /// <summary>
+        /// Runs setup.bat in AUTO mode (non-interactive installation)
+        /// This automatically installs the unlocker and copies The Sims 4 config
         /// </summary>
         private static void RunUnlockerScriptAuto()
         {
@@ -157,14 +196,23 @@ namespace ModernDesign.MVVM.View
             var psi = new ProcessStartInfo
             {
                 FileName = batPath,
-                Arguments = "auto",
+                Arguments = "auto", // Modo automático - instala sin interacción
                 WorkingDirectory = _unlockerFolder,
-                UseShellExecute = true, // Required for .bat files to run properly
+                UseShellExecute = true,
                 CreateNoWindow = false,
-                WindowStyle = ProcessWindowStyle.Hidden
+                WindowStyle = ProcessWindowStyle.Hidden, // Oculto porque es automático
+                Verb = "runas" // Pedir permisos de admin directamente
             };
 
-            Process.Start(psi);
+            try
+            {
+                var process = Process.Start(psi);
+                process?.WaitForExit(15000); // Esperar hasta 15 segundos
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Failed to run setup.bat in auto mode: {ex.Message}", ex);
+            }
         }
 
         /// <summary>

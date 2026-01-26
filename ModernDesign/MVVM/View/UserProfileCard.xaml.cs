@@ -340,9 +340,9 @@ namespace ModernDesign.MVVM.View
             if (isUnlocked)
             {
                 // DESBLOQUEADO
-                DeveloperCategoryStatus.Text = es ? "✅ Desbloqueado" : "✅ Unlocked";
+                DeveloperCategoryStatus.Text = es ? " Desbloqueado" : " Unlocked";
                 DeveloperCategoryStatus.Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#22C55E"));
-                DeveloperCategoryLock.Text = "✅";
+                DeveloperCategoryLock.Text = "";
 
                 // Aplicar efecto de brillo al icono
                 DeveloperCategoryIcon.Effect = new DropShadowEffect
@@ -562,8 +562,9 @@ namespace ModernDesign.MVVM.View
             {
                 Process.Start(new ProcessStartInfo
                 {
-                    FileName = "https://github.com/tu-repositorio/translation-guide",
-                    UseShellExecute = true
+                    FileName = "explorer.exe",
+                    Arguments = "https://github.com/leuansin/leuansims4toolkit-translations", // Create soon this new repository and teach how to create translations
+                    UseShellExecute = false
                 });
             }
             catch

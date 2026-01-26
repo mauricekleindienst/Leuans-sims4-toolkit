@@ -165,7 +165,7 @@ namespace ModernDesign.MVVM.View
 
         private void OpenUrl(string url)
         {
-            try { Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true }); }
+            try { Process.Start(new ProcessStartInfo { FileName = "explorer.exe", Arguments = url, UseShellExecute = false }); }
             catch (Exception ex) { MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
         }
         #endregion

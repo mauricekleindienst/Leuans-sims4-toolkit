@@ -13,6 +13,8 @@ namespace ModernDesign.MVVM.View
     {
         private string _modsFolderPath;
         private List<ModEntry> _mods = new List<ModEntry>();
+        private List<ModEntry> _allMods = new List<ModEntry>();  // Nueva
+        private string _searchText = "";  // Nueva
         private List<string> _scriptsInSubfolders = new List<string>();
 
         public OrganizeModsWindow()
@@ -37,6 +39,7 @@ namespace ModernDesign.MVVM.View
             ScriptWarningTitle.Text = es ? "¡Scripts en subcarpetas detectados!" : "Scripts in subfolders detected!";
             ScriptWarningDesc.Text = es ? "Algunos archivos .ts4script están en subcarpetas y probablemente no funcionarán" : "Some .ts4script files are in subfolders and probably won't work";
             FixScriptsButton.Content = es ? "Reparar Ahora" : "Fix Now";
+            SearchPlaceholder.Text = es ? "Buscar mods..." : "Search mods...";
             UpdateStats();
         }
 
@@ -150,9 +153,39 @@ namespace ModernDesign.MVVM.View
                 else if (ext == ".leuts4script") { entry.ScriptPath = file; entry.ScriptActive = false; }
             }
 
-            _mods = modDict.Values.OrderBy(m => m.DisplayName).ToList();
-            UpdateUI();
+            _allMods = modDict.Values.OrderBy(m => m.DisplayName).ToList();
+            ApplySearchFilter();
             UpdateScriptWarning();
+        }
+
+        private void SearchBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            _searchText = SearchBox.Text;
+            SearchPlaceholder.Visibility = string.IsNullOrEmpty(_searchText) ? Visibility.Visible : Visibility.Collapsed;
+            ClearSearchButton.Visibility = string.IsNullOrEmpty(_searchText) ? Visibility.Collapsed : Visibility.Visible;
+            ApplySearchFilter();
+        }
+
+        private void ClearSearchButton_Click(object sender, RoutedEventArgs e)
+        {
+            SearchBox.Text = "";
+        }
+
+        private void ApplySearchFilter()
+        {
+            if (string.IsNullOrWhiteSpace(_searchText))
+            {
+                _mods = _allMods;
+            }
+            else
+            {
+                string search = _searchText.ToLowerInvariant();
+                _mods = _allMods.Where(m =>
+                    m.DisplayName.ToLowerInvariant().Contains(search) ||
+                    m.RelativePath.ToLowerInvariant().Contains(search)
+                ).ToList();
+            }
+            UpdateUI();
         }
 
         private bool IsInModsRoot(string filePath)

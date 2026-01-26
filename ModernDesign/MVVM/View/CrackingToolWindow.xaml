@@ -12,196 +12,337 @@
         Icon="/Icono_TLK.ico">
 
     <Window.Resources>
-        <!-- Animación de Parpadeo Neon -->
+        <QuadraticEase x:Key="EaseOut" EasingMode="EaseOut"/>
+
         <Storyboard x:Key="NeonPulse" RepeatBehavior="Forever">
             <DoubleAnimation Storyboard.TargetProperty="Opacity"
                            From="0.6" To="1.0" Duration="0:0:0.8"
                            AutoReverse="True"/>
         </Storyboard>
 
-        <!-- Animación de Giro para Skull -->
-        <Storyboard x:Key="SkullRotate" RepeatBehavior="Forever">
-            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
-                           From="0" To="360" Duration="0:0:4"/>
+        <Storyboard x:Key="SkullCrackingAnimation">
+            <DoubleAnimation Storyboard.TargetName="CrackingSkull"
+                           Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)"
+                           From="0.3" To="1.5" Duration="0:0:2"
+                           EasingFunction="{StaticResource EaseOut}"/>
+            <DoubleAnimation Storyboard.TargetName="CrackingSkull"
+                           Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)"
+                           From="0.3" To="1.5" Duration="0:0:2"
+                           EasingFunction="{StaticResource EaseOut}"/>
+            <DoubleAnimation Storyboard.TargetName="CrackingSkull"
+                           Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[1].(RotateTransform.Angle)"
+                           From="0" To="720" Duration="0:0:2"
+                           RepeatBehavior="Forever"/>
+            <DoubleAnimation Storyboard.TargetName="CrackingSkull"
+                           Storyboard.TargetProperty="Opacity"
+                           From="0" To="1" Duration="0:0:0.5"/>
+        </Storyboard>
+
+        <Storyboard x:Key="UnlockAnimation">
+            <DoubleAnimation Storyboard.TargetName="UnlockIcon"
+                           Storyboard.TargetProperty="Opacity"
+                           From="0" To="1" Duration="0:0:0.8"/>
+            <DoubleAnimation Storyboard.TargetName="UnlockIcon"
+                           Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                           From="0.5" To="1.3" Duration="0:0:0.8"
+                           EasingFunction="{StaticResource EaseOut}"/>
+            <DoubleAnimation Storyboard.TargetName="UnlockIcon"
+                           Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                           From="0.5" To="1.3" Duration="0:0:0.8"
+                           EasingFunction="{StaticResource EaseOut}"/>
+        </Storyboard>
+
+        <Storyboard x:Key="SparklesAnimation" RepeatBehavior="Forever">
+            <DoubleAnimation Storyboard.TargetName="Sparkle1"
+                           Storyboard.TargetProperty="Opacity"
+                           From="0" To="1" Duration="0:0:1"
+                           AutoReverse="True"/>
+            <DoubleAnimation Storyboard.TargetName="Sparkle2"
+                           Storyboard.TargetProperty="Opacity"
+                           From="0" To="1" Duration="0:0:1.2"
+                           BeginTime="0:0:0.3"
+                           AutoReverse="True"/>
+            <DoubleAnimation Storyboard.TargetName="Sparkle3"
+                           Storyboard.TargetProperty="Opacity"
+                           From="0" To="1" Duration="0:0:0.9"
+                           BeginTime="0:0:0.6"
+                           AutoReverse="True"/>
+            <DoubleAnimation Storyboard.TargetName="Sparkle4"
+                           Storyboard.TargetProperty="Opacity"
+                           From="0" To="1" Duration="0:0:1.1"
+                           BeginTime="0:0:0.2"
+                           AutoReverse="True"/>
         </Storyboard>
     </Window.Resources>
 
-    <Border x:Name="MainBorder" CornerRadius="15" BorderThickness="3">
-        <Border.BorderBrush>
-            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop x:Name="NeonColor1" Color="#FF0000" Offset="0"/>
-                <GradientStop x:Name="NeonColor2" Color="#8B0000" Offset="0.5"/>
-                <GradientStop x:Name="NeonColor3" Color="#FF0000" Offset="1"/>
-            </LinearGradientBrush>
-        </Border.BorderBrush>
-        <Border.Background>
-            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="#0a0a0a" Offset="0"/>
-                <GradientStop Color="#1a0000" Offset="1"/>
-            </LinearGradientBrush>
-        </Border.Background>
-        <Border.Effect>
-            <DropShadowEffect x:Name="BorderGlow" Color="#FF0000" BlurRadius="30" 
-                            ShadowDepth="0" Opacity="0.8"/>
-        </Border.Effect>
+    <Grid>
+        <Canvas x:Name="SparklesCanvas" Visibility="Collapsed">
+            <Ellipse x:Name="Sparkle1" Width="20" Height="20" Fill="#1E5A8E" 
+                     Canvas.Left="50" Canvas.Top="50" Opacity="0">
+                <Ellipse.Effect>
+                    <BlurEffect Radius="10"/>
+                </Ellipse.Effect>
+            </Ellipse>
+            <Ellipse x:Name="Sparkle2" Width="15" Height="15" Fill="#1E5A8E" 
+                     Canvas.Right="80" Canvas.Top="100" Opacity="0">
+                <Ellipse.Effect>
+                    <BlurEffect Radius="8"/>
+                </Ellipse.Effect>
+            </Ellipse>
+            <Ellipse x:Name="Sparkle3" Width="25" Height="25" Fill="#1E5A8E" 
+                     Canvas.Left="100" Canvas.Bottom="80" Opacity="0">
+                <Ellipse.Effect>
+                    <BlurEffect Radius="12"/>
+                </Ellipse.Effect>
+            </Ellipse>
+            <Ellipse x:Name="Sparkle4" Width="18" Height="18" Fill="#1E5A8E" 
+                     Canvas.Right="60" Canvas.Bottom="120" Opacity="0">
+                <Ellipse.Effect>
+                    <BlurEffect Radius="9"/>
+                </Ellipse.Effect>
+            </Ellipse>
+        </Canvas>
 
-        <Grid Margin="20">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
+        <Border x:Name="MainBorder" CornerRadius="15" BorderThickness="3">
+            <Border.BorderBrush>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop x:Name="NeonColor1" Color="#1E5A8E" Offset="0"/>
+                    <GradientStop x:Name="NeonColor2" Color="#0F2D47" Offset="0.5"/>
+                    <GradientStop x:Name="NeonColor3" Color="#1E5A8E" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.BorderBrush>
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#0a0a0a" Offset="0"/>
+                    <GradientStop Color="#001a2e" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+            <Border.Effect>
+                <DropShadowEffect x:Name="BorderGlow" Color="#1E5A8E" BlurRadius="30" 
+                                ShadowDepth="0" Opacity="0.8"/>
+            </Border.Effect>
 
-            <!-- Header -->
-            <StackPanel Grid.Row="0" HorizontalAlignment="Center" Margin="0,0,0,15">
-                <TextBlock x:Name="HeaderText" Text="⚡ CRACKING PROTOCOL ⚡"
-                         FontSize="28" FontWeight="Black" 
-                         Foreground="#FF0000" HorizontalAlignment="Center"
-                         FontFamily="Consolas">
-                    <TextBlock.Effect>
-                        <DropShadowEffect Color="#FF0000" BlurRadius="20" 
-                                        ShadowDepth="0" Opacity="0.9"/>
-                    </TextBlock.Effect>
-                </TextBlock>
-                <TextBlock x:Name="SubHeaderText" Text="SYSTEM: LEUAN v2.0 | STATUS: ARMED"
-                         FontSize="11" Foreground="#888888" 
-                         HorizontalAlignment="Center" Margin="0,3,0,0"
-                         FontFamily="Consolas"/>
-            </StackPanel>
+            <Grid Margin="20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-            <!-- Neon Line -->
-            <Border Grid.Row="1" Height="2" Margin="0,0,0,15">
-                <Border.Background>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                        <GradientStop Color="Transparent" Offset="0"/>
-                        <GradientStop x:Name="LineColor" Color="#FF0000" Offset="0.5"/>
-                        <GradientStop Color="Transparent" Offset="1"/>
-                    </LinearGradientBrush>
-                </Border.Background>
-                <Border.Effect>
-                    <DropShadowEffect x:Name="LineGlow" Color="#FF0000" BlurRadius="15" 
-                                    ShadowDepth="0" Opacity="0.8"/>
-                </Border.Effect>
-            </Border>
-
-            <!-- Path Selection Panel -->
-            <Border Grid.Row="2" Background="#0d0d0d" CornerRadius="10" 
-                    Padding="15" Margin="0,0,0,10" BorderThickness="2"
-                    BorderBrush="#FF0000">
-                <Border.Effect>
-                    <DropShadowEffect Color="#FF0000" BlurRadius="10" 
-                                    ShadowDepth="0" Opacity="0.4"/>
-                </Border.Effect>
-                <StackPanel>
-                    <TextBlock x:Name="PathLabel" Text="[TARGET_PATH]" 
-                             FontSize="10" Foreground="#FF0000" 
-                             Margin="0,0,0,8" FontWeight="Bold"
+                <StackPanel Grid.Row="0" HorizontalAlignment="Center" Margin="0,0,0,15">
+                    <TextBlock x:Name="HeaderText" Text="⚡ CRACKING PROTOCOL ⚡"
+                             FontSize="28" FontWeight="Black" 
+                             Foreground="#1E5A8E" HorizontalAlignment="Center"
+                             FontFamily="Consolas">
+                        <TextBlock.Effect>
+                            <DropShadowEffect Color="#1E5A8E" BlurRadius="20" 
+                                            ShadowDepth="0" Opacity="0.9"/>
+                        </TextBlock.Effect>
+                    </TextBlock>
+                    <TextBlock x:Name="SubHeaderText" Text="SYSTEM: LEUAN v2.0 | STATUS: ARMED"
+                             FontSize="11" Foreground="#888888" 
+                             HorizontalAlignment="Center" Margin="0,3,0,0"
                              FontFamily="Consolas"/>
-
-                    <Border Background="#000000" CornerRadius="5" 
-                            Padding="10" Margin="0,0,0,10"
-                            BorderBrush="#333333" BorderThickness="1">
-                        <TextBlock x:Name="PathText" Text="SCANNING..."
-                                 FontSize="10" Foreground="#00FF00" 
-                                 TextWrapping="Wrap" FontFamily="Consolas"/>
-                    </Border>
-
-                    <Button x:Name="SelectPathBtn" Content="📂 SELECT TARGET" 
-                            Height="35" Foreground="#FF0000" 
-                            FontWeight="Bold" FontSize="12" Cursor="Hand" 
-                            Click="SelectPathBtn_Click" FontFamily="Consolas"
-                            BorderBrush="#FF0000" BorderThickness="2">
-                        <Button.Background>
-                            <SolidColorBrush Color="#1a1a1a"/>
-                        </Button.Background>
-                        <Button.Effect>
-                            <DropShadowEffect Color="#FF0000" BlurRadius="8" 
-                                            ShadowDepth="0" Opacity="0.3"/>
-                        </Button.Effect>
-                    </Button>
                 </StackPanel>
-            </Border>
 
-            <!-- Main Content Grid -->
-            <Grid Grid.Row="3">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" MinWidth="200"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="1.5*" MinWidth="300"/>
-                </Grid.ColumnDefinitions>
-
-                <!-- Skull/Lock Button -->
-                <Viewbox Grid.Column="0" MaxWidth="180" MaxHeight="180"
-                         HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <Button x:Name="SkullBtn" Width="180" Height="180"
-                            Background="Transparent" BorderThickness="0"
-                            Cursor="Hand" Click="CrackBtn_Click"
-                            IsEnabled="False">
-                        <Grid>
-                            <Ellipse x:Name="SkullGlow" Width="180" Height="180" 
-                                   Fill="Transparent" StrokeThickness="4">
-                                <Ellipse.Stroke>
-                                    <SolidColorBrush x:Name="SkullStrokeBrush" Color="#FF0000"/>
-                                </Ellipse.Stroke>
-                                <Ellipse.Effect>
-                                    <DropShadowEffect x:Name="SkullShadow" Color="#FF0000" 
-                                                    BlurRadius="40" ShadowDepth="0" Opacity="0.8"/>
-                                </Ellipse.Effect>
-                            </Ellipse>
-                            <StackPanel VerticalAlignment="Center">
-                                <TextBlock x:Name="SkullIcon" Text="💀" FontSize="90"
-                                         HorizontalAlignment="Center"
-                                         RenderTransformOrigin="0.5,0.5">
-                                    <TextBlock.RenderTransform>
-                                        <RotateTransform Angle="0"/>
-                                    </TextBlock.RenderTransform>
-                                </TextBlock>
-                                <TextBlock x:Name="StatusLabel" Text="READY" FontSize="14"
-                                         Foreground="#FF0000" FontWeight="Bold"
-                                         HorizontalAlignment="Center" 
-                                         Margin="0,5,0,0"
-                                         FontFamily="Consolas"/>
-                            </StackPanel>
-                        </Grid>
-                    </Button>
-                </Viewbox>
-
-                <!-- Separator -->
-                <Border Grid.Column="1" Width="2" Margin="10,0"
-                        Background="#333333"/>
-
-                <!-- Console Output -->
-                <Border Grid.Column="2" Background="#000000" CornerRadius="8" 
-                        Padding="12" BorderThickness="2" BorderBrush="#FF0000">
+                <Border Grid.Row="1" Height="2" Margin="0,0,0,15">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                            <GradientStop Color="Transparent" Offset="0"/>
+                            <GradientStop x:Name="LineColor" Color="#1E5A8E" Offset="0.5"/>
+                            <GradientStop Color="Transparent" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
                     <Border.Effect>
-                        <DropShadowEffect Color="#FF0000" BlurRadius="10" 
-                                        ShadowDepth="0" Opacity="0.3"/>
+                        <DropShadowEffect x:Name="LineGlow" Color="#1E5A8E" BlurRadius="15" 
+                                        ShadowDepth="0" Opacity="0.8"/>
                     </Border.Effect>
-                    <ScrollViewer x:Name="ConsoleScroll" 
-                                VerticalScrollBarVisibility="Auto"
-                                HorizontalScrollBarVisibility="Disabled">
-                        <TextBlock x:Name="ConsoleText" 
-                                 Text="&gt;&gt; SYSTEM INITIALIZED&#x0a;&gt;&gt; AWAITING TARGET SELECTION..."
-                                 FontSize="10" Foreground="#00FF00" 
-                                 TextWrapping="Wrap" FontFamily="Consolas"
-                                 LineHeight="16"/>
-                    </ScrollViewer>
                 </Border>
-            </Grid>
 
-            <!-- Close Button -->
-            <Button Grid.Row="4" x:Name="CloseBtn" Content="[X] ABORT" 
-                    Height="35" Foreground="#888888" 
-                    FontWeight="Bold" FontSize="12" Cursor="Hand" 
-                    Click="CloseBtn_Click" Margin="0,10,0,0"
-                    BorderBrush="#333333" BorderThickness="2"
-                    FontFamily="Consolas">
-                <Button.Background>
-                    <SolidColorBrush Color="#1a1a1a"/>
-                </Button.Background>
-            </Button>
-        </Grid>
-    </Border>
+                <Border Grid.Row="2" Background="#0d0d0d" CornerRadius="10" 
+                        Padding="15" Margin="0,0,0,10" BorderThickness="2"
+                        BorderBrush="#1E5A8E">
+                    <Border.Effect>
+                        <DropShadowEffect Color="#1E5A8E" BlurRadius="10" 
+                                        ShadowDepth="0" Opacity="0.4"/>
+                    </Border.Effect>
+                    <StackPanel>
+                        <TextBlock x:Name="PathLabel" Text="[TARGET_PATH]" 
+                                 FontSize="10" Foreground="#1E5A8E" 
+                                 Margin="0,0,0,8" FontWeight="Bold"
+                                 FontFamily="Consolas"/>
+
+                        <Border Background="#000000" CornerRadius="5" 
+                                Padding="10" Margin="0,0,0,10"
+                                BorderBrush="#333333" BorderThickness="1">
+                            <TextBlock x:Name="PathText" Text="SCANNING..."
+                                     FontSize="10" Foreground="#00FF00" 
+                                     TextWrapping="Wrap" FontFamily="Consolas"/>
+                        </Border>
+
+                        <Button x:Name="SelectPathBtn" Content="📂 SELECT TARGET" 
+                                Height="35" Foreground="#1E5A8E" 
+                                FontWeight="Bold" FontSize="12" Cursor="Hand" 
+                                Click="SelectPathBtn_Click" FontFamily="Consolas"
+                                BorderBrush="#1E5A8E" BorderThickness="2">
+                            <Button.Background>
+                                <SolidColorBrush Color="#1a1a1a"/>
+                            </Button.Background>
+                            <Button.Effect>
+                                <DropShadowEffect Color="#1E5A8E" BlurRadius="8" 
+                                                ShadowDepth="0" Opacity="0.3"/>
+                            </Button.Effect>
+                        </Button>
+                    </StackPanel>
+                </Border>
+
+                <Grid Grid.Row="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" MinWidth="200"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="1.5*" MinWidth="300"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0">
+                        <Viewbox MaxWidth="180" MaxHeight="180"
+                                 HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Button x:Name="SkullBtn" Width="180" Height="180"
+                                    Background="Transparent" BorderThickness="0"
+                                    Cursor="Hand" Click="CrackBtn_Click"
+                                    IsEnabled="False">
+                                <Grid>
+                                    <Ellipse x:Name="SkullGlow" Width="180" Height="180" 
+                                           Fill="Transparent" StrokeThickness="4">
+                                        <Ellipse.Stroke>
+                                            <SolidColorBrush x:Name="SkullStrokeBrush" Color="#1E5A8E"/>
+                                        </Ellipse.Stroke>
+                                        <Ellipse.Effect>
+                                            <DropShadowEffect x:Name="SkullShadow" Color="#1E5A8E" 
+                                                            BlurRadius="40" ShadowDepth="0" Opacity="0.8"/>
+                                        </Ellipse.Effect>
+                                    </Ellipse>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock x:Name="SkullIcon" Text="💀" FontSize="90"
+                                                 HorizontalAlignment="Center"
+                                                 RenderTransformOrigin="0.5,0.5">
+                                            <TextBlock.RenderTransform>
+                                                <RotateTransform Angle="0"/>
+                                            </TextBlock.RenderTransform>
+                                        </TextBlock>
+                                        <TextBlock x:Name="StatusLabel" Text="READY" FontSize="14"
+                                                 Foreground="#1E5A8E" FontWeight="Bold"
+                                                 HorizontalAlignment="Center" 
+                                                 Margin="0,5,0,0"
+                                                 FontFamily="Consolas"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Button>
+                        </Viewbox>
+
+                        <Viewbox MaxWidth="200" MaxHeight="200"
+                                 HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock x:Name="CrackingSkull" Text="💀" FontSize="120"
+                                     Opacity="0" RenderTransformOrigin="0.5,0.5">
+                                <TextBlock.RenderTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform ScaleX="0.3" ScaleY="0.3"/>
+                                        <RotateTransform Angle="0"/>
+                                    </TransformGroup>
+                                </TextBlock.RenderTransform>
+                                <TextBlock.Effect>
+                                    <DropShadowEffect Color="#1E5A8E" BlurRadius="50" 
+                                                    ShadowDepth="0" Opacity="1"/>
+                                </TextBlock.Effect>
+                            </TextBlock>
+                        </Viewbox>
+
+                        <Viewbox MaxWidth="150" MaxHeight="150"
+                                 HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock x:Name="UnlockIcon" Text="🔓" FontSize="100"
+                                     Opacity="0" RenderTransformOrigin="0.5,0.5">
+                                <TextBlock.RenderTransform>
+                                    <ScaleTransform ScaleX="0.5" ScaleY="0.5"/>
+                                </TextBlock.RenderTransform>
+                                <TextBlock.Effect>
+                                    <DropShadowEffect Color="#1E5A8E" BlurRadius="40" 
+                                                    ShadowDepth="0" Opacity="1"/>
+                                </TextBlock.Effect>
+                            </TextBlock>
+                        </Viewbox>
+
+                        <!-- BOTÓN DE CONFIGURACIÓN -->
+                        <Button x:Name="ConfigBtn" 
+                                Width="60" Height="60"
+                                Background="#001a2e"
+                                Foreground="#1E5A8E"
+                                BorderBrush="#1E5A8E"
+                                BorderThickness="2"
+                                Cursor="Hand"
+                                Visibility="Visible"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Bottom"
+                                Margin="0,0,10,10"
+                                Click="ConfigBtn_Click"
+                                FontSize="28"
+                                Content="⚙️">
+                            <Button.Resources>
+                                <Style TargetType="Button">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}"
+                                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                                        CornerRadius="30">
+                                                    <Border.Effect>
+                                                        <DropShadowEffect Color="#1E5A8E" BlurRadius="15" 
+                                                                        ShadowDepth="0" Opacity="0.6"/>
+                                                    </Border.Effect>
+                                                    <ContentPresenter HorizontalAlignment="Center" 
+                                                                    VerticalAlignment="Center"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+                    </Grid>
+
+                    <Border Grid.Column="1" Width="2" Margin="10,0"
+                            Background="#333333"/>
+
+                    <Border Grid.Column="2" Background="#000000" CornerRadius="8" 
+                            Padding="12" BorderThickness="2" BorderBrush="#1E5A8E">
+                        <Border.Effect>
+                            <DropShadowEffect Color="#1E5A8E" BlurRadius="10" 
+                                            ShadowDepth="0" Opacity="0.3"/>
+                        </Border.Effect>
+                        <ScrollViewer x:Name="ConsoleScroll" 
+                                    VerticalScrollBarVisibility="Auto"
+                                    HorizontalScrollBarVisibility="Disabled">
+                            <TextBlock x:Name="ConsoleText" 
+                                     Text="&gt;&gt; SYSTEM INITIALIZED&#x0a;&gt;&gt; AWAITING TARGET SELECTION..."
+                                     FontSize="10" Foreground="#00FF00" 
+                                     TextWrapping="Wrap" FontFamily="Consolas"
+                                     LineHeight="16"/>
+                        </ScrollViewer>
+                    </Border>
+                </Grid>
+
+                <Button Grid.Row="4" x:Name="CloseBtn" Content="[X] ABORT" 
+                        Height="35" Foreground="#888888" 
+                        FontWeight="Bold" FontSize="12" Cursor="Hand" 
+                        Click="CloseBtn_Click" Margin="0,10,0,0"
+                        BorderBrush="#333333" BorderThickness="2"
+                        FontFamily="Consolas">
+                    <Button.Background>
+                        <SolidColorBrush Color="#1a1a1a"/>
+                    </Button.Background>
+                </Button>
+            </Grid>
+        </Border>
+    </Grid>
 </Window>

@@ -26,7 +26,7 @@
             <!-- Header -->
             <StackPanel Grid.Row="0" Margin="0,0,0,20">
                 <TextBlock x:Name="HeaderText"
-                           Text="✅ Legit Installation Guide"
+                           Text=" Legit Installation Guide"
                            FontSize="24"
                            FontWeight="Bold"
                            Foreground="#22C55E"
@@ -135,7 +135,7 @@
             </ScrollViewer>
 
             <!-- Close Button -->
-            <Button x:Name="CloseBtn" Grid.Row="3" Content="✅ Got It!" Height="45" Margin="0,20,0,0"
+            <Button x:Name="CloseBtn" Grid.Row="3" Content=" Got It!" Height="45" Margin="0,20,0,0"
                     Background="#22C55E" Foreground="White" FontWeight="Bold"
                     FontSize="14" Cursor="Hand" Click="CloseBtn_Click">
                 <Button.Template>

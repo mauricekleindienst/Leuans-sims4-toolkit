@@ -25,7 +25,7 @@ namespace ModernDesign.MVVM.View
             InitializeTutorialSteps();
             ShowCurrentStep();
 
-            // ✅ Links dinámicos
+            //  Links dinámicos
             Loaded += async (s, e) => await LoadManualInstallLinksAsync();
         }
 
@@ -197,7 +197,7 @@ namespace ModernDesign.MVVM.View
                 _steps.Add(new TutorialStep
                 {
                     Number = 6,
-                    Icon = "✅",
+                    Icon = "",
                     Title = "¡Listo para jugar!",
                     Description = "Verifica que todo esté funcionando correctamente.",
                     Instructions = new List<string>
@@ -309,7 +309,7 @@ namespace ModernDesign.MVVM.View
                 _steps.Add(new TutorialStep
                 {
                     Number = 6,
-                    Icon = "✅",
+                    Icon = "",
                     Title = "Ready to Play!",
                     Description = "Verify that everything is working correctly.",
                     Instructions = new List<string>
@@ -602,8 +602,9 @@ namespace ModernDesign.MVVM.View
                     {
                         System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
                         {
-                            FileName = e.Uri.AbsoluteUri,
-                            UseShellExecute = true
+                            FileName = "explorer.exe",
+                            Arguments = e.Uri.AbsoluteUri,
+                            UseShellExecute = false
                         });
                     }
                     catch (Exception ex)

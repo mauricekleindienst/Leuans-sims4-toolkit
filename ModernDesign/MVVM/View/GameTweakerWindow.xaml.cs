@@ -945,11 +945,11 @@ namespace ModernDesign.MVVM.View
             string warningMessage = es
                 ? "¿Estás seguro de que quieres aplicar estos cambios?\n\n" +
                   "⚠️ ADVERTENCIA: Modificar estas configuraciones sin conocimiento puede corromper el archivo Options.ini.\n\n" +
-                  "✅ No te preocupes: Si algo sale mal, siempre puedes presionar el botón 'Restaurar' para volver al estado original.\n\n" +
+                  " No te preocupes: Si algo sale mal, siempre puedes presionar el botón 'Restaurar' para volver al estado original.\n\n" +
                   "¿Deseas continuar?"
                 : "Are you sure you want to apply these changes?\n\n" +
                   "⚠️ WARNING: Modifying these settings without knowledge may corrupt the Options.ini file.\n\n" +
-                  "✅ Don't worry: If something goes wrong, you can always press the 'Restore' button to return to the original state.\n\n" +
+                  " Don't worry: If something goes wrong, you can always press the 'Restore' button to return to the original state.\n\n" +
                   "Do you want to continue?";
 
             var confirmResult = MessageBox.Show(

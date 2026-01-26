@@ -1,21 +1,25 @@
-﻿using System;
+﻿using ModernDesign.Profile;
+using System;
 using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using ModernDesign.Profile;
+using System.Windows.Input;
 
 namespace ModernDesign
 {
     public partial class LanguageSelector : Window
     {
         private readonly string _languageIniPath;
+        private readonly string _settingsPIniPath;
+        private ThemeData _selectedTheme = null;
 
         public LanguageSelector()
         {
             InitializeComponent();
             _languageIniPath = GetLanguageIniPath();
+            _settingsPIniPath = GetSettingsPIniPath();
 
             // Set default selection
             rbEnglish.IsChecked = true;
@@ -26,6 +30,13 @@ namespace ModernDesign
             string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             string toolkitFolder = Path.Combine(appData, "Leuan's - Sims 4 ToolKit");
             return Path.Combine(toolkitFolder, "language.ini");
+        }
+
+        private string GetSettingsPIniPath()
+        {
+            string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string toolkitFolder = Path.Combine(appData, "Leuan's - Sims 4 ToolKit");
+            return Path.Combine(toolkitFolder, "settingsp.ini");
         }
 
         private void TxtUserName_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
@@ -86,6 +97,24 @@ namespace ModernDesign
                 return;
             }
 
+            // OPEN THEME SELECTOR
+            ThemeSelector themeSelector = new ThemeSelector();
+            bool? themeResult = themeSelector.ShowDialog();
+
+            if (themeResult != true || themeSelector.SelectedTheme == null)
+            {
+                MessageBox.Show(
+                    rbSpanish.IsChecked == true
+                        ? "Debes seleccionar un tema para continuar."
+                        : "You must select a theme to continue.",
+                    rbSpanish.IsChecked == true ? "Tema Requerido" : "Theme Required",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+                return;
+            }
+
+            _selectedTheme = themeSelector.SelectedTheme;
+
             try
             {
                 // Create Profile
@@ -94,10 +123,10 @@ namespace ModernDesign
                 // Save Language Configuration
                 SaveLanguageConfig(languageCode);
 
-                // ✅ SEND DISCORD WEBHOOK
-                //await SendDiscordWebhook(userName, languageCode);
+                // Save Theme Configuration
+                SaveThemeConfig(_selectedTheme);
 
-                // ✅ SHOW RESTART MESSAGE
+                //  SHOW RESTART MESSAGE
                 string message = rbSpanish.IsChecked == true
                     ? "Configuración guardada exitosamente.\n\n" +
                       "La aplicación se cerrará ahora.\n" +
@@ -116,10 +145,10 @@ namespace ModernDesign
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);
 
-                // ✅ OPEN DISCORD INVITE
+                //  OPEN DISCORD INVITE
                 OpenDiscordInvite();
 
-                // ✅ CLOSE THE APPLICATION
+                //  CLOSE THE APPLICATION
                 Application.Current.Shutdown();
             }
             catch (Exception ex)
@@ -132,58 +161,15 @@ namespace ModernDesign
             }
         }
 
-        private async Task SendDiscordWebhook(string userName, string languageCode)
-        {
-            try
-            {
-                string webhookUrl = "https://discord.com/api/webhooks/1444457608277786757/WhpK6Mh6KR_MRGzva7zHg-xpBehh8ceQ-sB9EYsyoTojKJRqFHoe2fk77m4gHM7rij5B";
-
-                string languageDisplay = languageCode == "es-ES" ? "🇪🇸 Español" : "🇺🇸 English";
-
-                string jsonPayload = $@"{{
-                    ""embeds"": [{{
-                        ""title"": ""🎉 Nuevo Usuario Registrado"",
-                        ""description"": ""Un nuevo usuario ha usado la APP por primera vez!"",
-                        ""color"": 5814783,
-                        ""fields"": [
-                            {{
-                                ""name"": ""👤 Usuario"",
-                                ""value"": ""{userName}"",
-                                ""inline"": true
-                            }},
-                            {{
-                                ""name"": ""🌐 Idioma"",
-                                ""value"": ""{languageDisplay}"",
-                                ""inline"": true
-                            }}
-                        ],
-                        ""footer"": {{
-                            ""text"": ""Leuan's - Sims 4 ToolKit""
-                        }},
-                        ""timestamp"": ""{DateTime.UtcNow:yyyy-MM-ddTHH:mm:ss.fffZ}""
-                    }}]
-                }}";
-
-                using (HttpClient client = new HttpClient())
-                {
-                    var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
-                    await client.PostAsync(webhookUrl, content);
-                }
-            }
-            catch
-            {
-                // Silently fail - don't interrupt user experience if webhook fails
-            }
-        }
-
         private void OpenDiscordInvite()
         {
             try
             {
                 System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
                 {
-                    FileName = "https://discord.gg/JYnpPt4nUu",
-                    UseShellExecute = true
+                    FileName = "explorer.exe",
+                    Arguments = "https://discord.gg/JYnpPt4nUu",
+                    UseShellExecute = false
                 });
             }
             catch
@@ -191,6 +177,7 @@ namespace ModernDesign
                 // Silently fail - don't interrupt user experience if browser fails to open
             }
         }
+
 
         private void SaveLanguageConfig(string languageCode)
         {
@@ -227,6 +214,29 @@ namespace ModernDesign
             };
 
             File.WriteAllLines(_languageIniPath, lines);
+        }
+
+        private void SaveThemeConfig(ThemeData theme)
+        {
+            string directory = Path.GetDirectoryName(_settingsPIniPath);
+            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+                Directory.CreateDirectory(directory);
+
+            string[] lines = new string[]
+            {
+                $"background1={theme.Color1}",
+                $"background2={theme.Color2}",
+                $"background3={theme.Color3}",
+                "avatar=👤"
+            };
+
+            File.WriteAllLines(_settingsPIniPath, lines);
+        }
+
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+                this.DragMove();
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e)

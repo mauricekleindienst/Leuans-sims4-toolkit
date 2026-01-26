@@ -1,0 +1,218 @@
+﻿<Window x:Class="ModernDesign.ChatbotSettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shell="http://schemas.microsoft.com/netfx/2009/xaml/presentation"
+        Title="Chatbot Settings"
+        Width="800" Height="600"
+        MinWidth="800" MinHeight="600"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResize"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown">
+
+    <shell:WindowChrome.WindowChrome>
+        <shell:WindowChrome
+            CaptionHeight="60"
+            ResizeBorderThickness="6"
+            CornerRadius="0"
+            GlassFrameThickness="0"
+            UseAeroCaptionButtons="False"/>
+    </shell:WindowChrome.WindowChrome>
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="PrimaryBrush" Color="#3B82F6"/>
+        <SolidColorBrush x:Key="SurfaceBrush" Color="#0F172A"/>
+        <SolidColorBrush x:Key="SurfaceLightBrush" Color="#1E293B"/>
+        <SolidColorBrush x:Key="TextPrimaryBrush" Color="#F8FAFC"/>
+        <SolidColorBrush x:Key="TextSecondaryBrush" Color="#94A3B8"/>
+
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Background" Value="#3B82F6"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="FontFamily" Value="Bahnschrift Light"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#2563EB"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="#475569"/>
+                    <Setter Property="Foreground" Value="#94A3B8"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Border CornerRadius="16" Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource PrimaryBrush}" BorderThickness="2">
+        <Border.Effect>
+            <DropShadowEffect Color="Black" BlurRadius="40" ShadowDepth="0" Opacity="0.7"/>
+        </Border.Effect>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- HEADER -->
+            <Border Grid.Row="0" Background="{StaticResource PrimaryBrush}" CornerRadius="16,16,0,0">
+                <Grid>
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="20,0">
+                        <TextBlock Text="⚙️" FontSize="24" Margin="0,0,10,0"/>
+                        <TextBlock x:Name="TitleText" Text="Chatbot Settings" 
+                                   Foreground="White" FontSize="18" FontWeight="Bold" FontFamily="Bahnschrift Light"/>
+                    </StackPanel>
+
+                    <Button Content="✕" 
+                            Width="32" Height="32"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Margin="0,0,15,0"
+                            Background="Transparent"
+                            Foreground="White"
+                            BorderThickness="0"
+                            FontSize="18"
+                            FontWeight="Bold"
+                            Cursor="Hand"
+                            Click="CloseButton_Click"
+                            shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}"
+                                                    CornerRadius="16"
+                                                    Width="32" Height="32">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="#20FFFFFF"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- CONTENT -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Padding="20">
+                <StackPanel>
+
+                    <!-- Enable/Disable Chatbot -->
+                    <Border Background="{StaticResource SurfaceLightBrush}" CornerRadius="12" Padding="15" Margin="0,0,0,15">
+                        <StackPanel>
+                            <TextBlock x:Name="EnableChatbotText" Text="Enable Chatbot" 
+                                       Foreground="{StaticResource TextPrimaryBrush}" FontSize="14" FontWeight="Bold" Margin="0,0,0,5"/>
+                            <TextBlock x:Name="EnableChatbotDesc" 
+                                       Text="Show or hide the chatbot bubble. If disabled, you can re-enable it in Settings." 
+                                       Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" TextWrapping="Wrap" Margin="0,0,0,10"/>
+                            <CheckBox x:Name="EnableChatbotCheckbox" Content="Chatbot Enabled" 
+                                      Foreground="{StaticResource TextPrimaryBrush}" FontSize="13" IsChecked="True"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Manage Responses -->
+                    <Border Background="{StaticResource SurfaceLightBrush}" CornerRadius="12" Padding="15" Margin="0,0,0,15">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" x:Name="ManageResponsesText" Text="Manage Chatbot Responses" 
+                                       Foreground="{StaticResource TextPrimaryBrush}" FontSize="14" FontWeight="Bold" Margin="0,0,0,10"/>
+
+                            <ListBox Grid.Row="1" x:Name="ResponsesListBox" 
+                                     Background="#0A0E1A" 
+                                     Foreground="{StaticResource TextPrimaryBrush}"
+                                     BorderBrush="#475569"
+                                     BorderThickness="1"
+                                     MinHeight="120"
+                                     MaxHeight="200"
+                                     Margin="0,0,0,10"
+                                     SelectionChanged="ResponsesListBox_SelectionChanged"/>
+
+                            <WrapPanel Grid.Row="2" HorizontalAlignment="Center" Orientation="Horizontal">
+                                <Button x:Name="AddResponseButton" Content="Add New" Width="100" Margin="5" Click="AddResponse_Click" Style="{StaticResource ModernButton}"/>
+                                <Button x:Name="EditResponseButton" Content="Edit" Width="100" Margin="5" Click="EditResponse_Click" Style="{StaticResource ModernButton}"/>
+                                <Button x:Name="DeleteResponseButton" Content="Delete" Width="100" Margin="5" Click="DeleteResponse_Click" Style="{StaticResource ModernButton}"/>
+                            </WrapPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- Share Chatbot -->
+                    <Border Background="{StaticResource SurfaceLightBrush}" CornerRadius="12" Padding="15" Margin="0,0,0,15">
+                        <StackPanel>
+                            <TextBlock x:Name="ShareChatbotText" Text="Share Your Chatbot" 
+                                       Foreground="{StaticResource TextPrimaryBrush}" FontSize="14" FontWeight="Bold" Margin="0,0,0,5"/>
+                            <TextBlock x:Name="ShareChatbotDesc" 
+                                       Foreground="{StaticResource TextSecondaryBrush}" FontSize="12" TextWrapping="Wrap" Margin="0,0,0,10">
+                                <Run Text="If you upload your trained chatbot.txt with your language and keywords, you can help contribute to a general chatbot.txt. This is highly appreciated!"/>
+                                <LineBreak/><LineBreak/>
+                                <Run Text="Upload your chatbot.txt in our Discord, in the #chatbot channel."/>
+                            </TextBlock>
+                            <Button x:Name="OpenDiscordButton" Content="Open Discord #chatbot" Width="200" Click="OpenDiscord_Click" Style="{StaticResource ModernButton}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- ChatGPT as ChatBot (DISABLED) -->
+                    <Border Background="#2A2A2A" CornerRadius="12" Padding="15" Margin="0,0,0,15" Opacity="0.5">
+                        <StackPanel>
+                            <TextBlock Text="ChatGPT as ChatBot" 
+                                       Foreground="#888888" FontSize="14" FontWeight="Bold" Margin="0,0,0,5"/>
+                            <TextBlock x:Name="ChatGPTDesc" 
+                                       Foreground="#666666" FontSize="12" TextWrapping="Wrap" Margin="0,0,0,10">
+                                <Run Text="Change the model, instead of keywords, make ChatGPT be your chatbot and help you with your problems. Only available for "/>
+                                <Hyperlink Click="UltraSupporters_Click" Foreground="#3B82F6">Ultra Supporters</Hyperlink>
+                            </TextBlock>
+                            <CheckBox Content="ChatGPT Enabled" Foreground="#666666" FontSize="13" IsEnabled="False"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Configure ChatGPT Routes (DISABLED) -->
+                    <Border Background="#2A2A2A" CornerRadius="12" Padding="15" Margin="0,0,0,15" Opacity="0.5">
+                        <StackPanel>
+                            <TextBlock Text="Configure ChatGPT to know your Routes and Game Files" 
+                                       Foreground="#888888" FontSize="14" FontWeight="Bold" Margin="0,0,0,5"/>
+                            <TextBlock Foreground="#666666" FontSize="12" TextWrapping="Wrap" Margin="0,0,0,10">
+                                <Run Text="Tell ChatGPT where your game and mods are, so it can help you in a more personal way to solve problems. Only available for "/>
+                                <Hyperlink Click="UltraSupporters_Click" Foreground="#3B82F6">Ultra Supporters</Hyperlink>
+                            </TextBlock>
+                            <CheckBox Content="Route Configuration Enabled" Foreground="#666666" FontSize="13" IsEnabled="False"/>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- FOOTER -->
+            <Border Grid.Row="2" Background="{StaticResource SurfaceLightBrush}" Padding="20" CornerRadius="0,0,16,16">
+                <Button x:Name="SaveButton" Content="Save Changes" Width="150" Click="SaveButton_Click" Style="{StaticResource ModernButton}"/>
+            </Border>
+        </Grid>
+    </Border>
+</Window>

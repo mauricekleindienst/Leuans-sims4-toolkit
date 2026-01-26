@@ -129,7 +129,7 @@ namespace ModernDesign.Managers
                 using (HttpClient client = new HttpClient())
                 {
                     client.Timeout = TimeSpan.FromSeconds(10);
-                    string response = await client.GetStringAsync("https://zeroauno.blob.core.windows.net/leuan/TheSims4/version.txt");
+                    string response = await client.GetStringAsync("https://raw.githubusercontent.com/Johnn-sin/leuansin-dlcs/refs/heads/main/version.txt");
                     return response.Trim();
                 }
             }

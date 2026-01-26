@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
@@ -14,10 +15,40 @@ namespace ModernDesign.MVVM.View
 {
     public partial class DLCUnlockerWindow : Window
     {
+        private bool _isCheckingConfig = false;
+
         public DLCUnlockerWindow()
         {
             InitializeComponent();
+
+            //  Borrar ETag cacheado al iniciar (siempre verificar con GitHub)
+            try
+            {
+                string cachedETagPath = GetCachedETagPath();
+                if (File.Exists(cachedETagPath))
+                {
+                    File.Delete(cachedETagPath);
+                    Debug.WriteLine("🗑️ Deleted cached ETag - will fetch fresh from GitHub");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error deleting cached ETag: {ex.Message}");
+            }
+
             Loaded += (s, e) => RefreshUnlockerStatus();
+        }
+
+        // ============================================================
+        // WINDOW DRAG SUPPORT
+        // ============================================================
+
+        private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ButtonState == MouseButtonState.Pressed)
+            {
+                this.DragMove();
+            }
         }
 
         // ============================================================
@@ -28,6 +59,8 @@ namespace ModernDesign.MVVM.View
         {
             try
             {
+                ActivityLog.Text += "\n> Checking unlocker status...";
+
                 if (UnlockerService.IsUnlockerInstalled(out var clientName))
                 {
                     StatusText.Text = $"DLC Unlocker: Installed ({clientName})";
@@ -41,8 +74,13 @@ namespace ModernDesign.MVVM.View
                     InstallBtn.Content = "Reinstall EA DLC Unlocker";
                     UninstallBtn.Visibility = Visibility.Visible;
 
+                    ActivityLog.Text += $"\n> SUCCESS: Unlocker detected ({clientName})";
+
                     // Check if configuration file is up to date
-                    await CheckConfigurationFile();
+                    if (!_isCheckingConfig)
+                    {
+                        await CheckConfigurationFile();
+                    }
                 }
                 else
                 {
@@ -56,6 +94,8 @@ namespace ModernDesign.MVVM.View
 
                     InstallBtn.Content = "Install EA DLC Unlocker";
                     UninstallBtn.Visibility = Visibility.Collapsed;
+
+                    ActivityLog.Text += "\n> Unlocker not detected.";
                 }
             }
             catch
@@ -69,11 +109,115 @@ namespace ModernDesign.MVVM.View
                     "You may still attempt to install it.";
 
                 UninstallBtn.Visibility = Visibility.Collapsed;
+
+                ActivityLog.Text += "\n> ERROR: Could not determine status.";
             }
         }
 
+        // ============================================================
+        // ETAG & CACHE MANAGEMENT
+        // ============================================================
+
+        private async Task<string> GetGitHubETag()
+        {
+            try
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    httpClient.DefaultRequestHeaders.Add("User-Agent", "Leuans-Sims4-Toolkit");
+                    httpClient.Timeout = TimeSpan.FromSeconds(5);
+
+                    var request = new HttpRequestMessage(HttpMethod.Head,
+                        "https://raw.githubusercontent.com/Leuansin/Leuans-sims4-toolkit/main/Misc/g_s4_db.ini");
+
+                    var response = await httpClient.SendAsync(request);
+
+                    if (response.Headers.ETag != null)
+                    {
+                        return response.Headers.ETag.Tag.Trim('"');
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error getting ETag: {ex.Message}");
+            }
+
+            return null;
+        }
+
+        private string GetCacheFolderPath()
+        {
+            string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string cacheFolder = Path.Combine(appData, "Leuan's - Sims 4 ToolKit", "qol");
+
+            if (!Directory.Exists(cacheFolder))
+                Directory.CreateDirectory(cacheFolder);
+
+            return cacheFolder;
+        }
+
+        private string GetCachedConfigPath()
+        {
+            return Path.Combine(GetCacheFolderPath(), "g_s4_db_cached.ini");
+        }
+
+        private string GetCachedETagPath()
+        {
+            return Path.Combine(GetCacheFolderPath(), "g_s4_db_etag.txt");
+        }
+
+        private async Task<string> GetRemoteConfigContent(bool forceDownload = false)
+        {
+            string cachedConfigPath = GetCachedConfigPath();
+            string cachedETagPath = GetCachedETagPath();
+
+            string currentETag = await GetGitHubETag();
+            string cachedETag = null;
+
+            if (File.Exists(cachedETagPath))
+            {
+                cachedETag = File.ReadAllText(cachedETagPath).Trim();
+            }
+
+            if (!forceDownload && File.Exists(cachedConfigPath) &&
+                currentETag != null && cachedETag == currentETag)
+            {
+                Debug.WriteLine("✓ Using cached config (ETag matches)");
+                return File.ReadAllText(cachedConfigPath);
+            }
+
+            Debug.WriteLine("📥 Downloading fresh config from GitHub...");
+            using (var httpClient = new HttpClient())
+            {
+                httpClient.Timeout = TimeSpan.FromSeconds(10);
+
+                string remoteContent = await httpClient.GetStringAsync(
+                    "https://raw.githubusercontent.com/Leuansin/Leuans-sims4-toolkit/main/Misc/g_s4_db.ini");
+
+                File.WriteAllText(cachedConfigPath, remoteContent);
+
+                if (currentETag != null)
+                {
+                    File.WriteAllText(cachedETagPath, currentETag);
+                }
+
+                Debug.WriteLine("✓ Config cached successfully");
+                return remoteContent;
+            }
+        }
+
+        // ============================================================
+        // CHECK CONFIGURATION FILE
+        // ============================================================
+
         private async Task CheckConfigurationFile()
         {
+            if (_isCheckingConfig)
+                return;
+
+            _isCheckingConfig = true;
+
             try
             {
                 string configPath = Path.Combine(
@@ -81,36 +225,60 @@ namespace ModernDesign.MVVM.View
                     "anadius", "EA DLC Unlocker v2", "g_The Sims 4.ini");
 
                 if (!File.Exists(configPath))
+                {
+                    _isCheckingConfig = false;
                     return;
+                }
+
+                StatusText.Text = "Checking for updates...";
+                StatusText.Foreground = new SolidColorBrush(
+                    (Color)ColorConverter.ConvertFromString("#60A5FA"));
+                HintText.Text = "Verifying configuration...";
 
                 string localContent = File.ReadAllText(configPath);
+                string remoteContent = await GetRemoteConfigContent();
 
-                using (var httpClient = new HttpClient())
+                _isCheckingConfig = false;
+
+                if (localContent.Trim() == remoteContent.Trim())
                 {
-                    string remoteContent = await httpClient.GetStringAsync(
-                        "https://zeroauno.blob.core.windows.net/leuan/TheSims4/Utility/Updated%20-%20g_The%20Sims%204.ini");
+                    StatusText.Text = "DLC Unlocker: Installed (EA app)";
+                    StatusText.Foreground = new SolidColorBrush(
+                        (Color)ColorConverter.ConvertFromString("#22C55E"));
+                    HintText.Text = "The unlocker is correctly installed.\nYou can now open EA app / Origin and play normally.";
 
-                    if (localContent.Trim() == remoteContent.Trim())
-                        return;
-
-                    // Configuration is outdated
-                    var result = MessageBox.Show(
-                        "We've detected that your EA DLC Unlocker is outdated and you're missing some DLCs!\n" +
-                        "Would you like to know which DLCs you're missing?\n\n",
-                        "Outdated Configuration",
-                        MessageBoxButton.YesNo,
-                        MessageBoxImage.Warning);
-
-                    if (result == MessageBoxResult.Yes)
-                    {
-                        var missingDLCs = GetMissingDLCs(localContent, remoteContent);
-                        await ShowMissingDLCsDialog(missingDLCs, configPath, remoteContent);
-                    }
+                    ActivityLog.Text += "\n> Configuration is up to date.";
+                    return;
                 }
+
+                var result = MessageBox.Show(
+                    "We've detected that your EA DLC Unlocker is outdated and you're missing some DLCs!\n" +
+                    "Would you like to know which DLCs you're missing?\n\n",
+                    "Outdated Configuration",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    var missingDLCs = GetMissingDLCs(localContent, remoteContent);
+                    await ShowMissingDLCsDialog(missingDLCs, configPath, remoteContent);
+                }
+
+                StatusText.Text = "DLC Unlocker: Installed (EA app)";
+                StatusText.Foreground = new SolidColorBrush(
+                    (Color)ColorConverter.ConvertFromString("#22C55E"));
+                HintText.Text = "The unlocker is correctly installed.\nYou can now open EA app / Origin and play normally.";
             }
-            catch
+            catch (Exception ex)
             {
-                // Silently fail - don't interrupt the user experience
+                _isCheckingConfig = false;
+                Debug.WriteLine($"Error checking config: {ex.Message}");
+                ActivityLog.Text += $"\n> ERROR: {ex.Message}";
+
+                StatusText.Text = "DLC Unlocker: Installed (EA app)";
+                StatusText.Foreground = new SolidColorBrush(
+                    (Color)ColorConverter.ConvertFromString("#22C55E"));
+                HintText.Text = "The unlocker is correctly installed.\nYou can now open EA app / Origin and play normally.";
             }
         }
 
@@ -143,6 +311,7 @@ namespace ModernDesign.MVVM.View
 
             return dlcs;
         }
+
         private async Task ShowMissingDLCsDialog(List<string> missingDLCs, string configPath, string remoteContent)
         {
             string dlcList = string.Join("\n", missingDLCs.Select(d => "• " + d.Replace("DLC_", "").Replace("_", " ")));
@@ -164,6 +333,8 @@ namespace ModernDesign.MVVM.View
                         "Success / Éxito",
                         MessageBoxButton.OK,
                         MessageBoxImage.Information);
+
+                    ActivityLog.Text += "\n> SUCCESS: Configuration updated.";
                 }
                 catch (Exception ex)
                 {
@@ -173,9 +344,12 @@ namespace ModernDesign.MVVM.View
                         "Error",
                         MessageBoxButton.OK,
                         MessageBoxImage.Error);
+
+                    ActivityLog.Text += "\n> ERROR: Failed to update config.";
                 }
             }
         }
+
         // ============================================================
         // DELAYED SECOND REFRESH (5 SECONDS)
         // ============================================================
@@ -210,6 +384,8 @@ namespace ModernDesign.MVVM.View
                 (Color)ColorConverter.ConvertFromString("#60A5FA"));
             HintText.Text = "Downloading and configuring components. Please wait maximum 1 minute...";
 
+            ActivityLog.Text += "\n> Starting installation process...";
+
             try
             {
                 await UnlockerService.InstallUnlockerAsync();
@@ -219,6 +395,8 @@ namespace ModernDesign.MVVM.View
                     "Unlocker Installed",
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);
+
+                ActivityLog.Text += "\n> SUCCESS: Installation complete!";
 
                 RefreshUnlockerStatus();
                 ScheduleDelayedRefresh();
@@ -236,6 +414,8 @@ namespace ModernDesign.MVVM.View
                     (Color)ColorConverter.ConvertFromString("#EF4444"));
                 HintText.Text =
                     "Verify your internet connection, permissions, or sims 4 installation.";
+
+                ActivityLog.Text += $"\n> ERROR: {ex.Message}";
             }
             finally
             {
@@ -268,6 +448,8 @@ namespace ModernDesign.MVVM.View
                 (Color)ColorConverter.ConvertFromString("#F97373"));
             HintText.Text = "Removing unlocker files and configurations...";
 
+            ActivityLog.Text += "\n> Starting uninstall process...";
+
             try
             {
                 await UnlockerService.UninstallUnlockerAsync();
@@ -277,6 +459,8 @@ namespace ModernDesign.MVVM.View
                     "Unlocker Uninstalled",
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);
+
+                ActivityLog.Text += "\n> SUCCESS: Uninstalled.";
 
                 RefreshUnlockerStatus();
                 ScheduleDelayedRefresh();
@@ -294,6 +478,8 @@ namespace ModernDesign.MVVM.View
                     (Color)ColorConverter.ConvertFromString("#EF4444"));
                 HintText.Text =
                     "Make sure EA/Origin are closed and try again.";
+
+                ActivityLog.Text += $"\n> ERROR: {ex.Message}";
             }
             finally
             {
@@ -327,7 +513,12 @@ namespace ModernDesign.MVVM.View
 
         private void OtherOS_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
         {
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = "explorer.exe",
+                Arguments = e.Uri.AbsoluteUri,
+                UseShellExecute = false
+            });
             e.Handled = true;
         }
 

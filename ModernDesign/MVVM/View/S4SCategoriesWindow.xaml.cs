@@ -16,7 +16,7 @@ namespace ModernDesign.MVVM.View
 {
     public partial class S4SCategoriesWindow : Window
     {
-        private const string TOOLS_DOWNLOAD_URL = "https://zeroauno.blob.core.windows.net/leuan/TheSims4/Utility/Leuans%20Sims%204%20ToolKit%20-%20Modding%20Tools.zip"; // Reemplaza con tu URL
+        private const string TOOLS_DOWNLOAD_URL = "https://github.com/Johnn-sin/leuansin-dlcs/releases/download/Misc/Leuans.Sims.4.ToolKit.-.Modding.Tools.rar"; // Tools Download
         private bool _isDownloading = false;
 
         public S4SCategoriesWindow()
@@ -214,10 +214,10 @@ namespace ModernDesign.MVVM.View
                 // Abrir carpeta
                 Process.Start(new ProcessStartInfo
                 {
-                    FileName = targetFolder,
-                    UseShellExecute = true
+                    FileName = "explorer.exe",
+                    Arguments = targetFolder,
+                    UseShellExecute = false
                 });
-
                 MessageBox.Show(
                     es ? $"¡Herramientas descargadas y extraídas exitosamente!\n\nUbicación: {targetFolder}"
                        : $"Tools downloaded and extracted successfully!\n\nLocation: {targetFolder}",

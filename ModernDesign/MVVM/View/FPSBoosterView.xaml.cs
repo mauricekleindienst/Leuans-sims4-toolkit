@@ -35,7 +35,7 @@ namespace ModernDesign.MVVM.View
         private int _pngCount = 0;
         private int _jpgCount = 0;
 
-        private const string COMPRESSOR_URL = "https://zeroauno.blob.core.windows.net/leuan/TheSims4/Utility/leuan-compressor.exe";
+        private const string COMPRESSOR_URL = "https://github.com/Johnn-sin/leuansin-dlcs/releases/download/Misc/leuan-compressor.exe";
         private string _compressorPath = "";
 
         public FPSBoosterView()
@@ -603,47 +603,22 @@ namespace ModernDesign.MVVM.View
         {
             bool es = _languageCode.StartsWith("es", StringComparison.OrdinalIgnoreCase);
 
-            var result = MessageBox.Show(
-                es ? $"Se renombrarán {_filesWithSpecialChars.Count} archivos eliminando caracteres especiales.\n\n¿Continuar?"
-                   : $"This will rename {_filesWithSpecialChars.Count} files removing special characters.\n\nContinue?",
-                "FPS Booster",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
-
-            if (result == MessageBoxResult.Yes)
+            if (string.IsNullOrEmpty(_modsFolder) || !Directory.Exists(_modsFolder))
             {
-                int renamed = 0;
-                var specialCharsPattern = new Regex(@"[^A-Za-z0-9_\-\.]");
-
-                foreach (var file in _filesWithSpecialChars.ToList())
-                {
-                    try
-                    {
-                        string dir = Path.GetDirectoryName(file);
-                        string oldName = Path.GetFileName(file);
-                        string newName = specialCharsPattern.Replace(oldName, "_");
-                        string newPath = Path.Combine(dir, newName);
-
-                        if (file != newPath && !File.Exists(newPath))
-                        {
-                            File.Move(file, newPath);
-                            renamed++;
-                        }
-                    }
-                    catch { }
-                }
-
-                _filesWithSpecialChars.Clear();
-                _charsIssue = false;
-                UpdateUI();
-
                 MessageBox.Show(
-                    es ? $"Se renombraron {renamed} archivos correctamente."
-                       : $"Successfully renamed {renamed} files.",
-                    "FPS Booster",
+                    es ? "No se pudo encontrar la carpeta Mods." : "Could not find Mods folder.",
+                    "Error",
                     MessageBoxButton.OK,
-                    MessageBoxImage.Information);
+                    MessageBoxImage.Error);
+                return;
             }
+
+            // Abrir el Renombrador de Mods directamente
+            var renamerWindow = new ModRenamerWindow(_modsFolder);
+            renamerWindow.ShowDialog();
+
+            // Re-escanear después de cerrar la ventana
+            ScanButton_Click(null, null);
         }
 
         private async void ModDownloadBtn_Click(object sender, RoutedEventArgs e)
@@ -667,7 +642,7 @@ namespace ModernDesign.MVVM.View
                 // Descargar el archivo
                 using (HttpClient client = new HttpClient())
                 {
-                    byte[] data = await client.GetByteArrayAsync("https://zeroauno.blob.core.windows.net/leuan/TheSims4/Utility/leuanfps.package");
+                    byte[] data = await client.GetByteArrayAsync("https://github.com/Johnn-sin/leuansin-dlcs/releases/download/FPSBooster/leuanfps.package");
                     File.WriteAllBytes(destinationPath, data);
                 }
 
@@ -738,8 +713,9 @@ namespace ModernDesign.MVVM.View
                     {
                         Process.Start(new ProcessStartInfo
                         {
-                            FileName = _screenshotsFolder,
-                            UseShellExecute = true
+                            FileName = "explorer.exe",
+                            Arguments = _screenshotsFolder,
+                            UseShellExecute = false
                         });
                     }
                     return;
@@ -985,7 +961,7 @@ namespace ModernDesign.MVVM.View
             if (_cacheIssue)
                 CacheFixBtn_Click(null, null);
 
-            // Fix special chars
+            // Fix special chars - Abrir renombrador
             if (_charsIssue)
                 CharsFixBtn_Click(null, null);
 
@@ -1000,5 +976,6 @@ namespace ModernDesign.MVVM.View
             if (_modMissing)
                 ModDownloadBtn_Click(null, null);
         }
+
     }
 }

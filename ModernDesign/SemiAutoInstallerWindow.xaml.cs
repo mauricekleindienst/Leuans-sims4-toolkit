@@ -625,7 +625,7 @@ namespace ModernDesign.MVVM.View
 
                     var checkIcon = new TextBlock
                     {
-                        Text = "✅",
+                        Text = "",
                         FontSize = 16,
                         VerticalAlignment = VerticalAlignment.Center,
                         Margin = new Thickness(0, 0, 10, 0)

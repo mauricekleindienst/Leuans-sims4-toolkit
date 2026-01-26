@@ -51,16 +51,128 @@
             <Setter Property="Margin" Value="0,0,0,12"/>
         </Style>
 
-        <!-- Modern ComboBox -->
+        <!-- Modern ComboBox with BLACK text -->
         <Style x:Key="ComboBoxStyle" TargetType="ComboBox">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="#FFFFFF"/>
-            <Setter Property="BorderBrush" Value="#30FFFFFF"/>
+            <Setter Property="Background" Value="#FFFFFF"/>
+            <Setter Property="Foreground" Value="#000000"/>
+            <Setter Property="BorderBrush" Value="#60FFFFFF"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Padding" Value="12,8"/>
             <Setter Property="FontSize" Value="13"/>
             <Setter Property="FontFamily" Value="Bahnschrift Light"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton x:Name="ToggleButton"
+                                        Grid.Column="2"
+                                        Focusable="false"
+                                        IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                        ClickMode="Press"
+                                        Background="{TemplateBinding Background}"
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border x:Name="border"
+                                                Background="{TemplateBinding Background}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                CornerRadius="6">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <ContentPresenter Grid.Column="0"
+                                                                Margin="12,8"
+                                                                HorizontalAlignment="Left"
+                                                                VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="1"
+                                                         Text="▼"
+                                                         FontSize="10"
+                                                         Foreground="#000000"
+                                                         Margin="0,0,12,0"
+                                                         VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="border" Property="Background" Value="#F0F0F0"/>
+                                                <Setter TargetName="border" Property="BorderBrush" Value="#80FFFFFF"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <ContentPresenter x:Name="ContentSite"
+                                            IsHitTestVisible="False"
+                                            Content="{TemplateBinding SelectionBoxItem}"
+                                            ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                            ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                            Margin="12,8"
+                                            VerticalAlignment="Center"
+                                            HorizontalAlignment="Left"/>
+                            <Popup x:Name="Popup"
+                                 Placement="Bottom"
+                                 IsOpen="{TemplateBinding IsDropDownOpen}"
+                                 AllowsTransparency="True"
+                                 Focusable="False"
+                                 PopupAnimation="Slide">
+                                <Border x:Name="DropDownBorder"
+                                        Background="#FFFFFF"
+                                        BorderBrush="#60FFFFFF"
+                                        BorderThickness="1"
+                                        CornerRadius="6"
+                                        MinWidth="{TemplateBinding ActualWidth}"
+                                        MaxHeight="200">
+                                    <Border.Effect>
+                                        <DropShadowEffect ShadowDepth="2" BlurRadius="10" Opacity="0.3" Color="Black"/>
+                                    </Border.Effect>
+                                    <ScrollViewer Margin="4,6" SnapsToDevicePixels="True">
+                                        <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ComboBoxItem Style with BLACK text -->
+        <Style TargetType="ComboBoxItem">
+            <Setter Property="Foreground" Value="#000000"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="FontFamily" Value="Bahnschrift Light"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBoxItem">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                Padding="{TemplateBinding Padding}"
+                                CornerRadius="4"
+                                Margin="2">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#E0E0E0"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#D0D0D0"/>
+                                <Setter Property="Foreground" Value="#000000"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
         <!-- Status Badge -->
@@ -134,9 +246,11 @@
     </UserControl.Resources>
 
     <Grid Margin="-26,0,0,0" Background="Transparent">
-        <ScrollViewer VerticalScrollBarVisibility="Auto" 
-                      HorizontalScrollBarVisibility="Disabled"
-                      Padding="0,0,10,0">
+        <ScrollViewer VerticalScrollBarVisibility="Hidden" 
+                          HorizontalScrollBarVisibility="Disabled"
+                          Padding="3"
+                          PanningMode="VerticalOnly"
+                          CanContentScroll="True">
             <StackPanel Margin="32,20,32,30">
 
                 <!-- HEADER -->
@@ -152,6 +266,50 @@
                                FontSize="14"/>
                 </StackPanel>
 
+                <!-- APPEARANCE SECTION -->
+                <TextBlock x:Name="AppearanceSectionTitle"
+                           Text="APPEARANCE" 
+                           Style="{StaticResource BodyTextBlock}"
+                           FontSize="12"
+                           FontWeight="SemiBold"
+                           Foreground="#F472B6"
+                           Margin="0,0,0,12"/>
+
+                <!-- Theme Selector Card -->
+                <Border Style="{StaticResource SettingsCard}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Column="0" Width="40" Height="40" CornerRadius="8" Margin="0,0,16,0"
+                                Background="#831843" BorderBrush="#F472B6" BorderThickness="1">
+                            <TextBlock Text="🎨" FontSize="22" 
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock x:Name="ThemeLabel"
+                                       Text="UI Theme"
+                                       Style="{StaticResource TitleTextBlock}"
+                                       FontSize="14"/>
+                            <TextBlock x:Name="ThemeDesc" 
+                                       Text="Customize the color scheme of the application"
+                                       Style="{StaticResource BodyTextBlock}"
+                                       FontSize="12"
+                                       Margin="0,4,0,0"/>
+                        </StackPanel>
+
+                        <Button x:Name="ChangeThemeBtn"
+                                Grid.Column="2"
+                                Content="Change Theme"
+                                Style="{StaticResource ActionButton}"
+                                Click="ChangeThemeBtn_Click"/>
+                    </Grid>
+                </Border>
+
                 <!-- LANGUAGE SECTION -->
                 <TextBlock x:Name="LanguageSectionTitle"
                            Text="LANGUAGE" 
@@ -159,7 +317,7 @@
                            FontSize="12"
                            FontWeight="SemiBold"
                            Foreground="#38BDF8"
-                           Margin="0,0,0,12"/>
+                           Margin="0,20,0,12"/>
 
                 <Border Style="{StaticResource SettingsCard}">
                     <Grid>
@@ -192,7 +350,7 @@
                                   Width="180" 
                                   Height="36"
                                   Style="{StaticResource ComboBoxStyle}"
-                                  SelectionChanged="LanguageComboBox_SelectionChanged">
+                                  SelectionChanged="LanguageComboBox_SelectionChanged" Background="#FF2D2828">
                             <ComboBoxItem Content="🇺🇸  English (US)" Tag="en-US"/>
                             <ComboBoxItem Content="🇪🇸  Español (ES)" Tag="es-ES"/>
                         </ComboBox>
@@ -314,7 +472,7 @@
                                            Style="{StaticResource BodyTextBlock}"
                                            FontSize="12"/>
                                 <TextBlock x:Name="CurrentVersion"
-                                           Text="1.3.0"
+                                           Text="1.4.0"
                                            Foreground="#93C5FD"
                                            FontFamily="Bahnschrift Light"
                                            FontWeight="SemiBold"

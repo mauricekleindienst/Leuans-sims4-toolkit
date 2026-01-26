@@ -47,7 +47,7 @@ namespace ModernDesign.MVVM.View
             ProgressBar.Width = percentage * 4.5; // Max width ~450px
 
             // Gold Medals
-            GoldMedalsStatus.Text = progress.HasAllGoldMedals ? "✅" : "❌";
+            GoldMedalsStatus.Text = progress.HasAllGoldMedals ? "" : "❌";
             GoldMedalsStatus.Foreground = new SolidColorBrush(progress.HasAllGoldMedals
                 ? (Color)ColorConverter.ConvertFromString("#22C55E")
                 : (Color)ColorConverter.ConvertFromString("#EF4444"));
@@ -57,7 +57,7 @@ namespace ModernDesign.MVVM.View
                 ? $"🎯 Visitar Todas las Funciones ({progress.FeaturesVisited}/{progress.TotalFeatures})"
                 : $"🎯 Visit All Features ({progress.FeaturesVisited}/{progress.TotalFeatures})";
 
-            FeaturesStatus.Text = progress.AllFeaturesVisited ? "✅" : "❌";
+            FeaturesStatus.Text = progress.AllFeaturesVisited ? "" : "❌";
             FeaturesStatus.Foreground = new SolidColorBrush(progress.AllFeaturesVisited
                 ? (Color)ColorConverter.ConvertFromString("#22C55E")
                 : (Color)ColorConverter.ConvertFromString("#EF4444"));
@@ -66,7 +66,7 @@ namespace ModernDesign.MVVM.View
             LoadFeaturesList(es);
 
             // Donation
-            DonationStatus.Text = progress.HasDonated ? "✅" : "❌";
+            DonationStatus.Text = progress.HasDonated ? "" : "❌";
             DonationStatus.Foreground = new SolidColorBrush(progress.HasDonated
                 ? (Color)ColorConverter.ConvertFromString("#22C55E")
                 : (Color)ColorConverter.ConvertFromString("#EF4444"));
@@ -81,7 +81,6 @@ namespace ModernDesign.MVVM.View
                 ("loading_screen", "Loading Screen", "Loading Screen"),
                 ("cheats_guide", "Guía de Trucos", "Cheats Guide"),
                 ("gallery_manager", "Gestor de Galería", "Gallery Manager"),
-                ("music_manager", "Gestor de Música", "Music Manager"),
                 ("gameplay_enhancer", "Mejoras de Juego", "Gameplay Enhancer"),
                 ("fix_common_errors", "Errores Comunes", "Fix Common Errors"),
                 ("method_5050", "Método 50/50", "50/50 Method")
@@ -96,7 +95,7 @@ namespace ModernDesign.MVVM.View
 
                 var textBlock = new TextBlock
                 {
-                    Text = visited ? $"✅ {name}" : $"❌ {name}",
+                    Text = visited ? $" {name}" : $"❌ {name}",
                     FontSize = 11,
                     Foreground = new SolidColorBrush(visited
                         ? (Color)ColorConverter.ConvertFromString("#22C55E")
@@ -115,8 +114,10 @@ namespace ModernDesign.MVVM.View
             {
                 Process.Start(new ProcessStartInfo
                 {
-                    FileName = "https://ko-fi.com/leuan", // Cambia por tu link real
-                    UseShellExecute = true
+                    FileName = "cmd",
+                    Arguments = $"/c start https://ko-fi.com/leuan",
+                    CreateNoWindow = true,
+                    UseShellExecute = false
                 });
             }
             catch { }

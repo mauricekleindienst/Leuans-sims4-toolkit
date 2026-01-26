@@ -146,7 +146,7 @@ namespace ModernDesign.MVVM.View
                     break;
                 case 3:
                     title = es ? "Lección 3: Pide Ayuda" : "Lesson 3: Ask for Help";
-                    msg = es ? "No estás solo:\n• Usa IA (ChatGPT, Claude) para dudas de código\n• Pregunta en foros como ModTheSims\n• Revisa repositorios de GitHub\n• Únete a Discords de modding\n\n¡Pedir ayuda NO es trampa, es parte del proceso!" : "You're not alone:\n• Use AI (ChatGPT, Claude) for code questions\n• Ask on forums like ModTheSims\n• Check GitHub repositories\n• Join modding Discords\n\nAsking for help is NOT cheating, it's part of the process!";
+                    msg = es ? "No estás solo:\n• Usa IA (DeepSeek, Claude) para dudas de código\n• Pregunta en foros como ModTheSims\n• Revisa repositorios de GitHub\n• Únete a Discords de modding\n\n¡Pedir ayuda NO es trampa, es parte del proceso!" : "You're not alone:\n• Use AI (DeepSeek, Claude) for code questions\n• Ask on forums like ModTheSims\n• Check GitHub repositories\n• Join modding Discords\n\nAsking for help is NOT cheating, it's part of the process!";
                     break;
             }
             MessageBox.Show(msg, title, MessageBoxButton.OK, MessageBoxImage.Information);
@@ -165,7 +165,7 @@ namespace ModernDesign.MVVM.View
 
         private void OpenUrl(string url)
         {
-            try { Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true }); }
+            try { Process.Start(new ProcessStartInfo { FileName = "explorer.exe", Arguments = url, UseShellExecute = false }); }
             catch (Exception ex) { MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error); }
         }
         #endregion

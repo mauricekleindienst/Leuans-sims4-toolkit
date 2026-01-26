@@ -73,7 +73,7 @@ namespace ModernDesign.MVVM.View
         {
             var textBlock = new TextBlock
             {
-                Text = completed ? $"✅ {text}" : $"❌ {text}",
+                Text = completed ? $" {text}" : $"❌ {text}",
                 Foreground = new SolidColorBrush(completed
                     ? (Color)ColorConverter.ConvertFromString("#22C55E")
                     : (Color)ColorConverter.ConvertFromString("#EF4444")),
@@ -91,8 +91,9 @@ namespace ModernDesign.MVVM.View
             {
                 Process.Start(new ProcessStartInfo
                 {
-                    FileName = "https://ko-fi.com/leuandev", // Cambia por tu link real
-                    UseShellExecute = true
+                    FileName = "explorer.exe",
+                    Arguments = "https://ko-fi.com/leuandev",
+                    UseShellExecute = false
                 });
             }
             catch { }

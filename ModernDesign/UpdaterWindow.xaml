@@ -7,7 +7,7 @@
         mc:Ignorable="av" 
         x:Class="ModernDesign.MVVM.View.UpdaterWindow"
         Title="Leuan | DLC Updater" 
-        MinHeight="600" MinWidth="700"
+        MinHeight="650" MinWidth="800"
         Height="600" Width="700"
         WindowStyle="None"
         ResizeMode="CanResize"
@@ -16,6 +16,11 @@
         WindowStartupLocation="CenterScreen" 
         Icon="/Icono_TLK.ico">
 
+    <!-- NUEVO: TaskbarItemInfo para mostrar progreso en la barra de tareas -->
+    <Window.TaskbarItemInfo>
+        <TaskbarItemInfo x:Name="TaskbarInfo" ProgressState="None" ProgressValue="0"/>
+    </Window.TaskbarItemInfo>
+    
     <Window.Resources>
         <!-- CheckBox Style -->
         <Style x:Key="DLCCheckBox" TargetType="CheckBox">
@@ -335,18 +340,47 @@
                                FontSize="10"
                                Margin="0,0,0,4"/>
 
-                    <!-- Progress bar -->
+                    <!-- Total Value of Installed DLCs -->
+                    <TextBlock x:Name="TotalValueText"
+                       Grid.Row="0"
+                       Text="💰 Your game is worth: $0.00 USD"
+                       Foreground="#22C55E"
+                       FontSize="10"
+                       FontWeight="SemiBold"
+                       HorizontalAlignment="Right"
+                       Margin="0,0,0,4"/>
+
+                    <!-- Progress bar - Goku Kamehameha Style -->
                     <StackPanel x:Name="ProgressPanel" Grid.Row="1" Visibility="Collapsed" Margin="0,0,0,4">
                         <Grid>
                             <TextBlock x:Name="ProgressText" Text="Downloading..." Foreground="White" FontSize="10"/>
                             <TextBlock x:Name="ProgressPercent" Text="0%" Foreground="#3EC7E8" 
-                                       FontSize="10" HorizontalAlignment="Right"/>
+                   FontSize="10" HorizontalAlignment="Right"/>
                         </Grid>
 
-                        <Border Height="5" CornerRadius="2" Background="#20FFFFFF" Margin="0,4,0,0">
-                            <Border x:Name="ProgressBar" HorizontalAlignment="Left" Width="0" 
-                                    CornerRadius="2" Background="#3EC7E8"/>
-                        </Border>
+                        <!-- Goku Kamehameha Progress Bar -->
+                        <Grid Height="60" Margin="0,4,0,0">
+                            <!-- Goku Image (Fixed position on the left) -->
+                            <Image x:Name="GokuImage" 
+               Source="{Binding GokuPoseImagePath}"
+               Width="50" 
+               Height="50"
+               HorizontalAlignment="Left"
+               VerticalAlignment="Center"
+               Margin="5,0,0,0"
+               RenderOptions.BitmapScalingMode="HighQuality"/>
+
+                            <!-- Kamehameha Beam (Grows with progress) -->
+                            <Image x:Name="KamehamehaBeam"
+               Source="{Binding KamehamehaGifPath}"
+               Height="40"
+               HorizontalAlignment="Left"
+               VerticalAlignment="Center"
+               Margin="55,0,0,0"
+               Width="0"
+               Stretch="Fill"
+               RenderOptions.BitmapScalingMode="HighQuality"/>
+                        </Grid>
 
                         <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
                             <TextBlock Text="Speed:" Foreground="#94A3B8" FontSize="9"/>
@@ -373,11 +407,55 @@
                     </Border>
 
                     <!-- Download Button -->
-                    <Button x:Name="DownloadBtn" Grid.Row="3" Content="⬇️  Download Selected" 
-                            Height="40" FontSize="13" Style="{StaticResource ActionButton}" 
-                            Click="DownloadBtn_Click" IsEnabled="False"
-                            Margin="0,6,0,0"
-                            WindowChrome.IsHitTestVisibleInChrome="True"/>
+                    <!-- Action Buttons -->
+                    <!-- Action Buttons -->
+                    <Grid Grid.Row="3" Margin="0,6,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Download/Uninstall Buttons (Visible when NOT downloading) -->
+                        <Button x:Name="DownloadBtn" Grid.Column="0" Content="⬇️  Download Selected" 
+            Height="40" FontSize="13" Style="{StaticResource ActionButton}" 
+            Click="DownloadBtn_Click" IsEnabled="False"
+            WindowChrome.IsHitTestVisibleInChrome="True"/>
+
+                        <Button x:Name="UninstallBtn" Grid.Column="2" Content="🗑️  Uninstall Selected" 
+            Height="40" FontSize="13" Style="{StaticResource SecondaryButton}" 
+            Click="UninstallBtn_Click" IsEnabled="False"
+            WindowChrome.IsHitTestVisibleInChrome="True"/>
+
+                        <!-- Pause/Cancel Buttons (Visible ONLY when downloading) -->
+                        <Button x:Name="PauseBtn" Grid.Column="0" Content="⏸️  Pause" 
+            Height="40" FontSize="13" Style="{StaticResource SecondaryButton}" 
+            Click="PauseBtn_Click" Visibility="Collapsed"
+            WindowChrome.IsHitTestVisibleInChrome="True"/>
+
+                        <Button x:Name="CancelBtn" Grid.Column="2" Content="❌  Cancel" 
+            Height="40" FontSize="13" 
+            Background="#EF4444"
+            Foreground="White"
+            FontWeight="SemiBold"
+            Cursor="Hand"
+            Click="CancelBtn_Click" Visibility="Collapsed"
+            WindowChrome.IsHitTestVisibleInChrome="True">
+                            <Button.Template>
+                                <ControlTemplate TargetType="{x:Type Button}">
+                                    <Border x:Name="bg" Background="{TemplateBinding Background}" 
+                        CornerRadius="8" Padding="15,10">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="bg" Property="Background" Value="#DC2626"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </Grid>
                 </Grid>
             </Border>
         </Grid>

@@ -181,14 +181,27 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <Border Grid.Row="0" Width="36" Height="36" CornerRadius="8" HorizontalAlignment="Left" Margin="0,0,0,8"
-                                    Background="#065F46" BorderBrush="#10B981" BorderThickness="1">
-                                <TextBlock Text="📦" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <StackPanel Grid.Row="1" VerticalAlignment="Top">
-                                <TextBlock x:Name="InstallModsTitle" Text="Install Mods" Style="{StaticResource TitleTextBlock}" FontSize="13"/>
-                                <TextBlock x:Name="InstallModsDesc" Text="Where to put .package and .ts4script files" Style="{StaticResource BodyTextBlock}" FontSize="10" Margin="0,3,0,0"/>
-                            </StackPanel>
+
+                            <!-- Fila 1: Ícono + Título -->
+                            <Grid Grid.Row="0" Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" Width="36" Height="36" CornerRadius="8" 
+                                        Background="#065F46" BorderBrush="#10B981" BorderThickness="1" Margin="0,0,8,0">
+                                    <TextBlock Text="📦" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+
+                                <TextBlock Grid.Column="1" x:Name="InstallModsTitle" Text="Install Mods" 
+                                          Style="{StaticResource TitleTextBlock}" FontSize="13" VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <!-- Fila 2: Descripción -->
+                            <TextBlock Grid.Row="1" x:Name="InstallModsDesc" 
+                                      Text="Where to put .package and .ts4script files" 
+                                      Style="{StaticResource BodyTextBlock}" FontSize="10" VerticalAlignment="Top"/>
                         </Grid>
                     </Border>
 
@@ -199,14 +212,25 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <Border Grid.Row="0" Width="36" Height="36" CornerRadius="8" HorizontalAlignment="Left" Margin="0,0,0,8"
-                                    Background="#065F46" BorderBrush="#10B981" BorderThickness="1">
-                                <TextBlock Text="🔍" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <StackPanel Grid.Row="1" VerticalAlignment="Top">
-                                <TextBlock x:Name="FindModsTitle" Text="Find Mods" Style="{StaticResource TitleTextBlock}" FontSize="13"/>
-                                <TextBlock x:Name="FindModsDesc" Text="Best websites to download safe mods" Style="{StaticResource BodyTextBlock}" FontSize="10" Margin="0,3,0,0"/>
-                            </StackPanel>
+
+                            <Grid Grid.Row="0" Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" Width="36" Height="36" CornerRadius="8" 
+                                        Background="#065F46" BorderBrush="#10B981" BorderThickness="1" Margin="0,0,8,0">
+                                    <TextBlock Text="🔍" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+
+                                <TextBlock Grid.Column="1" x:Name="FindModsTitle" Text="Find Mods" 
+                                          Style="{StaticResource TitleTextBlock}" FontSize="13" VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <TextBlock Grid.Row="1" x:Name="FindModsDesc" 
+                                      Text="Best websites to download safe mods" 
+                                      Style="{StaticResource BodyTextBlock}" FontSize="10" VerticalAlignment="Top"/>
                         </Grid>
                     </Border>
 
@@ -217,18 +241,27 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <Border Grid.Row="0" Width="36" Height="36" CornerRadius="8" HorizontalAlignment="Left" Margin="0,0,0,8"
-                                    Background="#065F46" BorderBrush="#10B981" BorderThickness="1">
-                                <TextBlock Text="📁" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <StackPanel Grid.Row="1" VerticalAlignment="Top">
-                                <TextBlock x:Name="OrganizeTitle" Text="Mod Manager" Style="{StaticResource TitleTextBlock}" FontSize="13"/>
-                                <TextBlock x:Name="OrganizeDesc" Text="Folder structure and best practices" Style="{StaticResource BodyTextBlock}" FontSize="10" Margin="0,3,0,0"/>
-                            </StackPanel>
+
+                            <Grid Grid.Row="0" Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" Width="36" Height="36" CornerRadius="8" 
+                                        Background="#065F46" BorderBrush="#10B981" BorderThickness="1" Margin="0,0,8,0">
+                                    <TextBlock Text="📁" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+
+                                <TextBlock Grid.Column="1" x:Name="OrganizeTitle" Text="Mod Manager" 
+                                          Style="{StaticResource TitleTextBlock}" FontSize="13" VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <TextBlock Grid.Row="1" x:Name="OrganizeDesc" 
+                                      Text="Folder structure and best practices" 
+                                      Style="{StaticResource BodyTextBlock}" FontSize="10" VerticalAlignment="Top"/>
                         </Grid>
                     </Border>
-
-                    <!-- Mod Gallery Card -->
                 </WrapPanel>
 
                 <!-- SECTION: UTILITIES -->
@@ -241,14 +274,25 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <Border Grid.Row="0" Width="36" Height="36" CornerRadius="8" HorizontalAlignment="Left" Margin="0,0,0,8"
-                                    Background="#92400E" BorderBrush="#FBBF24" BorderThickness="1">
-                                <TextBlock Text="⏳" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <StackPanel Grid.Row="1" VerticalAlignment="Top">
-                                <TextBlock x:Name="LoadingScreenTitle" Text="Loading Screen" Style="{StaticResource TitleTextBlock}" FontSize="13"/>
-                                <TextBlock x:Name="LoadingScreenDesc" Text="Customize loading screens" Style="{StaticResource BodyTextBlock}" FontSize="10" Margin="0,3,0,0"/>
-                            </StackPanel>
+
+                            <Grid Grid.Row="0" Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" Width="36" Height="36" CornerRadius="8" 
+                                        Background="#92400E" BorderBrush="#FBBF24" BorderThickness="1" Margin="0,0,8,0">
+                                    <TextBlock Text="⏳" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+
+                                <TextBlock Grid.Column="1" x:Name="LoadingScreenTitle" Text="Loading Screen" 
+                                          Style="{StaticResource TitleTextBlock}" FontSize="13" VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <TextBlock Grid.Row="1" x:Name="LoadingScreenDesc" 
+                                      Text="Customize loading screens" 
+                                      Style="{StaticResource BodyTextBlock}" FontSize="10" VerticalAlignment="Top"/>
                         </Grid>
                     </Border>
 
@@ -259,14 +303,25 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <Border Grid.Row="0" Width="36" Height="36" CornerRadius="8" HorizontalAlignment="Left" Margin="0,0,0,8"
-                                    Background="#92400E" BorderBrush="#FBBF24" BorderThickness="1">
-                                <TextBlock Text="🎮" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <StackPanel Grid.Row="1" VerticalAlignment="Top">
-                                <TextBlock x:Name="CheatsGuideTitle" Text="Cheats Guide" Style="{StaticResource TitleTextBlock}" FontSize="13"/>
-                                <TextBlock x:Name="CheatsGuideDesc" Text="All game cheats and commands" Style="{StaticResource BodyTextBlock}" FontSize="10" Margin="0,3,0,0"/>
-                            </StackPanel>
+
+                            <Grid Grid.Row="0" Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" Width="36" Height="36" CornerRadius="8" 
+                                        Background="#92400E" BorderBrush="#FBBF24" BorderThickness="1" Margin="0,0,8,0">
+                                    <TextBlock Text="🎮" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+
+                                <TextBlock Grid.Column="1" x:Name="CheatsGuideTitle" Text="Cheats Guide" 
+                                          Style="{StaticResource TitleTextBlock}" FontSize="13" VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <TextBlock Grid.Row="1" x:Name="CheatsGuideDesc" 
+                                      Text="All game cheats and commands" 
+                                      Style="{StaticResource BodyTextBlock}" FontSize="10" VerticalAlignment="Top"/>
                         </Grid>
                     </Border>
 
@@ -277,14 +332,25 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <Border Grid.Row="0" Width="36" Height="36" CornerRadius="8" HorizontalAlignment="Left" Margin="0,0,0,8"
-                                    Background="#92400E" BorderBrush="#FBBF24" BorderThickness="1">
-                                <TextBlock Text="⚡" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <StackPanel Grid.Row="1" VerticalAlignment="Top">
-                                <TextBlock x:Name="GameplayEnhancerTitle" Text="Gameplay Enhancer" Style="{StaticResource TitleTextBlock}" FontSize="13"/>
-                                <TextBlock x:Name="GameplayEnhancerDesc" Text="Improve your gameplay experience" Style="{StaticResource BodyTextBlock}" FontSize="10" Margin="0,3,0,0"/>
-                            </StackPanel>
+
+                            <Grid Grid.Row="0" Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" Width="36" Height="36" CornerRadius="8" 
+                                        Background="#92400E" BorderBrush="#FBBF24" BorderThickness="1" Margin="0,0,8,0">
+                                    <TextBlock Text="⚡" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+
+                                <TextBlock Grid.Column="1" x:Name="GameplayEnhancerTitle" Text="Gameplay Enhancer" 
+                                          Style="{StaticResource TitleTextBlock}" FontSize="13" VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <TextBlock Grid.Row="1" x:Name="GameplayEnhancerDesc" 
+                                      Text="Improve your gameplay experience" 
+                                      Style="{StaticResource BodyTextBlock}" FontSize="10" VerticalAlignment="Top"/>
                         </Grid>
                     </Border>
 
@@ -295,14 +361,25 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <Border Grid.Row="0" Width="36" Height="36" CornerRadius="8" HorizontalAlignment="Left" Margin="0,0,0,8"
-                                Background="#92400E" BorderBrush="#FBBF24" BorderThickness="1">
-                                <TextBlock Text="📦" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <StackPanel Grid.Row="1" VerticalAlignment="Top">
-                                <TextBlock x:Name="AutoExtractorCardTitle1" Text="AutoExtract DLCs" Style="{StaticResource TitleTextBlock}" FontSize="13"/>
-                                <TextBlock x:Name="AutoExtractorCardDesc1" Text="Extract DLC files automatically" Style="{StaticResource BodyTextBlock}" FontSize="10" Margin="0,3,0,0"/>
-                            </StackPanel>
+
+                            <Grid Grid.Row="0" Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" Width="36" Height="36" CornerRadius="8" 
+                                        Background="#92400E" BorderBrush="#FBBF24" BorderThickness="1" Margin="0,0,8,0">
+                                    <TextBlock Text="📦" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+
+                                <TextBlock Grid.Column="1" x:Name="AutoExtractorCardTitle1" Text="AutoExtract DLCs" 
+                                          Style="{StaticResource TitleTextBlock}" FontSize="13" VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <TextBlock Grid.Row="1" x:Name="AutoExtractorCardDesc1" 
+                                      Text="Extract DLC files automatically" 
+                                      Style="{StaticResource BodyTextBlock}" FontSize="10" VerticalAlignment="Top"/>
                         </Grid>
                     </Border>
 
@@ -313,14 +390,25 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <Border Grid.Row="0" Width="36" Height="36" CornerRadius="8" HorizontalAlignment="Left" Margin="0,0,0,8"
-                                Background="#92400E" BorderBrush="#FBBF24" BorderThickness="1">
-                                <TextBlock Text="💿" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <StackPanel Grid.Row="1" VerticalAlignment="Top">
-                                <TextBlock x:Name="InstallBaseGameTitle" Text="Install Base Game" Style="{StaticResource TitleTextBlock}" FontSize="13"/>
-                                <TextBlock x:Name="InstallBaseGameDesc" Text="Download and install The Sims 4" Style="{StaticResource BodyTextBlock}" FontSize="10" Margin="0,3,0,0"/>
-                            </StackPanel>
+
+                            <Grid Grid.Row="0" Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" Width="36" Height="36" CornerRadius="8" 
+                                        Background="#92400E" BorderBrush="#FBBF24" BorderThickness="1" Margin="0,0,8,0">
+                                    <TextBlock Text="💿" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+
+                                <TextBlock Grid.Column="1" x:Name="InstallBaseGameTitle" Text="Install Base Game" 
+                                          Style="{StaticResource TitleTextBlock}" FontSize="13" VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <TextBlock Grid.Row="1" x:Name="InstallBaseGameDesc" 
+                                      Text="Download and install The Sims 4" 
+                                      Style="{StaticResource BodyTextBlock}" FontSize="10" VerticalAlignment="Top"/>
                         </Grid>
                     </Border>
 
@@ -331,14 +419,25 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <Border Grid.Row="0" Width="36" Height="36" CornerRadius="8" HorizontalAlignment="Left" Margin="0,0,0,8"
-                                Background="#92400E" BorderBrush="#FBBF24" BorderThickness="1">
-                                <TextBlock Text="🔧" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <StackPanel Grid.Row="1" VerticalAlignment="Top">
-                                <TextBlock x:Name="RepairGameTitle" Text="Repair Your Game" Style="{StaticResource TitleTextBlock}" FontSize="13"/>
-                                <TextBlock x:Name="RepairGameDesc" Text="Fix corrupted or missing files" Style="{StaticResource BodyTextBlock}" FontSize="10" Margin="0,3,0,0"/>
-                            </StackPanel>
+
+                            <Grid Grid.Row="0" Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" Width="36" Height="36" CornerRadius="8" 
+                                        Background="#92400E" BorderBrush="#FBBF24" BorderThickness="1" Margin="0,0,8,0">
+                                    <TextBlock Text="🔧" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+
+                                <TextBlock Grid.Column="1" x:Name="RepairGameTitle" Text="Repair Your Game" 
+                                          Style="{StaticResource TitleTextBlock}" FontSize="13" VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <TextBlock Grid.Row="1" x:Name="RepairGameDesc" 
+                                      Text="Fix corrupted or missing files" 
+                                      Style="{StaticResource BodyTextBlock}" FontSize="10" VerticalAlignment="Top"/>
                         </Grid>
                     </Border>
 
@@ -349,14 +448,25 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <Border Grid.Row="0" Width="36" Height="36" CornerRadius="8" HorizontalAlignment="Left" Margin="0,0,0,8"
-                                Background="#92400E" BorderBrush="#FBBF24" BorderThickness="1">
-                                <TextBlock Text="👅" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <StackPanel Grid.Row="1" VerticalAlignment="Top">
-                                <TextBlock x:Name="LanguageSelectorTitle1" Text="Change Sims Language" Style="{StaticResource TitleTextBlock}" FontSize="13"/>
-                                <TextBlock x:Name="LanguageSelectorDesc1" Text="Change your Sims 4 Language" Style="{StaticResource BodyTextBlock}" FontSize="10" Margin="0,3,0,0"/>
-                            </StackPanel>
+
+                            <Grid Grid.Row="0" Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" Width="36" Height="36" CornerRadius="8" 
+                                        Background="#92400E" BorderBrush="#FBBF24" BorderThickness="1" Margin="0,0,8,0">
+                                    <TextBlock Text="👅" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+
+                                <TextBlock Grid.Column="1" x:Name="LanguageSelectorTitle1" Text="Change Sims Language" 
+                                          Style="{StaticResource TitleTextBlock}" FontSize="13" VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <TextBlock Grid.Row="1" x:Name="LanguageSelectorDesc1" 
+                                      Text="Change your Sims 4 Language" 
+                                      Style="{StaticResource BodyTextBlock}" FontSize="10" VerticalAlignment="Top"/>
                         </Grid>
                     </Border>
 
@@ -367,14 +477,52 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <Border Grid.Row="0" Width="36" Height="36" CornerRadius="8" HorizontalAlignment="Left" Margin="0,0,0,8"
-                                Background="#92400E" BorderBrush="#FBBF24" BorderThickness="1">
-                                <TextBlock Text="🔓" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <StackPanel Grid.Row="1" VerticalAlignment="Top">
-                                <TextBlock x:Name="CrackingToolTitle1" Text="Cracking Tool" Style="{StaticResource TitleTextBlock}" FontSize="13"/>
-                                <TextBlock x:Name="CrackingToolDesc1" Text="Make a legit copy a cracked version" Style="{StaticResource BodyTextBlock}" FontSize="10" Margin="0,3,0,0"/>
-                            </StackPanel>
+
+                            <Grid Grid.Row="0" Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" Width="36" Height="36" CornerRadius="8" 
+                                        Background="#92400E" BorderBrush="#FBBF24" BorderThickness="1" Margin="0,0,8,0">
+                                    <TextBlock Text="🔓" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+
+                                <TextBlock Grid.Column="1" x:Name="CrackingToolTitle1" Text="Cracking Tool" 
+                                          Style="{StaticResource TitleTextBlock}" FontSize="13" VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <TextBlock Grid.Row="1" x:Name="CrackingToolDesc1" 
+                                      Text="Make a legit copy a cracked version" 
+                                      Style="{StaticResource BodyTextBlock}" FontSize="10" VerticalAlignment="Top"/>
+                        </Grid>
+                    </Border>
+                    <Border x:Name="UnlockEventsCard" Width="195" Height="105" CornerRadius="8" Style="{StaticResource GuideCard}" MouseLeftButtonUp="UnlockEventsCard_Click">
+                        <Grid Margin="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0" Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" Width="36" Height="36" CornerRadius="8" 
+                                    Background="#92400E" BorderBrush="#FBBF24" BorderThickness="1" Margin="0,0,8,0">
+                                    <TextBlock Text="🎉" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+
+                                <TextBlock Grid.Column="1" x:Name="EventUnlockerTitle" Text="Unlock Events" 
+                                    Style="{StaticResource TitleTextBlock}" FontSize="13" VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <TextBlock Grid.Row="1" x:Name="EventUnlockerDesc" 
+                                Text="Unlock items from events" 
+                                Style="{StaticResource BodyTextBlock}" FontSize="10" VerticalAlignment="Top"/>
                         </Grid>
                     </Border>
                 </UniformGrid>
@@ -389,14 +537,25 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <Border Grid.Row="0" Width="36" Height="36" CornerRadius="8" HorizontalAlignment="Left" Margin="0,0,0,8"
-                                    Background="#6B21A8" BorderBrush="#A855F7" BorderThickness="1">
-                                <TextBlock Text="🖼️" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <StackPanel Grid.Row="1" VerticalAlignment="Top">
-                                <TextBlock x:Name="GalleryManagerTitle" Text="Gallery Manager" Style="{StaticResource TitleTextBlock}" FontSize="13"/>
-                                <TextBlock x:Name="GalleryManagerDesc" Text="Manage your gallery content" Style="{StaticResource BodyTextBlock}" FontSize="10" Margin="0,3,0,0"/>
-                            </StackPanel>
+
+                            <Grid Grid.Row="0" Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" Width="36" Height="36" CornerRadius="8" 
+                                        Background="#6B21A8" BorderBrush="#A855F7" BorderThickness="1" Margin="0,0,8,0">
+                                    <TextBlock Text="🖼️" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+
+                                <TextBlock Grid.Column="1" x:Name="GalleryManagerTitle" Text="Gallery Manager" 
+                                          Style="{StaticResource TitleTextBlock}" FontSize="13" VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <TextBlock Grid.Row="1" x:Name="GalleryManagerDesc" 
+                                      Text="Manage your gallery content" 
+                                      Style="{StaticResource BodyTextBlock}" FontSize="10" VerticalAlignment="Top"/>
                         </Grid>
                     </Border>
 
@@ -407,14 +566,25 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <Border Grid.Row="0" Width="36" Height="36" CornerRadius="8" HorizontalAlignment="Left" Margin="0,0,0,8"
-                                    Background="#581C87" BorderBrush="#A855F7" BorderThickness="1">
-                                <TextBlock Text="🎵" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <StackPanel Grid.Row="1" VerticalAlignment="Top">
-                                <TextBlock x:Name="MusicManagerTitle" Text="Music Manager" Style="{StaticResource TitleTextBlock}" FontSize="13"/>
-                                <TextBlock x:Name="MusicManagerDesc" Text="Custom music for your game" Style="{StaticResource BodyTextBlock}" FontSize="10" Margin="0,3,0,0"/>
-                            </StackPanel>
+
+                            <Grid Grid.Row="0" Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" Width="36" Height="36" CornerRadius="8" 
+                                        Background="#581C87" BorderBrush="#A855F7" BorderThickness="1" Margin="0,0,8,0">
+                                    <TextBlock Text="🎵" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+
+                                <TextBlock Grid.Column="1" x:Name="MusicManagerTitle" Text="Music Manager" 
+                                          Style="{StaticResource TitleTextBlock}" FontSize="13" VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <TextBlock Grid.Row="1" x:Name="MusicManagerDesc" 
+                                      Text="Custom music for your game" 
+                                      Style="{StaticResource BodyTextBlock}" FontSize="10" VerticalAlignment="Top"/>
                         </Grid>
                     </Border>
 
@@ -425,16 +595,57 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <Border Grid.Row="0" Width="36" Height="36" CornerRadius="8" HorizontalAlignment="Left" Margin="0,0,0,8"
-                                    Background="#6B21A8" BorderBrush="#A855F7" BorderThickness="1">
-                                <TextBlock Text="💾" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <StackPanel Grid.Row="1" VerticalAlignment="Top">
-                                <TextBlock x:Name="SaveGameManagerTitle" Text="SaveGame Manager" Style="{StaticResource TitleTextBlock}" FontSize="13"/>
-                                <TextBlock x:Name="SaveGameManagerDesc" Text="Manage your save files" Style="{StaticResource BodyTextBlock}" FontSize="10" Margin="0,3,0,0"/>
-                            </StackPanel>
+
+                            <Grid Grid.Row="0" Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" Width="36" Height="36" CornerRadius="8" 
+                                        Background="#6B21A8" BorderBrush="#A855F7" BorderThickness="1" Margin="0,0,8,0">
+                                    <TextBlock Text="💾" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+
+                                <TextBlock Grid.Column="1" x:Name="SaveGameManagerTitle" Text="SaveGame Manager" 
+                                          Style="{StaticResource TitleTextBlock}" FontSize="13" VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <TextBlock Grid.Row="1" x:Name="SaveGameManagerDesc" 
+                                      Text="Manage your save files" 
+                                      Style="{StaticResource BodyTextBlock}" FontSize="10" VerticalAlignment="Top"/>
                         </Grid>
                     </Border>
+
+                    <!-- Mod Renamer -->
+                    <Border x:Name="ModRenamerCard" Width="195" Height="105" CornerRadius="8" Margin="4" Style="{StaticResource GuideCard}" MouseLeftButtonUp="ModRenamerCard_Click">
+                        <Grid Margin="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0" Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" Width="36" Height="36" CornerRadius="8" 
+                    Background="#7C3AED" BorderBrush="#A78BFA" BorderThickness="1" Margin="0,0,8,0">
+                                    <TextBlock Text="🔧" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+
+                                <TextBlock Grid.Column="1" x:Name="ModRenamerTitle" Text="Mod Renamer" 
+                      Style="{StaticResource TitleTextBlock}" FontSize="13" VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <TextBlock Grid.Row="1" x:Name="ModRenamerDesc" 
+                  Text="Clean file names, fix special characters" 
+                  Style="{StaticResource BodyTextBlock}" FontSize="10" VerticalAlignment="Top"/>
+                        </Grid>
+                    </Border>
+
                 </WrapPanel>
 
                 <!-- SECTION: CREATE YOUR OWN -->
@@ -447,14 +658,25 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <Border Grid.Row="0" Width="32" Height="32" CornerRadius="6" HorizontalAlignment="Left" Margin="0,0,0,6"
-                                    Background="#065F46" BorderBrush="#10B981" BorderThickness="1">
-                                <TextBlock Text="🛠️" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <StackPanel Grid.Row="1" VerticalAlignment="Top">
-                                <TextBlock x:Name="S4STitle" Text="Basic Modding" Style="{StaticResource TitleTextBlock}" FontSize="11"/>
-                                <TextBlock x:Name="S4SDesc" Text="Create Traits, Moods, Buffs, Careers, CC, etc..." Style="{StaticResource BodyTextBlock}" FontSize="9" Margin="0,2,0,0"/>
-                            </StackPanel>
+
+                            <Grid Grid.Row="0" Margin="0,0,0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" Width="32" Height="32" CornerRadius="6" 
+                                        Background="#065F46" BorderBrush="#10B981" BorderThickness="1" Margin="0,0,6,0">
+                                    <TextBlock Text="🛠️" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+
+                                <TextBlock Grid.Column="1" x:Name="S4STitle" Text="Basic Modding" 
+                                          Style="{StaticResource TitleTextBlock}" FontSize="11" VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <TextBlock Grid.Row="1" x:Name="S4SDesc" 
+                                      Text="Create Traits, Moods, Buffs, Careers, CC, etc..." 
+                                      Style="{StaticResource BodyTextBlock}" FontSize="9" VerticalAlignment="Top"/>
                         </Grid>
                     </Border>
 
@@ -465,14 +687,25 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <Border Grid.Row="0" Width="32" Height="32" CornerRadius="6" HorizontalAlignment="Left" Margin="0,0,0,6"
-                                    Background="#065F46" BorderBrush="#10B981" BorderThickness="1">
-                                <TextBlock Text="🎭" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <StackPanel Grid.Row="1" VerticalAlignment="Top">
-                                <TextBlock x:Name="BlenderTitle" Text="3D with Blender" Style="{StaticResource TitleTextBlock}" FontSize="11"/>
-                                <TextBlock x:Name="BlenderDesc" Text="Custom meshes" Style="{StaticResource BodyTextBlock}" FontSize="9" Margin="0,2,0,0"/>
-                            </StackPanel>
+
+                            <Grid Grid.Row="0" Margin="0,0,0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" Width="32" Height="32" CornerRadius="6" 
+                                        Background="#065F46" BorderBrush="#10B981" BorderThickness="1" Margin="0,0,6,0">
+                                    <TextBlock Text="🎭" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+
+                                <TextBlock Grid.Column="1" x:Name="BlenderTitle" Text="3D with Blender" 
+                                          Style="{StaticResource TitleTextBlock}" FontSize="11" VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <TextBlock Grid.Row="1" x:Name="BlenderDesc" 
+                                      Text="Custom meshes" 
+                                      Style="{StaticResource BodyTextBlock}" FontSize="9" VerticalAlignment="Top"/>
                         </Grid>
                     </Border>
 
@@ -483,14 +716,25 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <Border Grid.Row="0" Width="32" Height="32" CornerRadius="6" HorizontalAlignment="Left" Margin="0,0,0,6"
-                                    Background="#065F46" BorderBrush="#10B981" BorderThickness="1">
-                                <TextBlock Text="💻" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <StackPanel Grid.Row="1" VerticalAlignment="Top">
-                                <TextBlock x:Name="ScriptingTitle" Text="Python Scripts" Style="{StaticResource TitleTextBlock}" FontSize="11"/>
-                                <TextBlock x:Name="ScriptingDesc" Text="Script mods basics" Style="{StaticResource BodyTextBlock}" FontSize="9" Margin="0,2,0,0"/>
-                            </StackPanel>
+
+                            <Grid Grid.Row="0" Margin="0,0,0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" Width="32" Height="32" CornerRadius="6" 
+                                        Background="#065F46" BorderBrush="#10B981" BorderThickness="1" Margin="0,0,6,0">
+                                    <TextBlock Text="💻" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+
+                                <TextBlock Grid.Column="1" x:Name="ScriptingTitle" Text="Python Scripts" 
+                                          Style="{StaticResource TitleTextBlock}" FontSize="11" VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <TextBlock Grid.Row="1" x:Name="ScriptingDesc" 
+                                      Text="Script mods basics" 
+                                      Style="{StaticResource BodyTextBlock}" FontSize="9" VerticalAlignment="Top"/>
                         </Grid>
                     </Border>
 
@@ -501,14 +745,25 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <Border Grid.Row="0" Width="32" Height="32" CornerRadius="6" HorizontalAlignment="Left" Margin="0,0,0,6"
-                                    Background="#065F46" BorderBrush="#10B981" BorderThickness="1">
-                                <TextBlock Text="⚙️" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <StackPanel Grid.Row="1" VerticalAlignment="Top">
-                                <TextBlock x:Name="TuningTitle" Text="XML Tuning" Style="{StaticResource TitleTextBlock}" FontSize="11"/>
-                                <TextBlock x:Name="TuningDesc" Text="Modify game values" Style="{StaticResource BodyTextBlock}" FontSize="9" Margin="0,2,0,0"/>
-                            </StackPanel>
+
+                            <Grid Grid.Row="0" Margin="0,0,0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0" Width="32" Height="32" CornerRadius="6" 
+                                        Background="#065F46" BorderBrush="#10B981" BorderThickness="1" Margin="0,0,6,0">
+                                    <TextBlock Text="⚙️" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+
+                                <TextBlock Grid.Column="1" x:Name="TuningTitle" Text="XML Tuning" 
+                                          Style="{StaticResource TitleTextBlock}" FontSize="11" VerticalAlignment="Center"/>
+                            </Grid>
+
+                            <TextBlock Grid.Row="1" x:Name="TuningDesc" 
+                                      Text="Modify game values" 
+                                      Style="{StaticResource BodyTextBlock}" FontSize="9" VerticalAlignment="Top"/>
                         </Grid>
                     </Border>
                 </WrapPanel>
@@ -548,6 +803,22 @@
                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                 <TextBlock x:Name="Method5050Title" Text="50/50 Method" Style="{StaticResource TitleTextBlock}" FontSize="13"/>
                                 <TextBlock x:Name="Method5050Desc" Text="Find problematic mods quickly" Style="{StaticResource BodyTextBlock}" FontSize="10" Margin="0,3,0,0"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                    <Border x:Name="FixStarIconCard" Width="295" Height="80" CornerRadius="8" Style="{StaticResource GuideCard}" Margin="4" MouseLeftButtonUp="FixStarIconCard_Click">
+                        <Grid Margin="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" Width="36" Height="36" CornerRadius="8" Margin="0,0,12,0"
+                Background="#FFBDB71F" BorderBrush="#FFB5A927" BorderThickness="1">
+                                <TextBlock Text="⭐" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                <TextBlock x:Name="FixStarIconTitle" Text="Fix Star/New Icon" Style="{StaticResource TitleTextBlock}" FontSize="13"/>
+                                <TextBlock x:Name="FixStarIconDesc" Text="Fix the permanent star of new items in build mode" Style="{StaticResource BodyTextBlock}" FontSize="10" Margin="0,3,0,0"/>
                             </StackPanel>
                         </Grid>
                     </Border>

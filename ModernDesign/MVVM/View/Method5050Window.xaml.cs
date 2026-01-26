@@ -36,7 +36,7 @@ namespace ModernDesign.MVVM.View
                 : "It's an efficient technique to identify problematic mods:\n\n1. Disable 50% of your mods\n2. Test the game\n3. If the error persists, the problem is in the other half\n4. If the error disappears, the problem is in the disabled half\n5. Repeat the process with the problematic half until you find the exact mod";
 
             DisableHalfButton.Content = es ? "🔄 Desactivar 50% de Mods" : "🔄 Disable 50% of Mods";
-            EnableAllButton.Content = es ? "✅ Reactivar Todos" : "✅ Enable All";
+            EnableAllButton.Content = es ? " Reactivar Todos" : " Enable All";
             ResetButton.Content = es ? "🔁 Reiniciar" : "🔁 Reset";
             CloseButton.Content = es ? "Cerrar" : "Close";
         }
@@ -150,8 +150,8 @@ namespace ModernDesign.MVVM.View
 
                 UpdateStatus(
                     LanguageManager.IsSpanish
-                        ? $"✅ Se desactivaron {disabledCount} mods (50% del total)"
-                        : $"✅ Disabled {disabledCount} mods (50% of total)",
+                        ? $" Se desactivaron {disabledCount} mods (50% del total)"
+                        : $" Disabled {disabledCount} mods (50% of total)",
                     false);
 
                 MessageBox.Show(
@@ -206,8 +206,8 @@ namespace ModernDesign.MVVM.View
                 UpdateModCount();
                 UpdateStatus(
                     LanguageManager.IsSpanish
-                        ? $"✅ Se reactivaron {enabledCount} mods"
-                        : $"✅ Enabled {enabledCount} mods",
+                        ? $" Se reactivaron {enabledCount} mods"
+                        : $" Enabled {enabledCount} mods",
                     false);
 
                 MessageBox.Show(

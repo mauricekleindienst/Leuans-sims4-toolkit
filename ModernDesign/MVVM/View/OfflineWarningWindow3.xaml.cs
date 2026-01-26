@@ -34,12 +34,12 @@ namespace ModernDesign.MVVM.View
 
                     "¿Tienes tu backup y deseas continuar bajo tu propio riesgo?";
 
-                RequirementsTitle.Text = "✅ REQUISITOS:";
+                RequirementsTitle.Text = " REQUISITOS:";
                 Requirement1.Text = "• Tener una versión crackeada (Anadius, FitGirl, etc.)";
                 Requirement2.Text = "• Tener backup completo de tu carpeta del juego";
                 Requirement3.Text = "• Saber restaurar el backup si algo sale mal";
 
-                ProtectedBtn.Content = "✅ Entiendo, continuar";
+                ProtectedBtn.Content = " Entiendo, continuar";
                 CancelBtn.Content = "❌ Cancelar";
             }
             else
@@ -59,12 +59,12 @@ namespace ModernDesign.MVVM.View
                     "🎗 Once you do this, you will stop having 'Other Versions' and to update in the future you'll need to select 'Leuans Version'\n\n" +
                     "Do you have your backup and want to continue at your own risk?";
 
-                RequirementsTitle.Text = "✅ REQUIREMENTS:";
+                RequirementsTitle.Text = " REQUIREMENTS:";
                 Requirement1.Text = "• Have a cracked version (Anadius, FitGirl, Elamigos, etc.)";
                 Requirement2.Text = "• Have complete backup of your game folder and your savegames (Documents Folder)";
                 Requirement3.Text = "• Know how to restore the backup if something goes wrong";
 
-                ProtectedBtn.Content = "✅ I understand, continue";
+                ProtectedBtn.Content = " I understand, continue";
                 CancelBtn.Content = "❌ Cancel";
             }
         }

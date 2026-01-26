@@ -85,7 +85,7 @@
                 <!-- Action Buttons -->
                 <StackPanel Orientation="Horizontal" Margin="0,20,0,0" HorizontalAlignment="Center">
                     <Button x:Name="DisableAllButton" Content="🚫 Disable All Mods" Padding="16,10" Margin="0,0,10,0" Background="#EF4444" Foreground="White" FontWeight="Bold" BorderThickness="0" Cursor="Hand" Click="DisableAllButton_Click"/>
-                    <Button x:Name="EnableAllButton" Content="✅ Enable All Mods" Padding="16,10" Margin="0,0,10,0" Background="#22C55E" Foreground="#0F172A" FontWeight="Bold" BorderThickness="0" Cursor="Hand" Click="EnableAllButton_Click"/>
+                    <Button x:Name="EnableAllButton" Content=" Enable All Mods" Padding="16,10" Margin="0,0,10,0" Background="#22C55E" Foreground="#0F172A" FontWeight="Bold" BorderThickness="0" Cursor="Hand" Click="EnableAllButton_Click"/>
                     <Button x:Name="SelectFolderButton" Content="📁" Padding="10,10" Background="#6366F1" Foreground="White" FontWeight="Bold" BorderThickness="0" Cursor="Hand" Click="SelectFolderButton_Click" ToolTip="Select Mods folder manually"/>
                 </StackPanel>
             </StackPanel>

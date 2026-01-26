@@ -182,16 +182,16 @@ namespace ModernDesign.MVVM.View
         private void UpdaterCard_Click(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             // Crear instancia de MainSelectionWindow
-            MainSelectionWindow mainSelectionWindow = new MainSelectionWindow();
+            InstallModeSelector installModeSelector = new InstallModeSelector();
 
             // Establecer la ventana actual como "Owner" (padre)
-            mainSelectionWindow.Owner = Window.GetWindow(this);
+            installModeSelector.Owner = Window.GetWindow(this);
 
             // Centrar la ventana respecto al padre
-            mainSelectionWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            installModeSelector.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 
             // Mostrar la ventana
-            mainSelectionWindow.ShowDialog();
+            installModeSelector.ShowDialog();
         }
 
         // Evento para la tarjeta de Repair
@@ -218,8 +218,9 @@ namespace ModernDesign.MVVM.View
                 // Abrir el link de Ko-fi en el navegador predeterminado
                 Process.Start(new ProcessStartInfo
                 {
-                    FileName = "https://ko-fi.com/leuan",
-                    UseShellExecute = true
+                    FileName = "explorer.exe",
+                    Arguments = "https://ko-fi.com/leuan",
+                    UseShellExecute = false
                 });
             }
             catch (Exception ex)

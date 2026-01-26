@@ -36,7 +36,7 @@ namespace ModernDesign.MVVM.View
                 : "💡 Recommendation: After disabling all mods, activate them one by one (renaming them back) to identify which one causes the problem.";
 
             DisableAllButton.Content = es ? "🚫 Desactivar Todos los Mods" : "🚫 Disable All Mods";
-            EnableAllButton.Content = es ? "✅ Reactivar Todos los Mods" : "✅ Enable All Mods";
+            EnableAllButton.Content = es ? " Reactivar Todos los Mods" : " Enable All Mods";
             CloseButton.Content = es ? "Cerrar" : "Close";
         }
 
@@ -123,8 +123,8 @@ namespace ModernDesign.MVVM.View
 
                 UpdateStatus(
                     LanguageManager.IsSpanish
-                        ? $"✅ Se desactivaron {packageCount} archivos .package y {scriptCount} archivos .ts4script"
-                        : $"✅ Disabled {packageCount} .package files and {scriptCount} .ts4script files",
+                        ? $" Se desactivaron {packageCount} archivos .package y {scriptCount} archivos .ts4script"
+                        : $" Disabled {packageCount} .package files and {scriptCount} .ts4script files",
                     false);
 
                 MessageBox.Show(
@@ -181,8 +181,8 @@ namespace ModernDesign.MVVM.View
 
                 UpdateStatus(
                     LanguageManager.IsSpanish
-                        ? $"✅ Se reactivaron {packageCount} archivos .package y {scriptCount} archivos .ts4script"
-                        : $"✅ Enabled {packageCount} .package files and {scriptCount} .ts4script files",
+                        ? $" Se reactivaron {packageCount} archivos .package y {scriptCount} archivos .ts4script"
+                        : $" Enabled {packageCount} .package files and {scriptCount} .ts4script files",
                     false);
 
                 MessageBox.Show(

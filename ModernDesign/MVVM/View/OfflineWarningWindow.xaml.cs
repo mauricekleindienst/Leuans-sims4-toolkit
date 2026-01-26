@@ -79,8 +79,9 @@ namespace ModernDesign.MVVM.View
             {
                 Process.Start(new ProcessStartInfo
                 {
-                    FileName = e.Uri.AbsoluteUri,
-                    UseShellExecute = true
+                    FileName = "explorer.exe",
+                    Arguments = e.Uri.AbsoluteUri,
+                    UseShellExecute = false
                 });
                 e.Handled = true;
             }

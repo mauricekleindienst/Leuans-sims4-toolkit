@@ -7,6 +7,8 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Effects;
@@ -20,6 +22,10 @@ namespace ModernDesign.MVVM.View
         private string _detectedVersion = "";
         private bool _isCracking = false;
         private bool _isCracked = false;
+
+        private Storyboard _skullCrackingAnimation;
+        private Storyboard _unlockAnimation;
+        private Storyboard _sparklesAnimation;
 
         public CrackingToolWindow()
         {
@@ -47,6 +53,7 @@ namespace ModernDesign.MVVM.View
                 StatusLabel.Text = "LISTO";
                 CloseBtn.Content = "[X] ABORTAR";
                 ConsoleText.Text = ">> SISTEMA INICIALIZADO\n>> ESPERANDO SELECCIÓN DE OBJETIVO...";
+                ConfigBtn.ToolTip = "Configurar Juego Crackeado";
             }
             else
             {
@@ -58,6 +65,7 @@ namespace ModernDesign.MVVM.View
                 StatusLabel.Text = "READY";
                 CloseBtn.Content = "[X] ABORT";
                 ConsoleText.Text = ">> SYSTEM INITIALIZED\n>> AWAITING TARGET SELECTION...";
+                ConfigBtn.ToolTip = "Configure Cracked Game";
             }
         }
 
@@ -160,33 +168,15 @@ namespace ModernDesign.MVVM.View
 
             AddConsoleLog(isSpanish ? ">> ANALIZANDO OBJETIVO..." : ">> ANALYZING TARGET...");
 
-            // Verificar archivos de crack en Game/Bin
-            string binPath = Path.Combine(path, "Game", "Bin");
-            string[] requiredCrackFiles = new[]
-            {
-                "leuan.dll",
-                "leuan-toolkitS4.dll",
-                "leuan-u.dll",
-                "leuan-v.dll",
-                "leuans4.cfg"
-            };
+            string crackedBinPath = Path.Combine(path, "Game-cracked", "Bin");
+            string configPath = Path.Combine(crackedBinPath, "leuans4.cfg");
 
-            int missingFiles = 0;
-            foreach (var file in requiredCrackFiles)
-            {
-                if (!File.Exists(Path.Combine(binPath, file)))
-                {
-                    missingFiles++;
-                }
-            }
-
-            // Si ya está crackeado completamente
-            if (missingFiles == 0)
+            if (File.Exists(configPath))
             {
                 _detectedVersion = "Cracked";
                 _isCracked = true;
                 AddConsoleLog(isSpanish ? ">> VERSIÓN YA CRACKEADA DETECTADA" : ">> ALREADY CRACKED VERSION DETECTED");
-                AddConsoleLog(isSpanish ? ">> TODOS LOS ARCHIVOS PRESENTES" : ">> ALL FILES PRESENT");
+                AddConsoleLog(isSpanish ? ">> CONFIGURACIÓN ENCONTRADA" : ">> CONFIG FILE FOUND");
                 AddConsoleLog(isSpanish ? ">> NO SE REQUIERE ACCIÓN" : ">> NO ACTION REQUIRED");
 
                 TransitionToCrackedState(isSpanish);
@@ -194,20 +184,6 @@ namespace ModernDesign.MVVM.View
                 return;
             }
 
-            // Si faltan 1-2 archivos (instalación corrupta)
-            if (missingFiles >= 1 && missingFiles <= 2)
-            {
-                _detectedVersion = "Corrupted";
-                AddConsoleLog(isSpanish ? ">> INSTALACIÓN CORRUPTA DETECTADA" : ">> CORRUPTED INSTALLATION DETECTED");
-                AddConsoleLog(isSpanish ? $">> FALTAN {missingFiles} ARCHIVO(S)" : $">> MISSING {missingFiles} FILE(S)");
-                AddConsoleLog(isSpanish ? ">> REQUIERE RE-CRACKEO" : ">> REQUIRES RE-CRACKING");
-
-                TransitionToCorruptedState(isSpanish);
-                EnableCrackButton();
-                return;
-            }
-
-            // Si faltan 3 o más archivos, verificar si es legítimo
             bool hasEAappInstaller = File.Exists(Path.Combine(path, "EAappInstaller_installScript.vdf"));
             bool hasEAStore = File.Exists(Path.Combine(path, "EAStore.ini"));
             bool hasInstallScript = File.Exists(Path.Combine(path, "installScript.vdf"));
@@ -247,7 +223,6 @@ namespace ModernDesign.MVVM.View
         {
             SkullBtn.IsEnabled = true;
 
-            // Animar el brillo del skull
             var pulseAnimation = new DoubleAnimation
             {
                 From = 0.8,
@@ -257,38 +232,6 @@ namespace ModernDesign.MVVM.View
                 RepeatBehavior = RepeatBehavior.Forever
             };
             SkullShadow.BeginAnimation(DropShadowEffect.OpacityProperty, pulseAnimation);
-        }
-
-        private void TransitionToCorruptedState(bool isSpanish)
-        {
-            // Cambiar a naranja
-            var colorOrange = Color.FromRgb(255, 165, 0);
-
-            var colorAnim1 = new ColorAnimation
-            {
-                To = colorOrange,
-                Duration = TimeSpan.FromSeconds(0.8)
-            };
-            var colorAnim2 = new ColorAnimation
-            {
-                To = Color.FromRgb(200, 100, 0),
-                Duration = TimeSpan.FromSeconds(0.8)
-            };
-
-            NeonColor1.BeginAnimation(GradientStop.ColorProperty, colorAnim1);
-            NeonColor2.BeginAnimation(GradientStop.ColorProperty, colorAnim2);
-            NeonColor3.BeginAnimation(GradientStop.ColorProperty, colorAnim1);
-
-            BorderGlow.BeginAnimation(DropShadowEffect.ColorProperty, colorAnim1);
-            LineGlow.BeginAnimation(DropShadowEffect.ColorProperty, colorAnim1);
-            LineColor.BeginAnimation(GradientStop.ColorProperty, colorAnim1);
-
-            SkullStrokeBrush.BeginAnimation(SolidColorBrush.ColorProperty, colorAnim1);
-            SkullShadow.BeginAnimation(DropShadowEffect.ColorProperty, colorAnim1);
-
-            StatusLabel.Foreground = new SolidColorBrush(colorOrange);
-            StatusLabel.Text = isSpanish ? "CORRUPTO" : "CORRUPTED";
-            SkullIcon.Text = "⚠️";
         }
 
         private void KillProcessesByVersion(string version)
@@ -356,19 +299,11 @@ namespace ModernDesign.MVVM.View
             SkullBtn.IsEnabled = false;
             SelectPathBtn.IsEnabled = false;
 
-            // Cambiar skull a candado cerrado
-            SkullIcon.Text = "🔒";
+            SkullIcon.Opacity = 0;
             StatusLabel.Text = isSpanish ? "CRACKEANDO..." : "CRACKING...";
 
-            // Iniciar animación de rotación
-            var rotateAnimation = new DoubleAnimation
-            {
-                From = 0,
-                To = 360,
-                Duration = TimeSpan.FromSeconds(2),
-                RepeatBehavior = RepeatBehavior.Forever
-            };
-            SkullIcon.RenderTransform.BeginAnimation(RotateTransform.AngleProperty, rotateAnimation);
+            _skullCrackingAnimation = (Storyboard)this.Resources["SkullCrackingAnimation"];
+            _skullCrackingAnimation.Begin();
 
             AddConsoleLog(isSpanish ? ">> INICIANDO PROTOCOLO DE CRACKEO..." : ">> INITIATING CRACKING PROTOCOL...");
 
@@ -379,13 +314,11 @@ namespace ModernDesign.MVVM.View
 
             try
             {
-                // Simular proceso de crackeo
                 await SimulateCrackingProcess(isSpanish);
 
-                // Descargar archivo
                 AddConsoleLog(isSpanish ? ">> DESCARGANDO PAYLOAD..." : ">> DOWNLOADING PAYLOAD...");
-                string downloadUrl = "https://zeroauno.blob.core.windows.net/leuan/TheSims4/Offline/Updater/LeuanVersion/LatestLeuanVersion.zip";
-                string zipPath = Path.Combine(Path.GetTempPath(), "LatestLeuanVersion.zip");
+                string downloadUrl = "https://github.com/Leuansin/leuan-dlcs/releases/download/latestupdateandcrack/LatestUpdateAndCrack.zip";
+                string zipPath = Path.Combine(Path.GetTempPath(), "LatestUpdateAndCrack.zip");
 
                 using (var response = await _httpClient.GetAsync(downloadUrl, HttpCompletionOption.ResponseHeadersRead))
                 {
@@ -419,7 +352,7 @@ namespace ModernDesign.MVVM.View
                 }
 
                 AddConsoleLog(isSpanish ? ">> PAYLOAD DESCARGADO" : ">> PAYLOAD DOWNLOADED");
-                AddConsoleLog(isSpanish ? ">> EXTRAYENDO ARCHIVOS..." : ">> EXTRACTING FILES...");
+                AddConsoleLog(isSpanish ? ">> EXTRAYENDO ARCHIVOS EN RAÍZ..." : ">> EXTRACTING FILES TO ROOT...");
 
                 await Task.Run(() =>
                 {
@@ -444,11 +377,11 @@ namespace ModernDesign.MVVM.View
                             }
 
                             processed++;
-                            if (processed % 100 == 0 && processed != lastReported)
+                            if (processed % 50 == 0 && processed != lastReported)
                             {
                                 Dispatcher.Invoke(() =>
                                 {
-                                    AddConsoleLog($">> {processed} / {totalFiles} FILES");
+                                    AddConsoleLog($">> {processed} / {totalFiles} ARCHIVOS");
                                 });
                                 lastReported = processed;
                             }
@@ -457,6 +390,20 @@ namespace ModernDesign.MVVM.View
                 });
 
                 AddConsoleLog(isSpanish ? ">> EXTRACCIÓN COMPLETA" : ">> EXTRACTION COMPLETE");
+                AddConsoleLog(isSpanish ? ">> VERIFICANDO ARCHIVOS..." : ">> VERIFYING FILES...");
+
+                string dlcIniPath = Path.Combine(_gamePath, "dlc.ini");
+                string gameCrackedPath = Path.Combine(_gamePath, "Game-cracked");
+
+                if (File.Exists(dlcIniPath))
+                {
+                    AddConsoleLog(isSpanish ? ">> dlc.ini ENCONTRADO ✓" : ">> dlc.ini FOUND ✓");
+                }
+                if (Directory.Exists(gameCrackedPath))
+                {
+                    AddConsoleLog(isSpanish ? ">> Game-cracked ENCONTRADO ✓" : ">> Game-cracked FOUND ✓");
+                }
+
                 AddConsoleLog(isSpanish ? ">> LIMPIANDO ARCHIVOS TEMPORALES..." : ">> CLEANING TEMP FILES...");
 
                 if (File.Exists(zipPath))
@@ -465,9 +412,15 @@ namespace ModernDesign.MVVM.View
                 }
 
                 AddConsoleLog(isSpanish ? ">> LIMPIEZA COMPLETA" : ">> CLEANUP COMPLETE");
-                await Task.Delay(500);
 
-                // Cambiar a estado CRACKED
+                _skullCrackingAnimation.Stop();
+                CrackingSkull.Opacity = 0;
+
+                _unlockAnimation = (Storyboard)this.Resources["UnlockAnimation"];
+                _unlockAnimation.Begin();
+
+                await Task.Delay(1000);
+
                 TransitionToCrackedState(isSpanish);
             }
             catch (Exception ex)
@@ -482,7 +435,13 @@ namespace ModernDesign.MVVM.View
                 SkullBtn.IsEnabled = true;
                 SelectPathBtn.IsEnabled = true;
                 _isCracking = false;
-                SkullIcon.RenderTransform.BeginAnimation(RotateTransform.AngleProperty, null);
+                SkullIcon.Opacity = 1;
+
+                if (_skullCrackingAnimation != null)
+                {
+                    _skullCrackingAnimation.Stop();
+                }
+                CrackingSkull.Opacity = 0;
             }
         }
 
@@ -492,7 +451,7 @@ namespace ModernDesign.MVVM.View
                 ? new[]
                 {
                     ">> DESENCRIPTANDO PROTECCIÓN DRM...",
-                    ">> BYPASSEANDO VERIFICACIÓN STEAM...",
+                    ">> BYPASSEANDO VERIFICACIÓN...",
                     ">> PARCHEANDO EJECUTABLE...",
                     ">> INYECTANDO CRACK...",
                     ">> MODIFICANDO ARCHIVOS DE SISTEMA...",
@@ -503,7 +462,7 @@ namespace ModernDesign.MVVM.View
                 : new[]
                 {
                     ">> DECRYPTING DRM PROTECTION...",
-                    ">> BYPASSING STEAM VERIFICATION...",
+                    ">> BYPASSING VERIFICATION...",
                     ">> PATCHING EXECUTABLE...",
                     ">> INJECTING CRACK...",
                     ">> MODIFYING SYSTEM FILES...",
@@ -524,16 +483,20 @@ namespace ModernDesign.MVVM.View
             _isCracked = true;
             _isCracking = false;
 
-            // Detener rotación
-            SkullIcon.RenderTransform.BeginAnimation(RotateTransform.AngleProperty, null);
+            UnlockIcon.Opacity = 0;
 
-            // Cambiar a candado abierto
             SkullIcon.Text = "🔓";
+            SkullIcon.Opacity = 1;
             StatusLabel.Text = isSpanish ? "CRACKEADO" : "CRACKED";
-            StatusLabel.Foreground = new SolidColorBrush(Color.FromRgb(0, 255, 65));
+            StatusLabel.Foreground = new SolidColorBrush(Color.FromRgb(30, 90, 142));
 
-            // Cambiar bordes a verde
-            AnimateBorderToGreen();
+            AnimateBorderToBlue();
+
+            SparklesCanvas.Visibility = Visibility.Visible;
+            _sparklesAnimation = (Storyboard)this.Resources["SparklesAnimation"];
+            _sparklesAnimation.Begin();
+
+            ConfigBtn.Visibility = Visibility.Visible;
 
             AddConsoleLog("");
             AddConsoleLog(isSpanish ? "╔════════════════════════════════════╗" : "╔════════════════════════════════════╗");
@@ -546,50 +509,87 @@ namespace ModernDesign.MVVM.View
 
             MessageBox.Show(
                 isSpanish
-                    ? "╔════════════════════════════════════╗\n║   PROTOCOLO COMPLETADO CON ÉXITO   ║\n╚════════════════════════════════════╝\n\n>> Tu copia legítima ahora es una versión crackeada portable.\n>> Versión: LEUAN v2.0\n\n>> Para actualizar tu juego, pregunta al chatbot:\n   'necesito actualizar mi juego'"
-                    : "╔════════════════════════════════════╗\n║   PROTOCOL COMPLETED SUCCESSFULLY  ║\n╚════════════════════════════════════╝\n\n>> Your legitimate copy is now a portable cracked version.\n>> Version: LEUAN v2.0\n\n>> To update your game, ask the chatbot:\n   'i need to update my game'",
+                    ? "╔════════════════════════════════════╗\n║   PROTOCOLO COMPLETADO CON ÉXITO   ║\n╚════════════════════════════════════╝\n\n>> Tu copia ahora es crackeada y portable.\n>> Versión: LEUAN v2.0\n\n>> Usa el botón ⚙️ para configurar el juego."
+                    : "╔════════════════════════════════════╗\n║   PROTOCOL COMPLETED SUCCESSFULLY  ║\n╚════════════════════════════════════╝\n\n>> Your copy is now cracked and portable.\n>> Version: LEUAN v2.0\n\n>> Use the ⚙️ button to configure the game.",
                 isSpanish ? "Protocolo Completado" : "Protocol Completed",
                 MessageBoxButton.OK,
                 MessageBoxImage.Information);
         }
 
-        private void AnimateBorderToGreen()
+        private void ConfigBtn_Click(object sender, RoutedEventArgs e)
         {
-            var colorGreen = Color.FromRgb(0, 255, 65);
-            var colorGreenDark = Color.FromRgb(0, 200, 50);
+            string configPath = Path.Combine(_gamePath, "Game-cracked", "Bin", "leuans4.cfg");
+
+            if (!File.Exists(configPath))
+            {
+                MessageBox.Show(
+                    IsSpanishLanguage() ? "No se encontró el archivo de configuración." : "Configuration file not found.",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                return;
+            }
+
+            try
+            {
+                var configWindow = new CrackConfigWindow(configPath);
+                configWindow.ShowDialog();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Error: {ex.Message}\n\n{ex.StackTrace}",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
+
+        private void AnimateBorderToBlue()
+        {
+            // Colores azul marino (exactamente como CrackConfigWindow)
+            var colorBlue = Color.FromRgb(30, 90, 142);      // #1E5A8E
+            var colorBlueDark = Color.FromRgb(15, 45, 71);   // Más oscuro
 
             var colorAnim1 = new ColorAnimation
             {
-                To = colorGreen,
-                Duration = TimeSpan.FromSeconds(1)
+                To = colorBlue,
+                Duration = TimeSpan.FromSeconds(1.5),
+                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut }
             };
             var colorAnim2 = new ColorAnimation
             {
-                To = colorGreenDark,
-                Duration = TimeSpan.FromSeconds(1)
+                To = colorBlueDark,
+                Duration = TimeSpan.FromSeconds(1.5),
+                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut }
             };
 
+            // Animar bordes a azul
             NeonColor1.BeginAnimation(GradientStop.ColorProperty, colorAnim1);
             NeonColor2.BeginAnimation(GradientStop.ColorProperty, colorAnim2);
             NeonColor3.BeginAnimation(GradientStop.ColorProperty, colorAnim1);
 
+            // Animar efectos de sombra a azul
             BorderGlow.BeginAnimation(DropShadowEffect.ColorProperty, colorAnim1);
             LineGlow.BeginAnimation(DropShadowEffect.ColorProperty, colorAnim1);
             LineColor.BeginAnimation(GradientStop.ColorProperty, colorAnim1);
 
+            // Animar círculo del skull a azul
             SkullStrokeBrush.BeginAnimation(SolidColorBrush.ColorProperty, colorAnim1);
             SkullShadow.BeginAnimation(DropShadowEffect.ColorProperty, colorAnim1);
 
-            // Cambiar fondo de la ventana
+            // Animar fondo a azul oscuro (como CrackConfig)
             var bgAnim1 = new ColorAnimation
             {
-                To = Color.FromRgb(0, 26, 0),
-                Duration = TimeSpan.FromSeconds(1)
+                To = Color.FromRgb(10, 10, 10),  // #0a0a0a
+                Duration = TimeSpan.FromSeconds(1.5),
+                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut }
             };
             var bgAnim2 = new ColorAnimation
             {
-                To = Color.FromRgb(0, 10, 0),
-                Duration = TimeSpan.FromSeconds(1)
+                To = Color.FromRgb(0, 26, 46),   // #001a2e (exacto de CrackConfig)
+                Duration = TimeSpan.FromSeconds(1.5),
+                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseInOut }
             };
 
             ((LinearGradientBrush)MainBorder.Background).GradientStops[0].BeginAnimation(GradientStop.ColorProperty, bgAnim1);
@@ -604,7 +604,6 @@ namespace ModernDesign.MVVM.View
                 ConsoleScroll.ScrollToEnd();
             });
         }
-
         private void CloseBtn_Click(object sender, RoutedEventArgs e)
         {
             this.Close();

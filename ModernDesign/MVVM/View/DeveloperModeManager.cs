@@ -1,323 +1,152 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using ModernDesign.Profile;
+using ModernDesign.Profile; // Restaurado para MedalType
 
 namespace ModernDesign.Managers
 {
     public static class DeveloperModeManager
     {
-        private static readonly string AppDataRoaming = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "Leuan's - Sims 4 ToolKit"
-        );
-
-        private static readonly string AppDataLocal = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "LTK"
-        );
+        private static readonly string AppDataRoaming = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Leuan's - Sims 4 ToolKit");
+        private static readonly string AppDataLocal = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "LTK");
 
         private static readonly string ProgressFilePath = Path.Combine(AppDataRoaming, "progress.ini");
-        private static readonly string SettingsPFilePath = Path.Combine(AppDataRoaming, "settingsp.ini");
         private static readonly string ProfileIniPath = Path.Combine(AppDataRoaming, "profile.ini");
         private static readonly string TmpFile2025Path = Path.Combine(AppDataLocal, "tmpFile2025.ini");
 
-        // Lista de features que deben ser visitadas
+        private static readonly string KeyUrl = "https://zeroauno.blob.core.windows.net/leuan/Skaparabipbop.txt?sp=r&st=2026-01-18T20:03:19Z&se=2027-01-19T04:18:19Z&spr=https&sv=2024-11-04&sr=b&sig=g6IfDljJD1%2FKqHhQCl%2Fu1v%2FpBLd0RSnSGO1eHEnVpl8%3D";
+
         private static readonly string[] RequiredFeatures = new string[]
         {
-            "install_mods",
-            "mod_manager",
-            "loading_screen",
-            "cheats_guide",
-            "gallery_manager",
-            "music_manager",
-            "gameplay_enhancer",
-            "fix_common_errors",
-            "method_5050"
+            "install_mods", "mod_manager", "loading_screen", "cheats_guide",
+            "gallery_manager", "gameplay_enhancer", "fix_common_errors", "method_5050"
         };
 
-        static DeveloperModeManager()
+        // --- MÉTODOS DE ESTADO ---
+
+        public static bool IsDeveloperModeUnlocked()
         {
-            // Crear carpetas si no existen
-            if (!Directory.Exists(AppDataRoaming))
-                Directory.CreateDirectory(AppDataRoaming);
-
-            if (!Directory.Exists(AppDataLocal))
-                Directory.CreateDirectory(AppDataLocal);
-
-            // Crear archivo de progreso si no existe
-            if (!File.Exists(ProgressFilePath))
-            {
-                using (StreamWriter writer = new StreamWriter(ProgressFilePath))
-                {
-                    foreach (var feature in RequiredFeatures)
-                    {
-                        writer.WriteLine($"{feature}=false");
-                    }
-                }
-            }
+            // Versión síncrona para la UI
+            return HasAllGoldMedals() && AreAllFeaturesVisited() && HasDonated();
         }
 
-        // Marcar una feature como visitada
-        public static void MarkFeatureAsVisited(string featureId)
+        public static async Task<bool> IsDeveloperModeUnlockedAsync()
         {
+            return HasAllGoldMedals() && AreAllFeaturesVisited() && await HasDonatedAsync();
+        }
+
+        public static bool HasAllGoldMedals()
+        {
+            string[] tutorialIds = { "beginner_guide", "tutorial_trait", "tutorial_interaction", "tutorial_career", "tutorial_buff", "tutorial_clothing", "tutorial_object" };
+
             try
             {
-                var lines = File.ReadAllLines(ProgressFilePath);
-                using (StreamWriter writer = new StreamWriter(ProgressFilePath))
+                foreach (var id in tutorialIds)
                 {
-                    bool found = false;
-                    foreach (var line in lines)
-                    {
-                        if (line.StartsWith($"{featureId}="))
-                        {
-                            writer.WriteLine($"{featureId}=true");
-                            found = true;
-                        }
-                        else
-                        {
-                            writer.WriteLine(line);
-                        }
-                    }
-
-                    // Si no existía, agregarlo
-                    if (!found)
-                    {
-                        writer.WriteLine($"{featureId}=true");
-                    }
+                    if (ProfileManager.GetTutorialMedal(id) != MedalType.Gold)
+                        return false;
                 }
+                return true;
             }
-            catch { }
+            catch { return false; }
         }
 
-        // Verificar si una feature fue visitada
-        public static bool IsFeatureVisited(string featureId)
-        {
-            try
-            {
-                if (!File.Exists(ProgressFilePath))
-                    return false;
-
-                foreach (var line in File.ReadAllLines(ProgressFilePath))
-                {
-                    if (line.StartsWith($"{featureId}="))
-                    {
-                        return line.EndsWith("=true");
-                    }
-                }
-            }
-            catch { }
-
-            return false;
-        }
-
-        // Verificar si todas las features fueron visitadas
         public static bool AreAllFeaturesVisited()
         {
             foreach (var feature in RequiredFeatures)
             {
-                if (!IsFeatureVisited(feature))
-                    return false;
+                if (!IsFeatureVisited(feature)) return false;
             }
             return true;
         }
 
-        // Verificar si tiene todas las medallas de oro
-        public static bool HasAllGoldMedals()
-        {
-            string[] tutorialIds = new string[]
-            {
-                "beginner_guide",
-                "tutorial_trait",
-                "tutorial_interaction",
-                "tutorial_career",
-                "tutorial_buff",
-                "tutorial_clothing",
-                "tutorial_object"
-            };
-
-            foreach (var tutorialId in tutorialIds)
-            {
-                if (ProfileManager.GetTutorialMedal(tutorialId) != MedalType.Gold)
-                    return false;
-            }
-
-            return true;
-        }
-
-        // Verificar si ha donado (NUEVA LÓGICA CON 3 REQUISITOS)
         public static async Task<bool> HasDonatedAsync()
         {
             try
             {
-                // REQUISITO 1: Verificar que exista settingsp.ini
-                if (!File.Exists(SettingsPFilePath))
-                    return false;
+                if (!File.Exists(TmpFile2025Path) || !File.Exists(ProfileIniPath)) return false;
 
-                // REQUISITO 2: Verificar tmpFile2025.ini con key válida
-                if (!File.Exists(TmpFile2025Path))
-                    return false;
-
-                string tmpFileKey = null;
-                foreach (var line in File.ReadAllLines(TmpFile2025Path))
+                using (var client = new HttpClient())
                 {
-                    if (line.StartsWith("key="))
-                    {
-                        tmpFileKey = line.Substring("key=".Length).Trim();
-                        break;
-                    }
+                    client.Timeout = TimeSpan.FromSeconds(5);
+                    string validKey = (await client.GetStringAsync(KeyUrl)).Trim();
+
+                    var profileLines = File.ReadAllLines(ProfileIniPath);
+                    string profileKey = profileLines.FirstOrDefault(l => l.StartsWith("key="))?.Split('=')[1].Trim();
+                    bool isSupporter = profileLines.Any(l => l.Trim().ToLower() == "ispatreonsupporter=true");
+
+                    string tmpKey = File.ReadAllLines(TmpFile2025Path).FirstOrDefault(l => l.StartsWith("key="))?.Split('=')[1].Trim();
+
+                    return isSupporter && tmpKey == validKey && profileKey == validKey;
                 }
-
-                if (string.IsNullOrEmpty(tmpFileKey))
-                    return false;
-
-                // REQUISITO 3: Verificar profile.ini con isPatreonSupporter=true y key válida
-                if (!File.Exists(ProfileIniPath))
-                    return false;
-
-                bool isPatreonSupporter = false;
-                string profileKey = null;
-
-                foreach (var line in File.ReadAllLines(ProfileIniPath))
-                {
-                    if (line.StartsWith("isPatreonSupporter="))
-                    {
-                        string value = line.Substring("isPatreonSupporter=".Length).Trim();
-                        isPatreonSupporter = value.Equals("true", StringComparison.OrdinalIgnoreCase);
-                    }
-                    else if (line.StartsWith("key="))
-                    {
-                        profileKey = line.Substring("key=".Length).Trim();
-                    }
-                }
-
-                if (!isPatreonSupporter || string.IsNullOrEmpty(profileKey))
-                    return false;
-
-                // Obtener la key válida desde el servidor
-                string validKey = await GetValidKeyFromServerAsync();
-                if (string.IsNullOrEmpty(validKey))
-                    return false;
-
-                // Verificar que AMBAS keys coincidan con la del servidor
-                bool tmpFileValid = tmpFileKey.Equals(validKey, StringComparison.OrdinalIgnoreCase);
-                bool profileValid = profileKey.Equals(validKey, StringComparison.OrdinalIgnoreCase);
-
-                return tmpFileValid && profileValid;
             }
-            catch
-            {
-                return false;
-            }
+            catch { return false; }
         }
-
-        // Verificación síncrona (usa cache)
-        private static bool? _donationStatusCache = null;
-        private static DateTime _lastCheckTime = DateTime.MinValue;
 
         public static bool HasDonated()
         {
+            // Verificación rápida local para no bloquear la UI con peticiones web
             try
             {
-                if (!File.Exists(SettingsPFilePath))
-                    return false;
+                if (!File.Exists(TmpFile2025Path) || !File.Exists(ProfileIniPath)) return false;
 
-                if (!File.Exists(TmpFile2025Path))
-                    return false;
+                string tmpKey = File.ReadAllLines(TmpFile2025Path).FirstOrDefault(l => l.StartsWith("key="))?.Split('=')[1].Trim();
+                string profileKey = File.ReadAllLines(ProfileIniPath).FirstOrDefault(l => l.StartsWith("key="))?.Split('=')[1].Trim();
+                bool isSupporter = File.ReadAllText(ProfileIniPath).ToLower().Contains("ispatreonsupporter=true");
 
-                string tmpFileKey = null;
-                foreach (var line in File.ReadAllLines(TmpFile2025Path))
+                return isSupporter && !string.IsNullOrEmpty(tmpKey) && tmpKey == profileKey;
+            }
+            catch { return false; }
+        }
+
+        // --- GESTIÓN DE FEATURES ---
+
+        public static void MarkFeatureAsVisited(string featureId)
+        {
+            try
+            {
+                var lines = File.Exists(ProgressFilePath) ? File.ReadAllLines(ProgressFilePath).ToList() : new System.Collections.Generic.List<string>();
+                bool found = false;
+                for (int i = 0; i < lines.Count; i++)
                 {
-                    if (line.StartsWith("key="))
+                    if (lines[i].StartsWith($"{featureId}="))
                     {
-                        tmpFileKey = line.Substring("key=".Length).Trim();
+                        lines[i] = $"{featureId}=true";
+                        found = true;
                         break;
                     }
                 }
-
-                if (string.IsNullOrEmpty(tmpFileKey))
-                    return false;
-
-                if (!File.Exists(ProfileIniPath))
-                    return false;
-
-                bool isPatreonSupporter = false;
-                string profileKey = null;
-
-                foreach (var line in File.ReadAllLines(ProfileIniPath))
-                {
-                    if (line.StartsWith("isPatreonSupporter="))
-                    {
-                        string value = line.Substring("isPatreonSupporter=".Length).Trim();
-                        isPatreonSupporter = value.Equals("true", StringComparison.OrdinalIgnoreCase);
-                    }
-                    else if (line.StartsWith("key="))
-                    {
-                        profileKey = line.Substring("key=".Length).Trim();
-                    }
-                }
-
-                if (!isPatreonSupporter || string.IsNullOrEmpty(profileKey))
-                    return false;
-
-                // Verificar que AMBAS keys sean iguales entre sí
-                // (No verificamos con el servidor en modo síncrono para evitar lag)
-                bool keysMatch = tmpFileKey.Equals(profileKey, StringComparison.OrdinalIgnoreCase);
-
-                return keysMatch;
+                if (!found) lines.Add($"{featureId}=true");
+                File.WriteAllLines(ProgressFilePath, lines);
             }
-            catch
-            {
-                return false;
-            }
+            catch { }
         }
 
-        private static async Task<string> GetValidKeyFromServerAsync()
+        public static bool IsFeatureVisited(string featureId)
         {
             try
             {
-                using (HttpClient client = new HttpClient())
-                {
-                    client.Timeout = TimeSpan.FromSeconds(5);
-                    string response = await client.GetStringAsync("https://zeroauno.blob.core.windows.net/leuan/TheSims4/version.txt");
-                    return response.Trim();
-                }
+                if (!File.Exists(ProgressFilePath)) return false;
+                return File.ReadAllLines(ProgressFilePath).Any(l => l.Trim() == $"{featureId}=true");
             }
-            catch
-            {
-                return null;
-            }
+            catch { return false; }
         }
 
-        // Verificar si el Developer Mode está desbloqueado
-        public static bool IsDeveloperModeUnlocked()
-        {
-            return HasAllGoldMedals() && AreAllFeaturesVisited() && HasDonated();
-        }
+        // --- PROGRESO PARA LA UI ---
 
-        // Obtener progreso detallado
         public static DeveloperModeProgress GetProgress()
         {
+            int visited = RequiredFeatures.Count(f => IsFeatureVisited(f));
             return new DeveloperModeProgress
             {
                 HasAllGoldMedals = HasAllGoldMedals(),
                 AllFeaturesVisited = AreAllFeaturesVisited(),
                 HasDonated = HasDonated(),
-                FeaturesVisited = GetVisitedFeaturesCount(),
+                FeaturesVisited = visited,
                 TotalFeatures = RequiredFeatures.Length
             };
-        }
-
-        private static int GetVisitedFeaturesCount()
-        {
-            int count = 0;
-            foreach (var feature in RequiredFeatures)
-            {
-                if (IsFeatureVisited(feature))
-                    count++;
-            }
-            return count;
         }
     }
 
@@ -330,10 +159,16 @@ namespace ModernDesign.Managers
         public int TotalFeatures { get; set; }
 
         public bool IsUnlocked => HasAllGoldMedals && AllFeaturesVisited && HasDonated;
-        public int ProgressPercentage => (int)((
-            (HasAllGoldMedals ? 33.33 : 0) +
-            (AllFeaturesVisited ? 33.33 : 0) +
-            (HasDonated ? 33.33 : 0)
-        ));
+        public int ProgressPercentage
+        {
+            get
+            {
+                double score = 0;
+                if (HasAllGoldMedals) score += 33.33;
+                if (AllFeaturesVisited) score += 33.33;
+                if (HasDonated) score += 33.34;
+                return (int)score;
+            }
+        }
     }
 }

@@ -75,7 +75,7 @@ namespace ModernDesign.MVVM.View
             installModeSelector.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             installModeSelector.ShowDialog();
 
-            // ✅ CERRAR MainSelectionWindow después de abrir InstallModeSelector
+            //  CERRAR MainSelectionWindow después de abrir InstallModeSelector
             Window.GetWindow(this)?.Close();
         }
 
@@ -108,7 +108,7 @@ namespace ModernDesign.MVVM.View
                 versionSelector.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 versionSelector.ShowDialog();
 
-                // ✅ CERRAR MainSelectionWindow después de abrir UpdateVersionSelectorWindow
+                //  CERRAR MainSelectionWindow después de abrir UpdateVersionSelectorWindow
                 Window.GetWindow(this)?.Close();
             }
         }

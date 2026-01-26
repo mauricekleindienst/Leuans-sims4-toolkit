@@ -25,9 +25,9 @@ namespace ModernDesign.MVVM.View
         private string downloaderExePath = "";
         private string customMusicPath = "";
         private List<DownloadedSong> downloadedSongs = new List<DownloadedSong>();
-        private const string DOWNLOADER_URL = "https://zeroauno.blob.core.windows.net/leuan/TheSims4/Utility/LeuMusic.zip";
+        private const string DOWNLOADER_URL = "https://github.com/Johnn-sin/leuansin-dlcs/releases/download/Misc/LeuMusic.zip";
 
-        // ✅ 5 API KEYS CON ROTACIÓN AUTOMÁTICA
+        //  5 API KEYS CON ROTACIÓN AUTOMÁTICA
         private static readonly string[] YOUTUBE_API_KEYS = new string[]
         {
             "AIzaSyCDcHpWQGH0KL4TvtulBf13tbcAK3Whl-A",
@@ -371,7 +371,7 @@ namespace ModernDesign.MVVM.View
             int currentRetry = 0;
             bool allApiKeysExhausted = false;
 
-            // ✅ PASO 1: Intentar con YouTube Data API
+            //  PASO 1: Intentar con YouTube Data API
             while (currentRetry < maxRetries)
             {
                 try
@@ -409,7 +409,7 @@ namespace ModernDesign.MVVM.View
                         }
                     }
 
-                    Debug.WriteLine($"✅ Búsqueda exitosa con API Key #{currentApiKeyIndex + 1}");
+                    Debug.WriteLine($" Búsqueda exitosa con API Key #{currentApiKeyIndex + 1}");
                     return results;
                 }
                 catch (Google.GoogleApiException ex)
@@ -444,7 +444,7 @@ namespace ModernDesign.MVVM.View
                 }
             }
 
-            // ✅ PASO 2: Si todas las APIs fallaron, usar scraping con yt-dlp
+            //  PASO 2: Si todas las APIs fallaron, usar scraping con yt-dlp
             if (allApiKeysExhausted || results.Count == 0)
             {
                 Debug.WriteLine("🔄 Intentando búsqueda con yt-dlp (scraping)...");
@@ -509,7 +509,7 @@ namespace ModernDesign.MVVM.View
 
                     if (results.Count > 0)
                     {
-                        Debug.WriteLine($"✅ Scraping exitoso: {results.Count} resultados");
+                        Debug.WriteLine($" Scraping exitoso: {results.Count} resultados");
                     }
                     else
                     {
@@ -948,8 +948,9 @@ namespace ModernDesign.MVVM.View
             {
                 Process.Start(new ProcessStartInfo
                 {
-                    FileName = filePath,
-                    UseShellExecute = true
+                    FileName = "explorer.exe",
+                    Arguments = filePath,
+                    UseShellExecute = false
                 });
             }
             catch (Exception ex)
@@ -1075,8 +1076,9 @@ namespace ModernDesign.MVVM.View
             {
                 Process.Start(new ProcessStartInfo
                 {
-                    FileName = "https://github.com/Leuansin/LeuMusic-Downloader",
-                    UseShellExecute = true
+                    FileName = "explorer.exe",
+                    Arguments = "https://github.com/Leuansin/LeuMusic-Downloader",
+                    UseShellExecute = false
                 });
             }
             catch { }

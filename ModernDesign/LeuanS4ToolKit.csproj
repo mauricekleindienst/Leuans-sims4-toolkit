@@ -78,11 +78,15 @@
     <Reference Include="Google.Apis.YouTube.v3, Version=1.70.0.3847, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.YouTube.v3.1.70.0.3847\lib\net462\Google.Apis.YouTube.v3.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Management" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -119,14 +123,20 @@
     <Compile Include="MVVM\View\BaseGameInstallerWindow.xaml.cs">
       <DependentUpon>BaseGameInstallerWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MVVM\View\ChatbotResponseEditorWindow.xaml.cs">
+      <DependentUpon>ChatbotResponseEditorWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\View\ChatbotSettingsWindow.xaml.cs">
+      <DependentUpon>ChatbotSettingsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MVVM\View\CheatsGuideView.xaml.cs">
       <DependentUpon>CheatsGuideView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\View\ColorPickerWindow.xaml.cs">
       <DependentUpon>ColorPickerWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MVVM\View\CrackedGameInstallerWindow.xaml.cs">
-      <DependentUpon>CrackedGameInstallerWindow.xaml</DependentUpon>
+    <Compile Include="MVVM\View\CrackConfigWindow.xaml.cs">
+      <DependentUpon>CrackConfigWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\View\CrackingToolWindow.xaml.cs">
       <DependentUpon>CrackingToolWindow.xaml</DependentUpon>
@@ -141,12 +151,24 @@
     <Compile Include="MVVM\View\DeveloperWarningWindow.xaml.cs">
       <DependentUpon>DeveloperWarningWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MVVM\View\DLCSelectorWindow.xaml.cs">
+      <DependentUpon>DLCSelectorWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MVVM\View\DonationManager.cs" />
     <Compile Include="MVVM\View\DownloadGameWindow.xaml.cs">
       <DependentUpon>DownloadGameWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MVVM\View\EventRewardsUnlockerWindow.xaml.cs">
+      <DependentUpon>EventRewardsUnlockerWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\View\ExclusionManagerWindow.xaml.cs">
+      <DependentUpon>ExclusionManagerWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MVVM\View\FixCommonErroresWindow.xaml.cs">
       <DependentUpon>FixCommonErroresWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\View\FixStarIconWindow.xaml.cs">
+      <DependentUpon>FixStarIconWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\View\FPSBoosterView.xaml.cs">
       <DependentUpon>FPSBoosterView.xaml</DependentUpon>
@@ -165,6 +187,9 @@
     </Compile>
     <Compile Include="MVVM\View\HighLevelModdingWindow.xaml.cs">
       <DependentUpon>HighLevelModdingWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\View\ImageDownloadWindow.xaml.cs">
+      <DependentUpon>ImageDownloadWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\View\InstallMethodSelectorWindow.xaml.cs">
       <DependentUpon>InstallMethodSelectorWindow.xaml</DependentUpon>
@@ -208,6 +233,12 @@
     <Compile Include="MVVM\View\ModdingLevelDialog.xaml.cs">
       <DependentUpon>ModdingLevelDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MVVM\View\ModManagerWindow.xaml.cs">
+      <DependentUpon>ModManagerWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\View\ModRenamerWindow.xaml.cs">
+      <DependentUpon>ModRenamerWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MVVM\View\MusicManagerView.xaml.cs">
       <DependentUpon>MusicManagerView.xaml</DependentUpon>
     </Compile>
@@ -222,9 +253,6 @@
     </Compile>
     <Compile Include="MVVM\View\OrganizeMusicView.xaml.cs">
       <DependentUpon>OrganizeMusicView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="MVVM\View\PlugnPlaySelectorWindow.xaml.cs">
-      <DependentUpon>PlugnPlaySelectorWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\View\ProfileManager.cs" />
     <Compile Include="MVVM\View\RepairLoggerWindow.xaml.cs">
@@ -246,11 +274,23 @@
     <Compile Include="MVVM\View\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MVVM\View\Sims3Downloader.xaml.cs">
+      <DependentUpon>Sims3Downloader.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\View\Sims3Updater.xaml.cs">
+      <DependentUpon>Sims3Updater.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MVVM\View\Sims4StudioWindow.xaml.cs">
       <DependentUpon>Sims4StudioWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\View\SocialView.xaml.cs">
       <DependentUpon>SocialView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\View\StaffView.xaml.cs">
+      <DependentUpon>StaffView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\View\ThemeSelector.xaml.cs">
+      <DependentUpon>ThemeSelector.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\View\ThreeDModelingWindow.xaml.cs">
       <DependentUpon>ThreeDModelingWindow.xaml</DependentUpon>
@@ -272,6 +312,9 @@
     <Compile Include="MVVM\View\UserSettingsManager.cs" />
     <Compile Include="DLCUnlockerWindow.xaml.cs">
       <DependentUpon>DLCUnlockerWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\View\VaultAccessPopupWindow.xaml.cs">
+      <DependentUpon>VaultAccessPopupWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="SemiAutoInstallerWindow.xaml.cs">
       <DependentUpon>SemiAutoInstallerWindow.xaml</DependentUpon>
@@ -326,6 +369,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="MVVM\View\ChatbotResponseEditorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\View\ChatbotSettingsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MVVM\View\CheatsGuideView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -334,7 +385,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MVVM\View\CrackedGameInstallerWindow.xaml">
+    <Page Include="MVVM\View\CrackConfigWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -358,11 +409,27 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="MVVM\View\DLCSelectorWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MVVM\View\DownloadGameWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="MVVM\View\EventRewardsUnlockerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\View\ExclusionManagerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MVVM\View\FixCommonErroresWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\View\FixStarIconWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -391,6 +458,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MVVM\View\HomeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\View\ImageDownloadWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -450,6 +521,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="MVVM\View\ModManagerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\View\ModRenamerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MVVM\View\MusicManagerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -467,10 +546,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MVVM\View\OrganizeMusicView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="MVVM\View\PlugnPlaySelectorWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -498,11 +573,27 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="MVVM\View\Sims3Downloader.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\View\Sims3Updater.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MVVM\View\Sims4StudioWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MVVM\View\SocialView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\View\StaffView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\View\ThemeSelector.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -527,6 +618,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="DLCUnlockerWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\View\VaultAccessPopupWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

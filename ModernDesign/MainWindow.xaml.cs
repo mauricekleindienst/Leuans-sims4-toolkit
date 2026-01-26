@@ -1,5 +1,5 @@
 ﻿using ModernDesign.MVVM;
-using ModernDesign.MVVM.View; // Para usar UnlockerService
+using ModernDesign.MVVM.View;
 using ModernDesign.MVVM.ViewModel;
 using ModernDesign.Profile;
 using System;
@@ -7,13 +7,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Media.Effects;
 using System.Windows.Threading;
 
 namespace ModernDesign
@@ -22,33 +22,249 @@ namespace ModernDesign
     {
         private DispatcherTimer _cleanerTimer;
         private DispatcherTimer _ramMonitorTimer;
+        private DispatcherTimer _tooltipTimer;
         private readonly Random _rng = new Random();
         private bool _ramWarningShown = false;
 
         private bool isChatbotOpen = false;
         private List<ChatbotResponse> chatbotResponses = new List<ChatbotResponse>();
-        private static readonly HttpClient httpClient = new HttpClient();
+        private bool chatbotEnabled = true;
+        private string chatbotFolder = "";
+        private string chatbotFilePath = "";
+
         // Clase interna para respuestas del chatbot
         private class ChatbotResponse
         {
             public List<string> Keywords { get; set; } = new List<string>();
             public string ResponseES { get; set; }
             public string ResponseEN { get; set; }
-            public string Action { get; set; } // acción a ejecutar
-
+            public string Action { get; set; }
         }
 
         public MainWindow()
         {
             InitializeComponent();
+
+            // Inicializar rutas del chatbot
+            string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            chatbotFolder = Path.Combine(appData, "Leuan's - Sims 4 ToolKit", "chatbot");
+            chatbotFilePath = Path.Combine(chatbotFolder, "chatbot.txt");
+
+            // Verificar si el chatbot está habilitado
+            CheckChatbotEnabled();
+
+            if (chatbotEnabled)
+            {
+                // Crear archivo chatbot.txt si no existe
+                EnsureChatbotFileExists();
+
+                // Descargar video del robot si no existe
+                EnsureRobotVideoExists();
+
+                // Cargar respuestas del chatbot
+                LoadChatbotResponsesFromLocal();
+
+                // Mostrar tooltip inicial después de 1 segundo
+                _tooltipTimer = new DispatcherTimer();
+                _tooltipTimer.Interval = TimeSpan.FromSeconds(1);
+                _tooltipTimer.Tick += ShowInitialTooltip;
+                _tooltipTimer.Start();
+            }
+            else
+            {
+                // Ocultar completamente el chatbot
+                ChatbotContainer.Visibility = Visibility.Collapsed;
+            }
+
             StartCleanerTimer();
             StartRamMonitorTimer();
 
-            // Limpieza también cuando se cierre la ventana principal
             this.Closed += MainWindow_Closed;
         }
 
+        private void CheckChatbotEnabled()
+        {
+            string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string toolkitFolder = Path.Combine(appData, "Leuan's - Sims 4 ToolKit");
+            string profilePath = Path.Combine(toolkitFolder, "profile.ini");
 
+            chatbotEnabled = true; // Por defecto habilitado
+
+            try
+            {
+                if (File.Exists(profilePath))
+                {
+                    string[] lines = File.ReadAllLines(profilePath);
+                    foreach (string line in lines)
+                    {
+                        if (line.Trim().StartsWith("ChatBot", StringComparison.OrdinalIgnoreCase))
+                        {
+                            string[] parts = line.Split('=');
+                            if (parts.Length == 2)
+                            {
+                                string value = parts[1].Trim().ToLower();
+                                chatbotEnabled = (value == "true");
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // Si hay error, mantener habilitado por defecto
+            }
+        }
+
+        private void EnsureChatbotFileExists()
+        {
+            try
+            {
+                // Crear directorio si no existe
+                if (!Directory.Exists(chatbotFolder))
+                {
+                    Directory.CreateDirectory(chatbotFolder);
+                }
+
+                // Crear archivo si no existe
+                if (!File.Exists(chatbotFilePath))
+                {
+                    string defaultContent = @"[KEYWORDS]
+KEYWORDS=hola|hi|hello|ola|necesito ayuda|i need help|help|help me|ayudame|problemas|errores|solucion|solucionalo
+RESPONSE_ES=Hola!, intenta explicar brevemente lo que necesitas... por ejemplo ""Abre el DLC Updater"" o ""Me crashea al descargar""
+RESPONSE_EN=Hi!, try telling me briefly what you need... For example ""Open DLC Updater"" or ""When downloading the toolkit crashes""
+ACTION=
+
+[KEYWORDS]
+KEYWORDS=discord|more help|help|ayuda|mas ayuda|más ayuda
+RESPONSE_ES=🧶 Abriendo Discord...
+RESPONSE_EN=🧶 Opening Discord...
+ACTION=OPEN_URL:https://discord.gg/JYnpPt4nUu
+
+[KEYWORDS]
+KEYWORDS=Open dlc updater|abrir dlc updater|dlc updater|descargar dlcs|download dlcs|i want the new kits|update my game to newest version|update my game|download kits|download dlc
+RESPONSE_ES=🧶 Abriendo DLC Updater...
+RESPONSE_EN=🧶 Opening DLC Updater...
+ACTION=OPEN_DLC_UPDATER
+
+[KEYWORDS]
+KEYWORDS=Why are packs showing as not owned|dlcs not owned|not owned|unowned|It says I don't own some|dont own|don't own
+RESPONSE_ES=Mmh, al parecer si no aparecen como Desbloqueados es problema de una mala instalación del DLC Unlocker, prueba de manera manual.
+RESPONSE_EN=Mmh, if they are appearing as ""unowned"", the problem is located in a bad installation for DLC Unlocker, try installing it manually.
+ACTION=
+
+[KEYWORDS]
+KEYWORDS=Open dlc unlocker|abrir dlc unlocker|dlc unlocker|unlock dlcs|desbloquear dlcs|unlocker
+RESPONSE_ES=🧶 Abriendo DLC Unlocker...
+RESPONSE_EN=🧶 Opening DLC Unlocker...
+ACTION=OPEN_DLC_UNLOCKER";
+
+                    File.WriteAllText(chatbotFilePath, defaultContent);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error creando chatbot.txt: {ex.Message}");
+            }
+        }
+
+        private async void EnsureRobotVideoExists()
+        {
+            try
+            {
+                string robotVideoPath = Path.Combine(chatbotFolder, "robotin.mp4");
+
+                // Si ya existe, no descargar de nuevo
+                if (File.Exists(robotVideoPath))
+                {
+                    return;
+                }
+
+                // Descargar el video
+                string videoUrl = "https://github.com/Leuansin/leuan-dlcs/releases/download/imgs/robotin.mp4";
+
+                using (var client = new System.Net.Http.HttpClient())
+                {
+                    client.Timeout = TimeSpan.FromSeconds(30);
+                    var videoBytes = await client.GetByteArrayAsync(videoUrl);
+                    File.WriteAllBytes(robotVideoPath, videoBytes);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error descargando robot video: {ex.Message}");
+                // Si falla, no pasa nada, simplemente no se mostrará el video
+            }
+        }
+        private void LoadChatbotResponsesFromLocal()
+        {
+            try
+            {
+                if (File.Exists(chatbotFilePath))
+                {
+                    string content = File.ReadAllText(chatbotFilePath);
+                    ParseChatbotResponses(content);
+                }
+                else
+                {
+                    chatbotResponses = new List<ChatbotResponse>();
+                }
+            }
+            catch
+            {
+                chatbotResponses = new List<ChatbotResponse>();
+            }
+        }
+
+        private void ShowInitialTooltip(object sender, EventArgs e)
+        {
+            _tooltipTimer.Stop();
+
+            bool isSpanish = GetLanguageCode().StartsWith("es");
+
+            TooltipText.Text = isSpanish
+                ? "¡Hola! Leuan me ha elegido para ti. ¡Por favor presiona la burbuja de abajo para abrir el ChatBot!"
+                : "Hi!  Leuan has chosen me for you! Please press the bubble below to open the ChatBot!";
+
+            // Cargar y reproducir video
+            string robotVideoPath = Path.Combine(chatbotFolder, "robotin.mp4");
+            if (File.Exists(robotVideoPath))
+            {
+                RobotVideo.Source = new Uri(robotVideoPath, UriKind.Absolute);
+                RobotVideo.Play();
+            }
+
+            // Animación de aparición
+            ChatbotTooltip.Visibility = Visibility.Visible;
+            DoubleAnimation fadeIn = new DoubleAnimation(0, 1, TimeSpan.FromMilliseconds(500));
+            ChatbotTooltip.BeginAnimation(OpacityProperty, fadeIn);
+
+            // Timer para ocultar después de 9 segundos
+            DispatcherTimer hideTimer = new DispatcherTimer();
+            hideTimer.Interval = TimeSpan.FromSeconds(9);
+            hideTimer.Tick += (s, args) =>
+            {
+                hideTimer.Stop();
+                if (RobotVideo != null)
+                {
+                    RobotVideo.Stop();
+                }
+                DoubleAnimation fadeOut = new DoubleAnimation(1, 0, TimeSpan.FromMilliseconds(500));
+                fadeOut.Completed += (ss, ee) => { ChatbotTooltip.Visibility = Visibility.Collapsed; };
+                ChatbotTooltip.BeginAnimation(OpacityProperty, fadeOut);
+            };
+            hideTimer.Start();
+        }
+
+        private void RobotVideo_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            // Loop del video
+            if (RobotVideo != null)
+            {
+                RobotVideo.Position = TimeSpan.Zero;
+                RobotVideo.Play();
+            }
+        }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             LoadCustomBackground();
@@ -77,14 +293,14 @@ namespace ModernDesign
             _cleanerTimer = new DispatcherTimer();
             _cleanerTimer.Tick += CleanerTimer_Tick;
 
-            ScheduleNextClean(); // primera vez
+            ScheduleNextClean();
             _cleanerTimer.Start();
         }
 
         private void StartRamMonitorTimer()
         {
             _ramMonitorTimer = new DispatcherTimer();
-            _ramMonitorTimer.Interval = TimeSpan.FromSeconds(10); // Revisar cada 10 segundos
+            _ramMonitorTimer.Interval = TimeSpan.FromSeconds(10);
             _ramMonitorTimer.Tick += RamMonitorTimer_Tick;
             _ramMonitorTimer.Start();
         }
@@ -93,12 +309,10 @@ namespace ModernDesign
         {
             try
             {
-                // Obtener el uso de RAM del proceso actual
                 Process currentProcess = Process.GetCurrentProcess();
                 long ramUsageBytes = currentProcess.WorkingSet64;
                 double ramUsageMB = ramUsageBytes / (1024.0 * 1024.0);
 
-                // Si supera 800MB y no hemos mostrado el warning
                 if (ramUsageMB > 800 && !_ramWarningShown)
                 {
                     _ramWarningShown = true;
@@ -107,7 +321,6 @@ namespace ModernDesign
             }
             catch
             {
-                // Ignorar errores en el monitoreo
             }
         }
 
@@ -126,11 +339,7 @@ namespace ModernDesign
 
             string title = isSpanish ? "Advertencia de Memoria" : "Memory Warning";
 
-            MessageBox.Show(
-                message,
-                title,
-                MessageBoxButton.OK,
-                MessageBoxImage.Warning);
+            MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Warning);
         }
 
         private string GetLanguageCode()
@@ -158,7 +367,6 @@ namespace ModernDesign
             }
             catch
             {
-                // si falla lectura, nos quedamos con en-US
             }
 
             return languageCode;
@@ -167,13 +375,9 @@ namespace ModernDesign
         private void ScheduleNextClean()
         {
             const double baseSeconds = 15.0;
-
-            // jitter en segundos, por ejemplo entre -5 y +5
             double jitter = (_rng.NextDouble() * 10.0) - 5.0;
-
             double nextSeconds = baseSeconds + jitter;
 
-            // nunca menos de 5 segundos, por seguridad
             if (nextSeconds < 5.0)
                 nextSeconds = 5.0;
 
@@ -182,36 +386,23 @@ namespace ModernDesign
 
         private void MainWindow_Closed(object sender, EventArgs e)
         {
-            try
-            {
-                //UnlockerService.CleanLocalUnlockerFiles();
-            }
-            catch
-            {
-                // ignorar errores aquí
-            }
-
-            // Detener timers
             _cleanerTimer?.Stop();
             _ramMonitorTimer?.Stop();
+            _tooltipTimer?.Stop();
         }
-
 
         private void CleanerTimer_Tick(object sender, EventArgs e)
         {
             try
             {
-                //UnlockerService.CleanLocalUnlockerFiles();
+                // Lógica de limpieza
             }
             catch
             {
-                // no queremos romper la UI si algo falla al borrar
             }
 
-            // programar el siguiente tick con nuevo jitter
             ScheduleNextClean();
         }
-
 
         private void MinimizeButton_Click(object sender, RoutedEventArgs e)
         {
@@ -232,20 +423,13 @@ namespace ModernDesign
 
         // ==================== CHATBOT ====================
 
-        private async void ChatbotButton_Click(object sender, MouseButtonEventArgs e)
+        private void ChatbotButton_Click(object sender, MouseButtonEventArgs e)
         {
             if (!isChatbotOpen)
             {
-                // ABRIR el chatbot
                 ChatbotWindow.Visibility = Visibility.Visible;
                 isChatbotOpen = true;
 
-                if (chatbotResponses.Count == 0)
-                {
-                    await LoadChatbotResponsesAsync();
-                }
-
-                // Solo mostrar mensaje de bienvenida si no hay mensajes
                 if (ChatMessagesPanel.Children.Count == 0)
                 {
                     bool isSpanish = GetLanguageCode().StartsWith("es");
@@ -256,7 +440,6 @@ namespace ModernDesign
             }
             else
             {
-                // CERRAR el chatbot
                 ChatbotWindow.Visibility = Visibility.Collapsed;
                 isChatbotOpen = false;
             }
@@ -267,6 +450,30 @@ namespace ModernDesign
             ChatbotWindow.Visibility = Visibility.Collapsed;
             isChatbotOpen = false;
             ChatMessagesPanel.Children.Clear();
+        }
+
+        private void ChatbotSettings_Click(object sender, RoutedEventArgs e)
+        {
+            ChatbotSettingsWindow settingsWindow = new ChatbotSettingsWindow();
+            settingsWindow.Owner = this;
+            settingsWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
+            bool? result = settingsWindow.ShowDialog();
+
+            if (result == true)
+            {
+                // Recargar respuestas del chatbot
+                LoadChatbotResponsesFromLocal();
+
+                // Verificar si el chatbot fue deshabilitado
+                CheckChatbotEnabled();
+                if (!chatbotEnabled)
+                {
+                    ChatbotContainer.Visibility = Visibility.Collapsed;
+                    ChatbotWindow.Visibility = Visibility.Collapsed;
+                    isChatbotOpen = false;
+                }
+            }
         }
 
         private void ChatInput_KeyDown(object sender, KeyEventArgs e)
@@ -296,7 +503,7 @@ namespace ModernDesign
                 Padding = new Thickness(12, 8, 12, 8),
                 Margin = new Thickness(50, 5, 5, 5),
                 HorizontalAlignment = HorizontalAlignment.Right,
-                MaxWidth = 250 // Responsive
+                MaxWidth = 250
             };
 
             TextBlock textBlock = new TextBlock
@@ -322,7 +529,7 @@ namespace ModernDesign
                 Padding = new Thickness(12, 8, 12, 8),
                 Margin = new Thickness(5, 5, 50, 5),
                 HorizontalAlignment = HorizontalAlignment.Left,
-                MaxWidth = 250, // Responsive
+                MaxWidth = 250,
                 BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#334155")),
                 BorderThickness = new Thickness(1)
             };
@@ -339,20 +546,6 @@ namespace ModernDesign
             messageBorder.Child = textBlock;
             ChatMessagesPanel.Children.Add(messageBorder);
             ChatScrollViewer.ScrollToBottom();
-        }
-
-        private async Task LoadChatbotResponsesAsync()
-        {
-            try
-            {
-                string url = "https://zeroauno.blob.core.windows.net/leuan/TheSims4/Utility/Chatbot/chatbot.txt";
-                string content = await httpClient.GetStringAsync(url);
-                ParseChatbotResponses(content);
-            }
-            catch
-            {
-                chatbotResponses = GetDefaultResponses();
-            }
         }
 
         private void ParseChatbotResponses(string content)
@@ -399,21 +592,6 @@ namespace ModernDesign
             }
         }
 
-
-
-        private List<ChatbotResponse> GetDefaultResponses()
-        {
-            return new List<ChatbotResponse>
-    {
-        new ChatbotResponse
-        {
-            Keywords = new List<string> { "dlc", "no aparece", "not showing", "unlock", "desbloquear" },
-            ResponseES = "🔧 Solución: Asegúrate de instalar el EA DLC Unlocker.\n\n1. Ve a Home → Repair\n2. Haz clic en Install EA DLC Unlocker\n3. Reinicia el juego",
-            ResponseEN = "🔧 Solution: Make sure to install the EA DLC Unlocker.\n\n1. Go to Home → Repair\n2. Click Install EA DLC Unlocker\n3. Restart the game"
-        }
-    };
-        }
-
         private void ProcessUserMessage(string message)
         {
             string lowerMessage = message.ToLower();
@@ -426,10 +604,6 @@ namespace ModernDesign
                     string answer = isSpanish ? response.ResponseES : response.ResponseEN;
                     AddBotMessage(answer);
 
-                    // ENVIAR TELEMETRÍA A DISCORD (async sin await para no bloquear UI)
-                    //_ = SendChatbotTelemetryAsync(message, answer, response.Action ?? "");
-
-                    // EJECUTAR ACCIÓN SI EXISTE
                     if (!string.IsNullOrEmpty(response.Action))
                     {
                         ExecuteChatbotAction(response.Action);
@@ -439,156 +613,26 @@ namespace ModernDesign
                 }
             }
 
-            // Mensaje por defecto cuando no se encuentra respuesta
             string defaultMessage = isSpanish
-                ? "🤔 No pude identificar tu problema específico.\n\n¿Necesitas ayuda personalizada?\n\nÚnete al Discord de Leuan:\n🔗 discord.gg/leuan"
-                : "🤔 I couldn't identify your specific problem.\n\nNeed personalized help?\n\nJoin Leuan's Discord:\n🔗 discord.gg/leuan";
+                ? "🤔 No pude identificar tu problema específico.\n\n¿Necesitas ayuda personalizada?\n\nÚnete al Discord de Leuan:\n🔗 discord.gg/JYnpPt4nUu"
+                : "🤔 I couldn't identify your specific problem.\n\nNeed personalized help?\n\nJoin Leuan's Discord:\n🔗 discord.gg/JYnpPt4nUu";
 
             AddBotMessage(defaultMessage);
-
-            // ENVIAR TELEMETRÍA TAMBIÉN PARA PREGUNTAS SIN RESPUESTA
-            //_ = SendChatbotTelemetryAsync(message, defaultMessage, "");
         }
 
-
-        private async Task SendChatbotTelemetryAsync(string userQuestion, string botResponse, string action)
+        private void SettingsButton_Loaded(object sender, RoutedEventArgs e)
         {
-            try
+            DoubleAnimation glowAnimation = new DoubleAnimation
             {
-                string webhookUrl = "https://discord.com/api/webhooks/1266183922107023360/GYpr3YE7anaS9tOHjnlqmakZgUpJ1HtK2mGmRsTl_zhyDOoVHwjZytcYdwSYPbuCAzud";
+                From = 10,
+                To = 25,
+                Duration = TimeSpan.FromSeconds(1.5),
+                AutoReverse = true,
+                RepeatBehavior = RepeatBehavior.Forever,
+                EasingFunction = new SineEase { EasingMode = EasingMode.EaseInOut }
+            };
 
-                // Obtener información del usuario (si existe)
-                string username = "Usuario Anónimo";
-                try
-                {
-                    string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-                    string profilePath = Path.Combine(appData, "Leuan's - Sims 4 ToolKit", "profile.ini");
-                    if (File.Exists(profilePath))
-                    {
-                        var lines = File.ReadAllLines(profilePath);
-                        foreach (var line in lines)
-                        {
-                            if (line.StartsWith("Username = ", StringComparison.OrdinalIgnoreCase))
-                            {
-                                username = line.Substring("Username = ".Length).Trim();
-                                break;
-                            }
-                        }
-                    }
-                }
-                catch { }
-
-                // Determinar el emoji y descripción de la acción
-                string actionEmoji = "💬";
-                string actionDescription = "Sin acción específica";
-
-                if (!string.IsNullOrEmpty(action))
-                {
-                    if (action.StartsWith("OPEN_URL:", StringComparison.OrdinalIgnoreCase))
-                    {
-                        actionEmoji = "🌐";
-                        string url = action.Substring("OPEN_URL:".Length).Trim();
-                        actionDescription = $"Abrir enlace: {url}";
-                    }
-                    else
-                    {
-                        switch (action.ToUpper())
-                        {
-                            case "OPEN_REPAIR_WINDOW":
-                                actionEmoji = "🔧";
-                                actionDescription = "Abrir ventana de Reparación (DLC Unlocker)";
-                                break;
-                            case "OPEN_UPDATER":
-                                actionEmoji = "📥";
-                                actionDescription = "Abrir Instalador de DLCs";
-                                break;
-                            case "OPEN_DISCOVERY":
-                                actionEmoji = "🔍";
-                                actionDescription = "Navegar a sección Discovery";
-                                break;
-                            case "OPEN_FPS_BOOSTER":
-                                actionEmoji = "⚡";
-                                actionDescription = "Navegar a FPS Booster";
-                                break;
-                            case "OPEN_SETTINGS":
-                                actionEmoji = "⚙️";
-                                actionDescription = "Navegar a Configuración";
-                                break;
-                            default:
-                                actionDescription = $"Acción: {action}";
-                                break;
-                        }
-                    }
-                }
-
-                // Escapar caracteres especiales para JSON
-                string EscapeJson(string text)
-                {
-                    if (string.IsNullOrEmpty(text)) return "N/A";
-                    return text.Replace("\\", "\\\\")
-                               .Replace("\"", "\\\"")
-                               .Replace("\n", "\\n")
-                               .Replace("\r", "\\r")
-                               .Replace("\t", "\\t");
-                }
-
-                // Crear el JSON manualmente
-                string jsonPayload = $@"{{
-            ""embeds"": [{{
-                ""title"": ""🤖 Interacción del Chatbot"",
-                ""description"": ""Un usuario ha interactuado con el asistente virtual del toolkit."",
-                ""color"": 3447003,
-                ""fields"": [
-                    {{
-                        ""name"": ""👤 Usuario"",
-                        ""value"": ""```{EscapeJson(username)}```"",
-                        ""inline"": true
-                    }},
-                    {{
-                        ""name"": ""🕐 Fecha y Hora"",
-                        ""value"": ""```{DateTime.Now:dd/MM/yyyy HH:mm:ss}```"",
-                        ""inline"": true
-                    }},
-                    {{
-                        ""name"": ""❓ Pregunta del Usuario"",
-                        ""value"": ""```{EscapeJson(TruncateText(userQuestion, 1000))}```"",
-                        ""inline"": false
-                    }},
-                    {{
-                        ""name"": ""💡 Respuesta del Bot"",
-                        ""value"": ""```{EscapeJson(TruncateText(botResponse, 1000))}```"",
-                        ""inline"": false
-                    }},
-                    {{
-                        ""name"": ""{actionEmoji} Acción Ejecutada"",
-                        ""value"": ""```{EscapeJson(actionDescription)}```"",
-                        ""inline"": false
-                    }}
-                ],
-                ""footer"": {{
-                    ""text"": ""Leuan's Sims 4 ToolKit - Chatbot Telemetry""
-                }},
-                ""timestamp"": ""{DateTime.UtcNow:o}""
-            }}]
-        }}";
-
-                // Enviar al webhook
-                var content = new StringContent(jsonPayload, System.Text.Encoding.UTF8, "application/json");
-                await httpClient.PostAsync(webhookUrl, content);
-            }
-            catch (Exception ex)
-            {
-                // Ignorar errores de telemetría para no afectar la experiencia del usuario
-                System.Diagnostics.Debug.WriteLine($"Error enviando telemetría: {ex.Message}");
-            }
-        }
-
-        // Método auxiliar para truncar texto largo
-        private string TruncateText(string text, int maxLength)
-        {
-            if (string.IsNullOrEmpty(text)) return "N/A";
-            if (text.Length <= maxLength) return text;
-            return text.Substring(0, maxLength - 3) + "...";
+            SettingsGlow.BeginAnimation(DropShadowEffect.BlurRadiusProperty, glowAnimation);
         }
 
         private void ExecuteChatbotAction(string action)
@@ -597,16 +641,15 @@ namespace ModernDesign
 
             try
             {
-                // DETECTAR SI ES UNA URL
                 if (action.StartsWith("OPEN_URL:", StringComparison.OrdinalIgnoreCase))
                 {
                     string url = action.Substring("OPEN_URL:".Length).Trim();
 
-                    // Abrir URL en el navegador predeterminado
                     System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
                     {
-                        FileName = url,
-                        UseShellExecute = true
+                        FileName = "explorer.exe",
+                        Arguments = url,
+                        UseShellExecute = false
                     });
                     return;
                 }
@@ -614,7 +657,6 @@ namespace ModernDesign
                 switch (action.ToUpper())
                 {
                     case "OPEN_DLC_UPDATER":
-                        // Abrir DLC Updater
                         InstallModeSelector installmodeWindow = new InstallModeSelector();
                         installmodeWindow.Owner = this;
                         installmodeWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -622,7 +664,6 @@ namespace ModernDesign
                         break;
 
                     case "OPEN_DLC_UNLOCKER":
-                        // Abrir DLC Unlocker
                         DLCUnlockerWindow dlcunlockerWindow = new DLCUnlockerWindow();
                         dlcunlockerWindow.Owner = this;
                         dlcunlockerWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -630,7 +671,6 @@ namespace ModernDesign
                         break;
 
                     case "UPDATE_GAME":
-                        // Abrir Main Selection View
                         MainSelectionWindow mainSelectionWindow = new MainSelectionWindow();
                         mainSelectionWindow.Owner = this;
                         mainSelectionWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -638,7 +678,6 @@ namespace ModernDesign
                         break;
 
                     case "CRACK_GAME":
-                        // Abrir Cracking Tool Window
                         CrackingToolWindow crackingToolWindow = new CrackingToolWindow();
                         crackingToolWindow.Owner = this;
                         crackingToolWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -646,7 +685,6 @@ namespace ModernDesign
                         break;
 
                     case "DOWNLOAD_BASEGAME":
-                        // Abrir Install Method Selector Window
                         InstallMethodSelectorWindow installMethodWindow = new InstallMethodSelectorWindow();
                         installMethodWindow.Owner = this;
                         installMethodWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -654,7 +692,6 @@ namespace ModernDesign
                         break;
 
                     case "MOD_MANAGER":
-                        // Abrir Organize Mods Window
                         OrganizeModsWindow organizeModsWindow = new OrganizeModsWindow();
                         organizeModsWindow.Owner = this;
                         organizeModsWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -662,7 +699,6 @@ namespace ModernDesign
                         break;
 
                     case "LOADING_SCREEN":
-                        // Abrir Loading Screen Selector Window
                         LoadingScreenSelectorWindow loadingScreenWindow = new LoadingScreenSelectorWindow();
                         loadingScreenWindow.Owner = this;
                         loadingScreenWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -670,7 +706,6 @@ namespace ModernDesign
                         break;
 
                     case "CHEATS_GUIDE":
-                        // Navegar a Cheats Guide View
                         if (DataContext is MainViewModel mainVM)
                         {
                             mainVM.CurrentView = new CheatsGuideView();
@@ -678,7 +713,6 @@ namespace ModernDesign
                         break;
 
                     case "GAMEPLAY_ENHANCER":
-                        // Navegar a Gameplay Enhancer View
                         if (DataContext is MainViewModel mainVM2)
                         {
                             mainVM2.CurrentView = new GameplayEnhancerView();
@@ -686,7 +720,6 @@ namespace ModernDesign
                         break;
 
                     case "AUTOEXTRACT_DLCS":
-                        // Abrir Semi Auto Installer Window
                         SemiAutoInstallerWindow semiAutoWindow = new SemiAutoInstallerWindow();
                         semiAutoWindow.Owner = this;
                         semiAutoWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -694,7 +727,6 @@ namespace ModernDesign
                         break;
 
                     case "REPAIR_GAME":
-                        // Abrir Repair Logger Window
                         RepairLoggerWindow repairWindow = new RepairLoggerWindow();
                         repairWindow.Owner = this;
                         repairWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -702,7 +734,6 @@ namespace ModernDesign
                         break;
 
                     case "CHANGE_LANGUAGE":
-                        // Abrir Language Selector Window
                         LanguageSelectorWindow languageWindow = new LanguageSelectorWindow();
                         languageWindow.Owner = this;
                         languageWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -710,7 +741,6 @@ namespace ModernDesign
                         break;
 
                     case "GAME_TWEAKER":
-                        // Abrir Game Tweaker Window
                         GameTweakerWindow gameTweakerWindow = new GameTweakerWindow();
                         gameTweakerWindow.Owner = this;
                         gameTweakerWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -718,7 +748,6 @@ namespace ModernDesign
                         break;
 
                     case "SCREENSHOT_MANAGER":
-                        // Navegar a Gallery Manager View
                         if (DataContext is MainViewModel mainVM3)
                         {
                             mainVM3.CurrentView = new GalleryManagerWindow();
@@ -726,7 +755,6 @@ namespace ModernDesign
                         break;
 
                     case "MUSIC_MANAGER":
-                        // Navegar a Music Manager View
                         if (DataContext is MainViewModel mainVM4)
                         {
                             mainVM4.CurrentView = new MusicManagerView();
@@ -734,7 +762,6 @@ namespace ModernDesign
                         break;
 
                     case "SAVEGAME_MANAGER":
-                        // Navegar a Save Games View
                         if (DataContext is MainViewModel mainVM5)
                         {
                             mainVM5.CurrentView = new SaveGamesView();
@@ -742,7 +769,6 @@ namespace ModernDesign
                         break;
 
                     case "LEARN_MODDING":
-                        // Abrir S4S Categories Window
                         S4SCategoriesWindow s4sWindow = new S4SCategoriesWindow();
                         s4sWindow.Owner = this;
                         s4sWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -750,7 +776,6 @@ namespace ModernDesign
                         break;
 
                     case "FIX_COMMON":
-                        // Abrir Fix Common Errores Window
                         FixCommonErrorsWindow fixCommonWindow = new FixCommonErrorsWindow();
                         fixCommonWindow.Owner = this;
                         fixCommonWindow.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -758,7 +783,6 @@ namespace ModernDesign
                         break;
 
                     case "METHOD50_50":
-                        // Abrir Method 50/50 Window
                         Method5050Window method5050Window = new Method5050Window();
                         method5050Window.Owner = this;
                         method5050Window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
@@ -766,16 +790,40 @@ namespace ModernDesign
                         break;
 
                     default:
-                        // Acción no reconocida
                         break;
                 }
             }
             catch (Exception ex)
             {
-                // Manejo de errores opcional
                 System.Diagnostics.Debug.WriteLine($"Error ejecutando acción del chatbot: {ex.Message}");
             }
         }
 
+        // SOLUCIÓN AL PROBLEMA DE CIERRE - Agregar al final de la clase
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            // Detener todos los timers
+            try
+            {
+                _cleanerTimer?.Stop();
+                _ramMonitorTimer?.Stop();
+                _tooltipTimer?.Stop();
+            }
+            catch { }
+
+            // Detener video del robot si está reproduciéndose
+            try
+            {
+                if (RobotVideo != null)
+                {
+                    RobotVideo.Stop();
+                    RobotVideo.Source = null;
+                }
+            }
+            catch { }
+
+            // Forzar cierre completo de la aplicación
+            Application.Current.Shutdown();
+        }
     }
 }

@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using WinForms = System.Windows.Forms;
+using Newtonsoft.Json;
 
 namespace ModernDesign.MVVM.View
 {
@@ -23,11 +24,26 @@ namespace ModernDesign.MVVM.View
         public LoadingScreenSelectorWindow()
         {
             InitializeComponent();
+
+            //  Borrar ETag cacheado al iniciar
+            try
+            {
+                string cachedETagPath = GetCachedETagPath();
+                if (File.Exists(cachedETagPath))
+                {
+                    File.Delete(cachedETagPath);
+                    Debug.WriteLine("🗑️ Deleted cached ETag - will fetch fresh from GitHub");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error deleting cached ETag: {ex.Message}");
+            }
+
             ApplyLanguage();
-            InitializeLoadingScreens();
         }
 
-        private const string GLITCHED_ICON_FIX_URL = "https://zeroauno.blob.core.windows.net/leuan/TheSims4/Utility/LoadingScreens/LeuanToolKit_LoadingScreen_FixGlitchedIcon.package"; // Reemplaza con URL real
+        private const string GLITCHED_ICON_FIX_URL = "https://github.com/Johnn-sin/leuansin-dlcs/releases/download/LoadingScreens/LeuanToolKit_LoadingScreen_FixGlitchedIcon.package";
         private const string GLITCHED_ICON_FIX_FILENAME = "LeuanToolKit_GlitchedIconFix.package";
 
         private void ApplyLanguage()
@@ -54,129 +70,177 @@ namespace ModernDesign.MVVM.View
             GlitchedIconButton.Content = es ? "Reparar Ahora" : "Fix Now";
         }
 
-        private void InitializeLoadingScreens()
+        // ============================================================
+        // ETAG & CACHE MANAGEMENT
+        // ============================================================
+
+        private async Task<string> GetGitHubETag()
         {
-            // Definir las 10 pantallas de carga disponibles con URLs de imágenes
-            _loadingScreens = new List<LoadingScreenItem>
+            try
             {
-                new LoadingScreenItem
+                using (var httpClient = new HttpClient())
                 {
-                    Name = "Hello Sunshine",
-                    NameES = "Hello Sunshine",
-                    Description = "Soft pastel colors with dreamy aesthetics",
-                    DescriptionES = "Colores pastel suaves con estética soñadora",
-                    DownloadUrl = "https://zeroauno.blob.core.windows.net/leuan/TheSims4/Utility/LoadingScreens/tumblr%20loading%20screen%201.package",
-                    FileName = "LeuanToolKit_LoadingScreen_HelloSunshine.package",
-                    ImageUrl = "https://zeroauno.blob.core.windows.net/leuan/TheSims4/Utility/LoadingScreens/tum%20screen%201.png", // Reemplaza con URL real
-                    GradientStart = "#F472B6",
-                    GradientEnd = "#C084FC"
-                },
-                new LoadingScreenItem
-                {
-                    Name = "Flowers Sunset",
-                    NameES = "Flores en Ocaso",
-                    Description = "Soft pastel colors with dreamy aesthetics",
-                    DescriptionES = "Colores pastel suaves con estética soñadora",
-                    DownloadUrl = "https://zeroauno.blob.core.windows.net/leuan/TheSims4/Utility/LoadingScreens/tumblr%20loading%20screen%202.package",
-                    FileName = "LeuanToolKit_LoadingScreen_FlowersSunset.package",
-                    ImageUrl = "https://zeroauno.blob.core.windows.net/leuan/TheSims4/Utility/LoadingScreens/tum%20screen%202.png",
-                    GradientStart = "#06B6D4",
-                    GradientEnd = "#8B5CF6"
-                },
-                new LoadingScreenItem
-                {
-                    Name = "Feathers",
-                    NameES = "Plumas",
-                    Description = "Soft pastel colors with dreamy aesthetics",
-                    DescriptionES = "Colores pastel suaves con estética soñadora",
-                    DownloadUrl = "https://zeroauno.blob.core.windows.net/leuan/TheSims4/Utility/LoadingScreens/tumblr%20loading%20screen%203.package",
-                    FileName = "LeuanToolKit_LoadingScreen_Feathers.package",
-                    ImageUrl = "https://zeroauno.blob.core.windows.net/leuan/TheSims4/Utility/LoadingScreens/tum%20screen%203.png",
-                    GradientStart = "#22C55E",
-                    GradientEnd = "#84CC16"
-                },
-                new LoadingScreenItem
-                {
-                    Name = "Vintage Retro",
-                    NameES = "Retro Vintage",
-                    Description = "Retro 80s and 90s vibes",
-                    DescriptionES = "Vibras retro de los 80s y 90s",
-                    DownloadUrl = "https://zeroauno.blob.core.windows.net/leuan/TheSims4/Utility/LoadingScreens/citiskyline.package",
-                    FileName = "LeuanToolKit_LoadingScreen_VintageRetro.package",
-                    ImageUrl = "https://zeroauno.blob.core.windows.net/leuan/TheSims4/Utility/LoadingScreens/citiesskyline.jpg",
-                    GradientStart = "#F59E0B",
-                    GradientEnd = "#DC2626"
-                },
-                new LoadingScreenItem
-                {
-                    Name = "Sylvan Glade",
-                    NameES = "Glaceado de Leuan",
-                    Description = "No description.",
-                    DescriptionES = "Sin descripcion.",
-                    DownloadUrl = "https://zeroauno.blob.core.windows.net/leuan/TheSims4/Utility/LoadingScreens/SylvanGlade.package",
-                    FileName = "LeuanToolKit_LoadingScreen_GalaxySpace.package",
-                    ImageUrl = "https://zeroauno.blob.core.windows.net/leuan/TheSims4/Utility/LoadingScreens/SylvanGlade.gif",
-                    GradientStart = "#6366F1",
-                    GradientEnd = "#1F2937"
-                },
-                new LoadingScreenItem
-                {
-                    Name = "Minimalist Dark",
-                    NameES = "Negro Minimalista",
-                    Description = "Clean and minimalist black design",
-                    DescriptionES = "Diseño negro limpio y minimalista",
-                    DownloadUrl = "https://zeroauno.blob.core.windows.net/leuan/TheSims4/Utility/LoadingScreens/teanmoon_DarkerLoadingScreens_BG.package",
-                    FileName = "LeuanToolKit_LoadingScreen_MinimalistWhite.package",
-                    ImageUrl = "https://zeroauno.blob.core.windows.net/leuan/TheSims4/Utility/LoadingScreens/DarkLoadingScreen.png",
-                    GradientStart = "#F3F4F6",
-                    GradientEnd = "#9CA3AF"
-                },
-                new LoadingScreenItem
-                {
-                    Name = "Brindleton",
-                    NameES = "Brindleton",
-                    Description = "Clean and minimalist white design",
-                    DescriptionES = "Diseño blanco limpio y minimalista",
-                    DownloadUrl = "https://zeroauno.blob.core.windows.net/leuan/TheSims4/Utility/LoadingScreens/brindleton3.package",
-                    FileName = "LeuanToolKit_LoadingScreen_MinimalistWhite.package",
-                    ImageUrl = "https://zeroauno.blob.core.windows.net/leuan/TheSims4/Utility/LoadingScreens/brindleton.jpeg",
-                    GradientStart = "#F3F4F6",
-                    GradientEnd = "#9CA3AF"
-                },
-                new LoadingScreenItem
-                {
-                    Name = "Warm Nature",
-                    NameES = "Naturaleza Acogedora",
-                    Description = "Clean and minimalist nature design",
-                    DescriptionES = "Diseño de naturaleza limpio y minimalista",
-                    DownloadUrl = "https://zeroauno.blob.core.windows.net/leuan/TheSims4/Utility/LoadingScreens/Sunivaa_WarmNatureloadingScreen01.package",
-                    FileName = "LeuanToolKit_LoadingScreen_MinimalistWhite.package",
-                    ImageUrl = "https://zeroauno.blob.core.windows.net/leuan/TheSims4/Utility/LoadingScreens/WarmNatureLoading01.png",
-                    GradientStart = "#F3F4F6",
-                    GradientEnd = "#9CA3AF"
-                },
-                new LoadingScreenItem
-                {
-                    Name = "WW1",
-                    NameES = "WW1",
-                    Description = "Clean and minimalist werewolf design",
-                    DescriptionES = "Diseño de lobos limpio y minimalista",
-                    DownloadUrl = "https://zeroauno.blob.core.windows.net/leuan/TheSims4/Utility/LoadingScreens/WW1.package",
-                    FileName = "LeuanToolKit_LoadingScreen_MinimalistWhite.package",
-                    ImageUrl = "https://zeroauno.blob.core.windows.net/leuan/TheSims4/Utility/LoadingScreens/WW1.png",
-                    GradientStart = "#F3F4F6",
-                    GradientEnd = "#9CA3AF"
+                    httpClient.DefaultRequestHeaders.Add("User-Agent", "Leuans-Sims4-Toolkit");
+                    httpClient.Timeout = TimeSpan.FromSeconds(5);
+
+                    var request = new HttpRequestMessage(HttpMethod.Head,
+                        "https://raw.githubusercontent.com/Johnn-sin/leuansin-dlcs/refs/heads/main/loading_screens_database.json");
+
+                    var response = await httpClient.SendAsync(request);
+
+                    if (response.Headers.ETag != null)
+                    {
+                        return response.Headers.ETag.Tag.Trim('"');
+                    }
                 }
-            };
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error getting ETag: {ex.Message}");
+            }
+
+            return null;
+        }
+
+        private string GetCacheFolderPath()
+        {
+            string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string cacheFolder = Path.Combine(appData, "Leuan's - Sims 4 ToolKit", "qol", "databases_cache", "LoadingScreens");
+
+            if (!Directory.Exists(cacheFolder))
+                Directory.CreateDirectory(cacheFolder);
+
+            return cacheFolder;
+        }
+
+        private string GetCachedDatabasePath()
+        {
+            return Path.Combine(GetCacheFolderPath(), "loading_screens_database.json");
+        }
+
+        private string GetCachedETagPath()
+        {
+            return Path.Combine(GetCacheFolderPath(), "loading_screens_etag.txt");
+        }
+
+        private async Task<List<LoadingScreenItem>> LoadLoadingScreensFromDatabase()
+        {
+            try
+            {
+                string cachedDatabasePath = GetCachedDatabasePath();
+                string cachedETagPath = GetCachedETagPath();
+
+                Debug.WriteLine($"📂 Cache path: {cachedDatabasePath}");
+
+                // Obtener ETag actual de GitHub
+                string currentETag = await GetGitHubETag();
+                Debug.WriteLine($"🏷️ Current ETag: {currentETag ?? "NULL"}");
+
+                // Leer ETag guardado localmente
+                string cachedETag = null;
+                if (File.Exists(cachedETagPath))
+                {
+                    cachedETag = File.ReadAllText(cachedETagPath).Trim();
+                    Debug.WriteLine($"💾 Cached ETag: {cachedETag}");
+                }
+
+                string jsonContent;
+
+                // Si el archivo existe, el ETag no cambió
+                if (File.Exists(cachedDatabasePath) && currentETag != null && cachedETag == currentETag)
+                {
+                    Debug.WriteLine("✅ Using cached loading screens database (ETag matches)");
+                    jsonContent = File.ReadAllText(cachedDatabasePath);
+                }
+                else
+                {
+                    // Descargar desde GitHub
+                    Debug.WriteLine("📥 Downloading fresh loading screens database from GitHub...");
+                    using (var httpClient = new HttpClient())
+                    {
+                        httpClient.Timeout = TimeSpan.FromSeconds(10);
+
+                        jsonContent = await httpClient.GetStringAsync(
+                            "https://raw.githubusercontent.com/Johnn-sin/leuansin-dlcs/refs/heads/main/loading_screens_database.json");
+
+                        Debug.WriteLine($"📄 Downloaded JSON length: {jsonContent.Length} characters");
+
+                        // Guardar en caché
+                        File.WriteAllText(cachedDatabasePath, jsonContent);
+
+                        // Guardar ETag
+                        if (currentETag != null)
+                        {
+                            File.WriteAllText(cachedETagPath, currentETag);
+                        }
+
+                        Debug.WriteLine("✅ Loading screens database cached successfully");
+                    }
+                }
+
+                // Mostrar primeros 200 caracteres del JSON para debug
+                Debug.WriteLine($"📝 JSON preview: {jsonContent.Substring(0, Math.Min(200, jsonContent.Length))}...");
+
+                // Deserializar JSON
+                var database = JsonConvert.DeserializeObject<LoadingScreenDatabase>(jsonContent);
+
+                if (database == null)
+                {
+                    Debug.WriteLine("❌ Database is NULL after deserialization!");
+                    return new List<LoadingScreenItem>();
+                }
+
+                if (database.LoadingScreens == null)
+                {
+                    Debug.WriteLine("❌ LoadingScreens list is NULL!");
+                    return new List<LoadingScreenItem>();
+                }
+
+                Debug.WriteLine($"✅ Deserialized {database.LoadingScreens.Count} loading screens");
+
+                // Convertir a LoadingScreenItem
+                var loadingScreens = new List<LoadingScreenItem>();
+                foreach (var entry in database.LoadingScreens)
+                {
+                    loadingScreens.Add(new LoadingScreenItem
+                    {
+                        Name = entry.Name,
+                        NameES = entry.NameES,
+                        Description = entry.Description,
+                        DescriptionES = entry.DescriptionES,
+                        DownloadUrl = entry.DownloadUrl,
+                        FileName = entry.FileName,
+                        ImageUrl = entry.ImageUrl,
+                        GradientStart = entry.GradientStart,
+                        GradientEnd = entry.GradientEnd
+                    });
+
+                    Debug.WriteLine($"  ✅ Added: {entry.Name}");
+                }
+
+                Debug.WriteLine($"🎉 Total loading screens loaded: {loadingScreens.Count}");
+                return loadingScreens;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"❌ Error loading loading screens database: {ex.Message}");
+                Debug.WriteLine($"❌ Stack trace: {ex.StackTrace}");
+
+                // Fallback: retornar lista vacía
+                return new List<LoadingScreenItem>();
+            }
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             await DetectModsFolder();
+
+            //  Cargar loading screens desde GitHub/caché
+            _loadingScreens = await LoadLoadingScreensFromDatabase();
+
             CreateLoadingScreenCards();
             UpdateRandomizeButtonState();
             UpdateGlitchedIconPanelVisibility();
-
         }
 
         private async Task DetectModsFolder()
@@ -362,7 +426,7 @@ namespace ModernDesign.MVVM.View
 
                 if (isInstalled)
                 {
-                    downloadBtn.Content = "✅ " + (es ? "Instalado" : "Installed");
+                    downloadBtn.Content = " " + (es ? "Instalado" : "Installed");
                     downloadBtn.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6B7280"));
                     downloadBtn.IsEnabled = false;
                 }
@@ -418,7 +482,7 @@ namespace ModernDesign.MVVM.View
                 string destinationPath = Path.Combine(_modsFolder, GLITCHED_ICON_FIX_FILENAME);
                 await DownloadFile(GLITCHED_ICON_FIX_URL, destinationPath);
 
-                GlitchedIconButton.Content = "✅ " + (es ? "Instalado" : "Installed");
+                GlitchedIconButton.Content = " " + (es ? "Instalado" : "Installed");
                 GlitchedIconButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6B7280"));
 
                 MessageBox.Show(
@@ -492,7 +556,7 @@ namespace ModernDesign.MVVM.View
                 string destinationPath = Path.Combine(_modsFolder, screen.FileName);
                 await DownloadFile(screen.DownloadUrl, destinationPath);
 
-                btn.Content = "✅ " + (es ? "Instalado" : "Installed");
+                btn.Content = " " + (es ? "Instalado" : "Installed");
                 btn.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6B7280"));
 
                 MessageBox.Show(
@@ -589,7 +653,7 @@ namespace ModernDesign.MVVM.View
 
                                     if (isInstalled)
                                     {
-                                        btn.Content = "✅ " + (es ? "Instalado" : "Installed");
+                                        btn.Content = " " + (es ? "Instalado" : "Installed");
                                         btn.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6B7280"));
                                         btn.IsEnabled = false;
                                     }
@@ -886,6 +950,43 @@ namespace ModernDesign.MVVM.View
         public string FileName { get; set; }
         public string ImageUrl { get; set; } // NUEVO
         public string GradientStart { get; set; }
+        public string GradientEnd { get; set; }
+    }
+
+    // Clases para deserialización del JSON
+    public class LoadingScreenDatabase
+    {
+        [JsonProperty("loadingScreens")]
+        public List<LoadingScreenEntry> LoadingScreens { get; set; }
+    }
+
+    public class LoadingScreenEntry
+    {
+        [JsonProperty("name")]
+        public string Name { get; set; }
+
+        [JsonProperty("nameES")]
+        public string NameES { get; set; }
+
+        [JsonProperty("description")]
+        public string Description { get; set; }
+
+        [JsonProperty("descriptionES")]
+        public string DescriptionES { get; set; }
+
+        [JsonProperty("downloadUrl")]
+        public string DownloadUrl { get; set; }
+
+        [JsonProperty("fileName")]
+        public string FileName { get; set; }
+
+        [JsonProperty("imageUrl")]
+        public string ImageUrl { get; set; }
+
+        [JsonProperty("gradientStart")]
+        public string GradientStart { get; set; }
+
+        [JsonProperty("gradientEnd")]
         public string GradientEnd { get; set; }
     }
 }

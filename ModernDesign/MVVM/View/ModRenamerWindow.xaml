@@ -1,0 +1,156 @@
+﻿<Window x:Class="ModernDesign.MVVM.View.ModRenamerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Mod Renamer" 
+        Width="1024" Height="600"
+        WindowStartupLocation="CenterScreen"
+        Background="Transparent"
+        AllowsTransparency="True"
+        WindowStyle="None"
+        ResizeMode="CanResize">
+
+    <Window.Resources>
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Background" Value="#3B82F6"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontFamily" Value="Bahnschrift Light"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}"
+                                CornerRadius="6" Padding="12,6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#2563EB"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Background" Value="#4B5563"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Border Background="#1F2937" CornerRadius="12" BorderBrush="#374151" BorderThickness="1">
+        <Border.Effect>
+            <DropShadowEffect ShadowDepth="0" Opacity="0.5" BlurRadius="20"/>
+        </Border.Effect>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- HEADER -->
+            <Border Grid.Row="0" Background="#111827" CornerRadius="12,12,0,0"
+                    MouseLeftButtonDown="Header_MouseLeftButtonDown">
+                <Grid Margin="20,0">
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock x:Name="TitleText" Text="🔧 Mod Renamer" 
+                                   Foreground="White" FontSize="20"
+                                   FontWeight="Bold" FontFamily="Bahnschrift Light"/>
+                        <TextBlock x:Name="SubtitleText" 
+                                   Text="Rename and manage your mod files"
+                                   Foreground="#9CA3AF" FontSize="12"
+                                   FontFamily="Bahnschrift Light"/>
+                    </StackPanel>
+
+                    <Button Content="✕" HorizontalAlignment="Right"
+                            Width="40" Height="40"
+                            Background="Transparent" Foreground="White"
+                            BorderThickness="0" FontSize="18"
+                            Click="CloseButton_Click" Cursor="Hand"/>
+                </Grid>
+            </Border>
+
+            <!-- TOOLBAR -->
+            <Border Grid.Row="1" Background="#1F2937" Padding="20,15">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <WrapPanel Grid.Column="0" Orientation="Horizontal">
+                        <Button x:Name="RenameAllBtn" Content="✨ Rename All"
+                                Style="{StaticResource ModernButton}"
+                                Background="#22C55E" Margin="0,0,10,0"
+                                Click="RenameAllBtn_Click"/>
+
+                        <Button x:Name="RestoreAllBtn" Content="↩️ Restore All"
+                                Style="{StaticResource ModernButton}"
+                                Background="#F59E0B" Margin="0,0,10,0"
+                                Click="RestoreAllBtn_Click"/>
+
+                        <Button x:Name="ToggleExtBtn" Content="📦 .package ↔ .leupackage"
+                                Style="{StaticResource ModernButton}"
+                                Background="#8B5CF6" Margin="0,0,10,0"
+                                Click="ToggleExtBtn_Click"/>
+
+                        <Button x:Name="FixScriptsBtn" Content="🔧 Fix .ts4script Location"
+                                Style="{StaticResource ModernButton}"
+                                Background="#EF4444" Margin="0,0,10,0"
+                                Click="FixScriptsBtn_Click"/>
+
+                        <TextBox x:Name="PrefixTextBox" 
+                                 Width="120" Height="30"
+                                 Background="#374151" Foreground="White"
+                                 BorderBrush="#4B5563" BorderThickness="1"
+                                 Padding="8,5" VerticalContentAlignment="Center"
+                                 FontFamily="Bahnschrift Light"
+                                 Margin="0,0,10,0"/>
+
+                        <Button x:Name="AddPrefixBtn" Content="➕ Add Prefix"
+                                Style="{StaticResource ModernButton}"
+                                Background="#0891B2"
+                                Click="AddPrefixBtn_Click"/>
+                    </WrapPanel>
+
+                    <Button x:Name="RefreshBtn" Grid.Column="1" Content="🔄 Refresh"
+                            Style="{StaticResource ModernButton}"
+                            Background="#6B7280"
+                            Click="RefreshBtn_Click"/>
+                </Grid>
+            </Border>
+
+            <!-- MOD LIST -->
+            <Border Grid.Row="2" Background="#111827" Margin="20,0,20,0" CornerRadius="8">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel x:Name="ModListPanel" Margin="10"/>
+                </ScrollViewer>
+            </Border>
+
+            <!-- FOOTER -->
+            <Border Grid.Row="3" Background="#1F2937" Padding="20,15" CornerRadius="0,0,12,12">
+                <Grid>
+                    <TextBlock x:Name="StatusText" Text="Ready"
+                               Foreground="#9CA3AF" FontSize="12"
+                               FontFamily="Bahnschrift Light"
+                               VerticalAlignment="Center"/>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button x:Name="ManageExclusionsBtn" Content="⚙️ Manage Exclusions"
+                                Style="{StaticResource ModernButton}"
+                                Background="#6366F1" Margin="0,0,10,0"
+                                Click="ManageExclusionsBtn_Click"/>
+
+                        <Button x:Name="CloseBtn" Content="Close"
+                                Style="{StaticResource ModernButton}"
+                                Background="#4B5563"
+                                Click="CloseButton_Click"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </Border>
+</Window>

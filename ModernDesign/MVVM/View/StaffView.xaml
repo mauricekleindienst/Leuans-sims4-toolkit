@@ -1,0 +1,315 @@
+﻿<UserControl x:Class="ModernDesign.MVVM.View.StaffView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d"
+             d:DesignWidth="800"
+             d:DesignHeight="600"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch">
+
+    <UserControl.Resources>
+        <!-- Color Palette -->
+        <SolidColorBrush x:Key="AccentPurpleBrush" Color="#A78BFA"/>
+        <SolidColorBrush x:Key="AccentPinkBrush" Color="#F472B6"/>
+        <SolidColorBrush x:Key="AccentGoldBrush" Color="#FBBF24"/>
+        <SolidColorBrush x:Key="TextPrimaryBrush" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="TextSecondaryBrush" Color="#E0E0E0"/>
+        <SolidColorBrush x:Key="TextMutedBrush" Color="#9CA3AF"/>
+
+        <!-- Title Style -->
+        <Style x:Key="TitleTextBlock" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+            <Setter Property="TextOptions.TextRenderingMode" Value="ClearType"/>
+        </Style>
+
+        <!-- Body Text Style -->
+        <Style x:Key="BodyTextBlock" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="TextOptions.TextFormattingMode" Value="Display"/>
+            <Setter Property="TextOptions.TextRenderingMode" Value="ClearType"/>
+        </Style>
+
+        <!-- Back Button Style -->
+        <Style x:Key="BackButton" TargetType="Border">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="16,10"/>
+            <Setter Property="Background" Value="#FFFFFF08"/>
+            <Setter Property="BorderBrush" Value="#FFFFFF15"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFFFFF12"/>
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleX)"
+                                                 To="1.02" Duration="0:0:0.15"/>
+                                <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleY)"
+                                                 To="1.02" Duration="0:0:0.15"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                    <Trigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleX)"
+                                                 To="1" Duration="0:0:0.15"/>
+                                <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleY)"
+                                                 To="1" Duration="0:0:0.15"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.ExitActions>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Staff Card Style -->
+        <Style x:Key="StaffCard" TargetType="Border">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="CornerRadius" Value="20"/>
+            <Setter Property="Background" Value="#18181845"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="Margin" Value="8"/>
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <TransformGroup>
+                        <ScaleTransform ScaleX="1" ScaleY="1"/>
+                        <TranslateTransform Y="0"/>
+                    </TransformGroup>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)"
+                                                 To="1.02" Duration="0:0:0.2">
+                                    <DoubleAnimation.EasingFunction>
+                                        <QuadraticEase EasingMode="EaseOut"/>
+                                    </DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+                                <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)"
+                                                 To="1.02" Duration="0:0:0.2">
+                                    <DoubleAnimation.EasingFunction>
+                                        <QuadraticEase EasingMode="EaseOut"/>
+                                    </DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+                                <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(TransformGroup.Children)[1].(TranslateTransform.Y)"
+                                                 To="-4" Duration="0:0:0.2">
+                                    <DoubleAnimation.EasingFunction>
+                                        <QuadraticEase EasingMode="EaseOut"/>
+                                    </DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                    <Trigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)"
+                                                 To="1" Duration="0:0:0.2"/>
+                                <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleY)"
+                                                 To="1" Duration="0:0:0.2"/>
+                                <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(TransformGroup.Children)[1].(TranslateTransform.Y)"
+                                                 To="0" Duration="0:0:0.2"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.ExitActions>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Social Link Button Style -->
+        <Style x:Key="SocialLinkButton" TargetType="Border">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="Background" Value="#FFFFFF10"/>
+            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+            <Setter Property="RenderTransform">
+                <Setter.Value>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFFFFF20"/>
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleX)"
+                                                 To="1.05" Duration="0:0:0.1"/>
+                                <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleY)"
+                                                 To="1.05" Duration="0:0:0.1"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                    <Trigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleX)"
+                                                 To="1" Duration="0:0:0.1"/>
+                                <DoubleAnimation Storyboard.TargetProperty="(RenderTransform).(ScaleTransform.ScaleY)"
+                                                 To="1" Duration="0:0:0.1"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.ExitActions>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Loading Spinner Animation -->
+        <Storyboard x:Key="SpinnerAnimation" RepeatBehavior="Forever">
+            <DoubleAnimation Storyboard.TargetName="LoadingSpinner"
+                             Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                             From="0" To="360" Duration="0:0:1"/>
+        </Storyboard>
+    </UserControl.Resources>
+
+    <Grid Background="Transparent">
+        <ScrollViewer VerticalScrollBarVisibility="Hidden" 
+                      HorizontalScrollBarVisibility="Disabled"
+                      PanningMode="VerticalOnly">
+            <StackPanel Margin="40,30,40,40">
+
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <!-- HEADER WITH BACK BUTTON -->
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <Grid Margin="0,0,0,35">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Back Button -->
+                    <Border Grid.Column="0" 
+                            Style="{StaticResource BackButton}"
+                            MouseLeftButtonUp="BackButton_Click"
+                            VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="←" FontSize="18" Foreground="#A78BFA" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <TextBlock x:Name="BackButtonText" 
+                                       Text="Back" 
+                                       FontSize="14" 
+                                       Foreground="{StaticResource TextSecondaryBrush}"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Title -->
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBlock Text="⭐" FontSize="32" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                            <TextBlock x:Name="TitleText"
+                                       Text="Staff Members" 
+                                       Style="{StaticResource TitleTextBlock}"
+                                       FontSize="34"
+                                       VerticalAlignment="Center">
+                                <TextBlock.Effect>
+                                    <DropShadowEffect Color="#A78BFA" BlurRadius="30" ShadowDepth="0" Opacity="0.4"/>
+                                </TextBlock.Effect>
+                            </TextBlock>
+                        </StackPanel>
+                        <TextBlock x:Name="SubtitleText" 
+                                   Text="The amazing people behind this project"
+                                   Style="{StaticResource BodyTextBlock}"
+                                   FontSize="14"
+                                   HorizontalAlignment="Center"
+                                   Opacity="0.65"
+                                   Margin="0,10,0,0"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <!-- LOADING INDICATOR -->
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <StackPanel x:Name="LoadingPanel" 
+                            HorizontalAlignment="Center" 
+                            VerticalAlignment="Center"
+                            Margin="0,80,0,0"
+                            Visibility="Visible">
+                    <Border x:Name="LoadingSpinner" 
+                            Width="40" Height="40" 
+                            CornerRadius="20"
+                            BorderThickness="3"
+                            BorderBrush="#A78BFA"
+                            RenderTransformOrigin="0.5,0.5"
+                            Opacity="0.7">
+                        <Border.RenderTransform>
+                            <RotateTransform Angle="0"/>
+                        </Border.RenderTransform>
+                    </Border>
+                    <TextBlock x:Name="LoadingText"
+                               Text="Loading staff members..."
+                               Style="{StaticResource BodyTextBlock}"
+                               FontSize="14"
+                               Opacity="0.6"
+                               HorizontalAlignment="Center"
+                               Margin="0,16,0,0"/>
+                </StackPanel>
+
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <!-- ERROR MESSAGE -->
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <Border x:Name="ErrorPanel" 
+                        Visibility="Collapsed"
+                        Background="#FF634720"
+                        CornerRadius="16"
+                        Padding="24"
+                        Margin="0,40,0,0"
+                        HorizontalAlignment="Center"
+                        MaxWidth="500">
+                    <StackPanel>
+                        <TextBlock Text="⚠️" FontSize="32" HorizontalAlignment="Center" Margin="0,0,0,12"/>
+                        <TextBlock x:Name="ErrorText"
+                                   Text="Could not load staff members"
+                                   Style="{StaticResource BodyTextBlock}"
+                                   FontSize="14"
+                                   HorizontalAlignment="Center"
+                                   TextAlignment="Center"/>
+                        <Border Style="{StaticResource BackButton}"
+                                HorizontalAlignment="Center"
+                                Margin="0,16,0,0"
+                                MouseLeftButtonUp="RetryButton_Click">
+                            <TextBlock x:Name="RetryButtonText" Text="Retry" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}"/>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <!-- STAFF CARDS CONTAINER -->
+                <!-- ═══════════════════════════════════════════════════════════════ -->
+                <ItemsControl x:Name="StaffItemsControl" 
+                              Visibility="Collapsed"
+                              HorizontalAlignment="Center"
+                              MaxWidth="950">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel HorizontalAlignment="Center"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

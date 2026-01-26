@@ -32,6 +32,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
@@ -56,8 +57,23 @@
             <Button x:Name="RefreshButton" Grid.Column="2" Content="🔄 Refresh" Style="{StaticResource ActionButton}" Background="#0891B2" Foreground="White" Click="RefreshButton_Click"/>
         </Grid>
 
+        <!-- SEARCH BAR -->
+        <Border Grid.Row="2" Background="#1E293B" CornerRadius="8" Padding="10,8" Margin="0,0,0,15">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="🔍" FontSize="16" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <TextBox x:Name="SearchBox" Grid.Column="1" Background="Transparent" Foreground="#E5E7EB" BorderThickness="0" FontFamily="Bahnschrift Light" FontSize="12" VerticalAlignment="Center" TextChanged="SearchBox_TextChanged"/>
+                <TextBlock x:Name="SearchPlaceholder" Grid.Column="1" Text="Search mods..." Style="{StaticResource BodyStyle}" FontSize="12" Opacity="0.5" VerticalAlignment="Center" IsHitTestVisible="False" Margin="0,0,0,0"/>
+                <Button x:Name="ClearSearchButton" Grid.Column="2" Content="✕" Background="Transparent" Foreground="#9CA3AF" BorderThickness="0" Cursor="Hand" FontSize="14" Padding="8,4" Click="ClearSearchButton_Click" Visibility="Collapsed"/>
+            </Grid>
+        </Border>
+
         <!-- WARNING BANNER FOR SCRIPTS IN SUBFOLDERS -->
-        <Border x:Name="ScriptWarningBanner" Grid.Row="2" Background="#DC2626" CornerRadius="10" Padding="15,12" Margin="0,0,0,15" Visibility="Collapsed">
+        <Border x:Name="ScriptWarningBanner" Grid.Row="3" Background="#DC2626" CornerRadius="10" Padding="15,12" Margin="0,0,0,15" Visibility="Collapsed">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -77,7 +93,7 @@
         </Border>
 
         <!-- STATS BAR -->
-        <Border Grid.Row="3" Background="#111827" CornerRadius="12" Margin="0,0,0,0">
+        <Border Grid.Row="4" Background="#111827" CornerRadius="12" Margin="0,0,0,0">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -145,7 +161,7 @@
         </Border>
 
         <!-- FOOTER -->
-        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
+        <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
             <Button x:Name="CloseButton" Content="Close" Style="{StaticResource ActionButton}" Background="#374151" Foreground="White" Click="CloseButton_Click"/>
         </StackPanel>
     </Grid>

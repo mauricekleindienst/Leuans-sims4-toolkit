@@ -1,0 +1,264 @@
+﻿<Window x:Class="ModernDesign.ThemeSelector"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="CanResizeWithGrip"
+        Width="680"
+        Height="630"
+        MinWidth="580"
+        MinHeight="620"
+        WindowStartupLocation="CenterScreen"
+        Title="Theme Selection"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown">
+
+    <Window.Resources>
+        <!-- Close Button Style -->
+        <Style x:Key="CloseButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#8B95A8"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Width" Value="35"/>
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                x:Name="closeBorder">
+                            <TextBlock Text="✕"
+                                     Foreground="{TemplateBinding Foreground}"
+                                     FontSize="{TemplateBinding FontSize}"
+                                     FontWeight="{TemplateBinding FontWeight}"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="closeBorder" Property="Background" Value="#FF4444"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Primary Button Style -->
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Background" Value="#00D9FF"/>
+            <Setter Property="Foreground" Value="#0A0E1A"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="Padding" Value="20,11"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#00D9FF" BlurRadius="12" ShadowDepth="0" Opacity="0.5"/>
+                            </Border.Effect>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#00F0FF"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="#2A3244"/>
+                    <Setter Property="Foreground" Value="#4A5568"/>
+                    <Setter Property="Opacity" Value="0.6"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Theme Card Button Style -->
+        <Style x:Key="ThemeCardButton" TargetType="Button">
+            <Setter Property="Background" Value="#1A1F2E"/>
+            <Setter Property="BorderBrush" Value="#2A3244"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="8"/>
+            <Setter Property="Height" Value="140"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12"
+                                x:Name="cardBorder"
+                                Padding="12">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="70"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Theme Preview -->
+                                <Border Grid.Row="0" CornerRadius="8" Margin="0,0,0,8">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                            <GradientStop Color="{Binding Tag.Color1, RelativeSource={RelativeSource AncestorType=Button}}" Offset="0"/>
+                                            <GradientStop Color="{Binding Tag.Color2, RelativeSource={RelativeSource AncestorType=Button}}" Offset="0.5"/>
+                                            <GradientStop Color="{Binding Tag.Color3, RelativeSource={RelativeSource AncestorType=Button}}" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                    <Border.Effect>
+                                        <DropShadowEffect BlurRadius="8" ShadowDepth="0" Opacity="0.4"/>
+                                    </Border.Effect>
+                                </Border>
+
+                                <!-- Theme Name -->
+                                <Viewbox Grid.Row="1" 
+                                         VerticalAlignment="Center"
+                                         HorizontalAlignment="Center"
+                                         MaxHeight="35"
+                                         Margin="2">
+                                    <TextBlock Text="{TemplateBinding Content}"
+                                             Foreground="White"
+                                             FontSize="13"
+                                             FontWeight="SemiBold"
+                                             FontFamily="Segoe UI"
+                                             TextAlignment="Center"
+                                             TextWrapping="Wrap"
+                                             MaxWidth="120"
+                                             Padding="4,0"/>
+                                </Viewbox>
+
+                                <!-- Lock Icon (if locked) -->
+                                <Border Grid.Row="0" 
+                                        Grid.RowSpan="2"
+                                        x:Name="lockOverlay"
+                                        Background="#CC0A0E1A"
+                                        CornerRadius="8"
+                                        Visibility="Collapsed"
+                                        Margin="-12">
+                                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                                        <TextBlock Text="🔒" FontSize="32" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                                        <TextBlock Text="Developer Mode" 
+                                                 Foreground="#FF9800"
+                                                 FontSize="11"
+                                                 FontWeight="Bold"
+                                                 HorizontalAlignment="Center"
+                                                 TextWrapping="Wrap"
+                                                 TextAlignment="Center"/>
+                                        <TextBlock Text="Required" 
+                                                 Foreground="#8B95A8"
+                                                 FontSize="10"
+                                                 HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="cardBorder" Property="BorderBrush" Value="#00D9FF"/>
+                                <Setter TargetName="cardBorder" Property="Background" Value="#0D1117"/>
+                            </Trigger>
+                            <DataTrigger Binding="{Binding Tag.IsLocked, RelativeSource={RelativeSource Self}}" Value="True">
+                                <Setter TargetName="lockOverlay" Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <!-- Main Container -->
+    <Border CornerRadius="20" Background="#0A0E1A" Margin="8">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="30" ShadowDepth="0" Opacity="0.6" Color="#00D9FF"/>
+        </Border.Effect>
+
+        <Grid>
+            <!-- Close Button -->
+            <Button x:Name="btnClose"
+                    Style="{StaticResource CloseButton}"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Margin="0,15,15,0"
+                    Panel.ZIndex="999"
+                    Click="Close_Click"
+                    ToolTip="Close"/>
+
+            <!-- Main Content -->
+            <Grid Margin="30,20,30,20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Header -->
+                <StackPanel Grid.Row="0" Margin="0,0,0,20">
+                    <TextBlock Text="🎨  Choose Your Theme"
+                               FontSize="24"
+                               Foreground="White"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"
+                               FontFamily="Segoe UI"
+                               Margin="0,0,0,8">
+                        <TextBlock.Effect>
+                            <DropShadowEffect Color="#00D9FF" BlurRadius="12" ShadowDepth="0" Opacity="0.3"/>
+                        </TextBlock.Effect>
+                    </TextBlock>
+
+                    <TextBlock Text="Select a color theme to personalize your toolkit experience"
+                               FontSize="12"
+                               Foreground="#8B95A8"
+                               HorizontalAlignment="Center"
+                               FontFamily="Segoe UI"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Theme Grid -->
+                <ScrollViewer Grid.Row="1"
+                              VerticalScrollBarVisibility="Auto" 
+                              HorizontalScrollBarVisibility="Disabled"
+                              Margin="0,0,-10,0"
+                              Padding="0,0,10,0">
+                    <ItemsControl x:Name="ThemeItemsControl">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="4"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </ScrollViewer>
+
+                <!-- Footer -->
+                <StackPanel Grid.Row="2" Margin="0,15,0,0">
+                    <TextBlock x:Name="txtThemeHint"
+                               Text="Please select a theme to continue"
+                               FontSize="11"
+                               Foreground="#8B95A8"
+                               HorizontalAlignment="Center"
+                               FontFamily="Segoe UI"
+                               Margin="0,0,0,12"/>
+
+                    <Button x:Name="btnConfirm"
+                            Content="Confirm Selection"
+                            Style="{StaticResource PrimaryButton}"
+                            HorizontalAlignment="Center"
+                            Width="180"
+                            Click="Confirm_Click"
+                            IsEnabled="False"/>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

@@ -177,8 +177,9 @@ namespace ModernDesign.MVVM.View
             {
                 Process.Start(new ProcessStartInfo
                 {
-                    FileName = _dlc.WikiUrl,
-                    UseShellExecute = true
+                    FileName = "explorer.exe",
+                    Arguments = _dlc.WikiUrl,
+                    UseShellExecute = false
                 });
             }
             catch
@@ -190,7 +191,6 @@ namespace ModernDesign.MVVM.View
                     MessageBoxImage.Error);
             }
         }
-
         private void CloseBtn_Click(object sender, RoutedEventArgs e)
         {
             this.Close();

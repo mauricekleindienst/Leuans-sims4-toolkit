@@ -1,0 +1,435 @@
+﻿<Window x:Class="ModernDesign.MVVM.View.ModManagerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Mod Manager"
+        Width="1200"
+        Height="750"
+        MinWidth="800"
+        MinHeight="600"
+        WindowStartupLocation="CenterScreen"
+        Background="Transparent"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="CanResize"
+        Loaded="Window_Loaded">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0" 
+                      ResizeBorderThickness="5" 
+                      CornerRadius="20"
+                      GlassFrameThickness="0"/>
+    </WindowChrome.WindowChrome>
+
+    <Border CornerRadius="20" Background="#0F172A" BorderBrush="#6366F1" BorderThickness="2">
+        <Border.Effect>
+            <DropShadowEffect ShadowDepth="0" BlurRadius="30" Opacity="0.5" Color="#6366F1"/>
+        </Border.Effect>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- HEADER -->
+            <Grid Grid.Row="0" Background="#1E293B" MouseDown="Header_MouseDown">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Margin="20,15,20,15">
+                    <TextBlock x:Name="TitleText" Text="🎮 Mod Manager" 
+                               Foreground="White" FontSize="24"
+                               FontWeight="Bold" FontFamily="Bahnschrift Light"
+                               FontStyle="Italic">
+                        <TextBlock.Effect>
+                            <DropShadowEffect ShadowDepth="2" Opacity="0.8" BlurRadius="10" Color="#6366F1"/>
+                        </TextBlock.Effect>
+                    </TextBlock>
+                    <TextBlock x:Name="SubtitleText" 
+                               Text="Download, manage and organize your favorite mods"
+                               Foreground="#94A3B8" FontSize="12"
+                               FontFamily="Bahnschrift Light"
+                               FontWeight="Bold"
+                               FontStyle="Italic"
+                               Margin="0,6,0,0"
+                               TextWrapping="Wrap">
+                        <TextBlock.Effect>
+                            <DropShadowEffect ShadowDepth="1" Opacity="0.7" BlurRadius="6"/>
+                        </TextBlock.Effect>
+                    </TextBlock>
+                </StackPanel>
+
+                <Button Grid.Column="1" Content="✕" 
+                        Width="40" Height="40"
+                        Margin="0,0,15,0"
+                        VerticalAlignment="Center"
+                        Background="#EF4444"
+                        Foreground="White"
+                        FontSize="18"
+                        FontWeight="Bold"
+                        Cursor="Hand"
+                        BorderThickness="0"
+                        Click="CloseButton_Click"
+                        ToolTip="Close">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="10">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="#DC2626"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </Grid>
+
+            <!-- CONTENT -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <Grid Margin="15,15,15,15">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Search Bar -->
+                    <Border Grid.Row="0" Background="#1E293B" CornerRadius="12" Padding="12" Margin="0,0,0,10">
+                        <Border.Effect>
+                            <DropShadowEffect ShadowDepth="0" BlurRadius="10" Opacity="0.3"/>
+                        </Border.Effect>
+                        <TextBox x:Name="SearchBox"
+                                 Text="Search mods..."
+                                 FontSize="13"
+                                 Foreground="#94A3B8"
+                                 Background="Transparent"
+                                 BorderThickness="0"
+                                 TextChanged="SearchBox_TextChanged"
+                                 GotFocus="SearchBox_GotFocus"
+                                 LostFocus="SearchBox_LostFocus"
+                                 ToolTip="Search mods by name, author or description"/>
+                    </Border>
+
+                    <!-- Folder Paths -->
+                    <Grid Grid.Row="1" Margin="0,0,0,10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Mods Folder -->
+                        <Border Grid.Row="0" Background="#1E293B" CornerRadius="12" Padding="12" Margin="0,0,0,8">
+                            <Border.Effect>
+                                <DropShadowEffect ShadowDepth="0" BlurRadius="10" Opacity="0.3"/>
+                            </Border.Effect>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,8,0">
+                                    <TextBlock Text="📁 Mods Folder" 
+                                               Foreground="#94A3B8" FontSize="9"
+                                               FontFamily="Bahnschrift Light"
+                                               FontWeight="Bold"
+                                               Margin="0,0,0,3"/>
+                                    <TextBlock x:Name="ModsFolderText"
+                                               Text="Not detected"
+                                               Foreground="White" FontSize="11"
+                                               FontFamily="Bahnschrift Light"
+                                               FontWeight="Bold"
+                                               TextTrimming="CharacterEllipsis"/>
+                                </StackPanel>
+
+                                <Button x:Name="ChangeFolderButton" Grid.Column="1"
+                                        Content="📂"
+                                        FontSize="14"
+                                        Width="35"
+                                        Height="35"
+                                        Background="#6366F1"
+                                        Foreground="White"
+                                        BorderThickness="0"
+                                        Cursor="Hand"
+                                        Click="ChangeFolderButton_Click"
+                                        ToolTip="Change Mods folder location">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+                            </Grid>
+                        </Border>
+
+                        <!-- Game Folder -->
+                        <Border Grid.Row="1" Background="#1E293B" CornerRadius="12" Padding="12">
+                            <Border.Effect>
+                                <DropShadowEffect ShadowDepth="0" BlurRadius="10" Opacity="0.3"/>
+                            </Border.Effect>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,8,0">
+                                    <TextBlock Text="🎮 Game Folder" 
+                                               Foreground="#94A3B8" FontSize="9"
+                                               FontFamily="Bahnschrift Light"
+                                               FontWeight="Bold"
+                                               Margin="0,0,0,3"/>
+                                    <TextBlock x:Name="GameFolderText"
+                                               Text="Not configured"
+                                               Foreground="White" FontSize="11"
+                                               FontFamily="Bahnschrift Light"
+                                               FontWeight="Bold"
+                                               TextTrimming="CharacterEllipsis"/>
+                                </StackPanel>
+
+                                <Button x:Name="ChangeGameFolderButton" Grid.Column="1"
+                                        Content="🎮"
+                                        FontSize="14"
+                                        Width="35"
+                                        Height="35"
+                                        Background="#8B5CF6"
+                                        Foreground="White"
+                                        BorderThickness="0"
+                                        Cursor="Hand"
+                                        Click="ChangeGameFolderButton_Click"
+                                        ToolTip="Change game installation folder">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+                            </Grid>
+                        </Border>
+                    </Grid>
+
+                    <!-- Filter Buttons -->
+                    <WrapPanel Grid.Row="2" Margin="0,0,0,10" HorizontalAlignment="Left">
+                        <Button x:Name="ShowAllButton" Content="All"
+                                Padding="12,6" Margin="0,0,6,6"
+                                FontSize="11"
+                                Background="#6366F1" Foreground="White"
+                                BorderThickness="0" Cursor="Hand"
+                                Click="ShowAllButton_Click"
+                                ToolTip="Show all available mods">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+
+                        <Button x:Name="ShowFavoritesButton" Content="⭐ Favorites"
+                                Padding="12,6" Margin="0,0,6,6"
+                                FontSize="11"
+                                Background="#FBBF24" Foreground="White"
+                                BorderThickness="0" Cursor="Hand"
+                                Click="ShowFavoritesButton_Click"
+                                ToolTip="Show only favorite mods">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+
+                        <Button x:Name="ShowCollectionsButton" Content="📁 Collections"
+                                Padding="12,6" Margin="0,0,6,6"
+                                FontSize="11"
+                                Background="#8B5CF6" Foreground="White"
+                                BorderThickness="0" Cursor="Hand"
+                                Click="ShowCollectionsButton_Click"
+                                ToolTip="Manage mod collections (playlists)">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </WrapPanel>
+
+                    <!-- Action Buttons -->
+                    <WrapPanel Grid.Row="3" Margin="0,0,0,10" HorizontalAlignment="Left">
+                        <Button x:Name="DownloadAllFavoritesButton" Content="⬇️ Download Favorites"
+                                Padding="10,6" Margin="0,0,6,6"
+                                FontSize="11"
+                                Background="#22C55E" Foreground="White"
+                                BorderThickness="0" Cursor="Hand"
+                                Visibility="Collapsed"
+                                Click="DownloadAllFavoritesButton_Click"
+                                ToolTip="Download all favorite mods">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+
+                        <Button x:Name="UninstallAllFavoritesButton" Content="🗑️ Uninstall Favorites"
+                                Padding="10,6" Margin="0,0,6,6"
+                                FontSize="11"
+                                Background="#EF4444" Foreground="White"
+                                BorderThickness="0" Cursor="Hand"
+                                Visibility="Collapsed"
+                                Click="UninstallAllFavoritesButton_Click"
+                                ToolTip="Uninstall all favorite mods">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+
+                        <Button x:Name="UploadCollectionButton" Content="📤 Upload Collection"
+                                Padding="10,6" Margin="0,0,6,6"
+                                FontSize="11"
+                                Background="#3B82F6" Foreground="White"
+                                BorderThickness="0" Cursor="Hand"
+                                Click="UploadCollectionButton_Click"
+                                ToolTip="Share your collection on Discord">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+
+                        <Button x:Name="TestGameButton" Content="🎮 Open Game"
+                                Padding="10,6" Margin="0,0,6,6"
+                                FontSize="11"
+                                Background="#8B5CF6" Foreground="White"
+                                BorderThickness="0" Cursor="Hand"
+                                Click="TestGameButton_Click"
+                                ToolTip="Launch The Sims 4 to test mods">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+
+                        <Button x:Name="CheckUpdatesButton" Content="🔄 Check Updates"
+                                Padding="10,6" Margin="0,0,6,6"
+                                FontSize="11"
+                                Background="#F59E0B" Foreground="White"
+                                BorderThickness="0" Cursor="Hand"
+                                Click="CheckUpdatesButton_Click"
+                                ToolTip="Check for mod updates (Beta)">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+
+                        <!-- Collection Action Buttons (visible only when viewing a collection) -->
+                        <Button x:Name="DownloadCollectionButton" Content="⬇️ Download Collection"
+                                Padding="10,6" Margin="0,0,6,6"
+                                FontSize="11"
+                                Background="#10B981" Foreground="White"
+                                BorderThickness="0" Cursor="Hand"
+                                Visibility="Collapsed"
+                                Click="DownloadCollectionButton_Click"
+                                ToolTip="Download all mods in this collection">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+
+                        <Button x:Name="UninstallCollectionButton" Content="🗑️ Uninstall Collection"
+                                Padding="10,6" Margin="0,0,6,6"
+                                FontSize="11"
+                                Background="#DC2626" Foreground="White"
+                                BorderThickness="0" Cursor="Hand"
+                                Visibility="Collapsed"
+                                Click="UninstallCollectionButton_Click"
+                                ToolTip="Uninstall all mods in this collection">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" CornerRadius="8" Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </WrapPanel>
+
+                    <!-- Loading Panel -->
+                    <StackPanel x:Name="LoadingPanel" Grid.Row="4"
+                                HorizontalAlignment="Center" 
+                                VerticalAlignment="Center"
+                                Visibility="Visible">
+                        <Border Width="50" Height="50" 
+                                CornerRadius="25"
+                                BorderThickness="4"
+                                BorderBrush="#6366F1">
+                            <Border.RenderTransform>
+                                <RotateTransform Angle="0" CenterX="25" CenterY="25"/>
+                            </Border.RenderTransform>
+                            <Border.Triggers>
+                                <EventTrigger RoutedEvent="Loaded">
+                                    <BeginStoryboard>
+                                        <Storyboard RepeatBehavior="Forever">
+                                            <DoubleAnimation Storyboard.TargetProperty="(Border.RenderTransform).(RotateTransform.Angle)"
+                                                             From="0" To="360" Duration="0:0:1"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </Border.Triggers>
+                        </Border>
+                        <TextBlock Text="Loading mods..."
+                                   Foreground="#94A3B8" FontSize="14"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,16,0,0"/>
+                    </StackPanel>
+
+                    <!-- Mods Grid -->
+                    <ScrollViewer Grid.Row="4" 
+                                  x:Name="ModsScrollViewer"
+                                  VerticalScrollBarVisibility="Auto" 
+                                  HorizontalScrollBarVisibility="Disabled"
+                                  Visibility="Collapsed">
+                        <WrapPanel x:Name="ModsPanel" 
+                                   HorizontalAlignment="Center"
+                                   Orientation="Horizontal"/>
+                    </ScrollViewer>
+                </Grid>
+            </ScrollViewer>
+        </Grid>
+    </Border>
+</Window>

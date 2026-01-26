@@ -19,16 +19,16 @@ namespace ModernDesign.MVVM.View
         private string _simsPath = "";
         private readonly string _tempFolder;
 
-        // ✅ LISTA DE ARCHIVOS PARA "OTHER VERSIONS"
-        private readonly List<UpdateFile> _otherVersionFiles = new List<UpdateFile>
-        {
-            new UpdateFile("Update Part 1", "https://www.mediafire.com/file_premium/hnillv3iy986uxn/Other_Files.zip/file"),
-            new UpdateFile("Update Part 2", "https://www.mediafire.com/file_premium/m44n1u6c1d0s7un/Delta.zip/file"),
-            new UpdateFile("Update Part 3", "https://www.mediafire.com/file_premium/617ntc9sfc5e6py/Data.zip/file"),
-            new UpdateFile("Update Part 4", "https://zeroauno.blob.core.windows.net/leuan/TheSims4/Offline/Updater/LeuanVersion/LatestLeuanVersion.zip")
-        };
+            //  LISTA DE ARCHIVOS PARA "OTHER VERSIONS"
+            private readonly List<UpdateFile> _otherVersionFiles = new List<UpdateFile>
+            {
+                new UpdateFile("Update Part 1", "https://www.mediafire.com/file_premium/hnillv3iy986uxn/Other_Files.zip/file"),
+                new UpdateFile("Update Part 2", "https://www.mediafire.com/file_premium/m44n1u6c1d0s7un/Delta.zip/file"),
+                new UpdateFile("Update Part 3", "https://www.mediafire.com/file_premium/617ntc9sfc5e6py/Data.zip/file"),
+                new UpdateFile("Update Part 4", "https://github.com/Leuansin/leuan-dlcs/releases/download/latestupdateandcrack/LatestUpdateAndCrack.zip")
+            };
 
-        // ✅ LISTA DE ARCHIVOS A ELIMINAR EN Game/Bin
+        //  LISTA DE ARCHIVOS A ELIMINAR EN Game/Bin
         private readonly List<string> _filesToDelete = new List<string>
         {
             "anadius64.dll",
@@ -198,8 +198,8 @@ namespace ModernDesign.MVVM.View
             StartBtn.IsEnabled = true;
 
             AddLog(isSpanish
-                ? $"✅ Carpeta de The Sims 4 detectada: {path}"
-                : $"✅ The Sims 4 folder detected: {path}");
+                ? $" Carpeta de The Sims 4 detectada: {path}"
+                : $" The Sims 4 folder detected: {path}");
         }
 
         private void BrowseBtn_Click(object sender, RoutedEventArgs e)
@@ -286,34 +286,34 @@ namespace ModernDesign.MVVM.View
         private async Task StartLeuanDownloadAsync()
         {
             bool isSpanish = IsSpanishLanguage();
-            string downloadUrl = "https://zeroauno.blob.core.windows.net/leuan/TheSims4/Offline/Updater/LeuanVersion/LatestLeuanVersion.zip";
+            string downloadUrl = "https://github.com/Leuansin/leuan-dlcs/releases/download/latestupdateandcrack/LatestUpdateAndCrack.zip";
             string tempZipPath = Path.Combine(_tempFolder, "update_leuan.zip");
 
-            // ✅ 1. ELIMINAR ARCHIVOS OBSOLETOS PRIMERO
+            //  1. ELIMINAR ARCHIVOS OBSOLETOS PRIMERO
             await DeleteObsoleteFiles();
 
-            // ✅ 2. DESCARGAR
+            //  2. DESCARGAR
             AddLog(isSpanish ? "\n📥 Iniciando descarga..." : "\n📥 Starting download...");
             AddLog($"URL: {downloadUrl}");
 
             await DownloadWithProgressAsync(downloadUrl, tempZipPath, "Leuan's Update", 1, 1);
 
-            // ✅ 3. EXTRAER
+            //  3. EXTRAER
             AddLog(isSpanish ? "📦 Extrayendo archivos..." : "📦 Extracting files...");
             ProgressText.Text = isSpanish ? "Extrayendo..." : "Extracting...";
 
             await Task.Run(() => ExtractZipWithOverwrite(tempZipPath, _simsPath));
 
-            // ✅ 4. LIMPIAR ZIP
+            //  4. LIMPIAR ZIP
             if (File.Exists(tempZipPath))
                 File.Delete(tempZipPath);
 
-            AddLog(isSpanish ? "\n✅ Actualización completada exitosamente!" : "\n✅ Update completed successfully!");
+            AddLog(isSpanish ? "\n Actualización completada exitosamente!" : "\n Update completed successfully!");
 
             MessageBox.Show(
                 isSpanish
-                    ? "✅ El juego ha sido actualizado correctamente.\n\nYa puedes cerrar esta ventana y jugar."
-                    : "✅ The game has been updated successfully.\n\nYou can now close this window and play.",
+                    ? " El juego ha sido actualizado correctamente.\n\nYa puedes cerrar esta ventana y jugar."
+                    : " The game has been updated successfully.\n\nYou can now close this window and play.",
                 isSpanish ? "Actualización Completada" : "Update Completed",
                 MessageBoxButton.OK,
                 MessageBoxImage.Information);
@@ -324,10 +324,10 @@ namespace ModernDesign.MVVM.View
             bool isSpanish = IsSpanishLanguage();
             int totalFiles = _otherVersionFiles.Count;
 
-            // ✅ 1. ELIMINAR ARCHIVOS OBSOLETOS PRIMERO
+            //  1. ELIMINAR ARCHIVOS OBSOLETOS PRIMERO
             await DeleteObsoleteFiles();
 
-            // ✅ 2. DESCARGAR Y EXTRAER CADA ARCHIVO
+            //  2. DESCARGAR Y EXTRAER CADA ARCHIVO
             AddLog(isSpanish
                 ? $"\n📥 Iniciando descarga de {totalFiles} archivos..."
                 : $"\n📥 Starting download of {totalFiles} files...");
@@ -362,19 +362,19 @@ namespace ModernDesign.MVVM.View
                 }
 
                 AddLog(isSpanish
-                    ? $"✅ {file.Name} completado."
-                    : $"✅ {file.Name} completed.");
+                    ? $" {file.Name} completado."
+                    : $" {file.Name} completed.");
             }
 
             AddLog(isSpanish
-                ? "\n✅ ¡Todas las actualizaciones completadas exitosamente!"
-                : "\n✅ All updates completed successfully!");
+                ? "\n ¡Todas las actualizaciones completadas exitosamente!"
+                : "\n All updates completed successfully!");
 
-            // ✅ MOSTRAR POPUP ESPECIAL PARA "OTHER VERSIONS"
+            //  MOSTRAR POPUP ESPECIAL PARA "OTHER VERSIONS"
             ShowMigrationSuccessPopup();
         }
 
-        // ✅ FUNCIÓN PARA ELIMINAR ARCHIVOS OBSOLETOS (SE EJECUTA ANTES DE DESCARGAR)
+        //  FUNCIÓN PARA ELIMINAR ARCHIVOS OBSOLETOS (SE EJECUTA ANTES DE DESCARGAR)
         private async Task DeleteObsoleteFiles()
         {
             bool isSpanish = IsSpanishLanguage();
@@ -422,8 +422,8 @@ namespace ModernDesign.MVVM.View
             });
 
             AddLog(isSpanish
-                ? $"✅ Limpieza completada: {deletedCount} archivos eliminados, {notFoundCount} no encontrados."
-                : $"✅ Cleanup completed: {deletedCount} files deleted, {notFoundCount} not found.");
+                ? $" Limpieza completada: {deletedCount} archivos eliminados, {notFoundCount} no encontrados."
+                : $" Cleanup completed: {deletedCount} files deleted, {notFoundCount} not found.");
         }
 
         private void ShowMigrationSuccessPopup()
@@ -431,13 +431,13 @@ namespace ModernDesign.MVVM.View
             bool isSpanish = IsSpanishLanguage();
 
             string message = isSpanish
-                ? "✅ Tu juego ha sido actualizado.\n\n" +
+                ? " Tu juego ha sido actualizado.\n\n" +
                   "De ahora en adelante, para mantenerte actualizado en el futuro, " +
                   "deberás elegir 'Leuan's Version'.\n\n" +
                   "Has migrado exitosamente desde versiones desactualizadas a la mejor " +
                   "y más recomendada versión.\n\n" +
                   "¡Felicidades! Tu juego ahora está usando la Leuan's Version!"
-                : "✅ Your game has been updated.\n\n" +
+                : " Your game has been updated.\n\n" +
                   "From now on to keep updated in the future you'll have to choose 'Leuan's Version'.\n\n" +
                   "You have migrated successfully from outdated versions to the best " +
                   "and most recommended version.\n\n" +
@@ -558,7 +558,7 @@ namespace ModernDesign.MVVM.View
         }
     }
 
-    // ✅ CLASE AUXILIAR PARA ARCHIVOS DE ACTUALIZACIÓN
+    //  CLASE AUXILIAR PARA ARCHIVOS DE ACTUALIZACIÓN
     public class UpdateFile
     {
         public string Name { get; set; }

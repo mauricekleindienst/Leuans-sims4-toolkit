@@ -50,7 +50,7 @@ namespace ModernDesign.MVVM.View
             FeaturedDesc.Text = es ? "Parte desde cero: aprende a instalar, organizar y gestionar tus primeros mods." : "Start from zero: learn to install, organize and manage your first mods.";
 
             GettingStartedTitle.Text = es ? "🚀 Empezando" : "🚀 Getting Started";
-            InstallModsTitle.Text = es ? "Instalar mods" : "Install Mods";
+            InstallModsTitle.Text = es ? "Puedo usar Mods?" : "Mod Support Checker";
             InstallModsDesc.Text = es ? "Dónde poner los archivos .package y .ts4script" : "Where to put .package and .ts4script files";
             FindModsTitle.Text = es ? "Encontrar mods" : "Find Mods";
             FindModsDesc.Text = es ? "Mejores webs para descargar mods seguros" : "Best websites to download safe mods";
@@ -104,17 +104,20 @@ namespace ModernDesign.MVVM.View
             AutoExtractorCardTitle1.Text = es ? "Auto Extraer" : "Auto Extractor";
             AutoExtractorCardDesc1.Text = es ? "Extrae e instala automáticamente tus DLCs en formato .zip" : "Extracts and installs automatically your DLc's downloaded as .zip";
 
-            InstallBaseGameTitle.Text = es ? "Instalar Sims 4" : "Install Sims 4";
+            InstallBaseGameTitle.Text = es ? "Instalar Juegos" : "Install Game";
             InstallBaseGameDesc.Text = es ? "Instala el juego de los Sims 4" : "Download the gamebase of The Sims 4";
 
             RepairGameTitle.Text = es ? "Reparar Juego" : "Repair Game";
             RepairGameDesc.Text = es ? "¿Juego con problemas?, ¡Reparalo aqui!" : "Your game is having troubles? repair it here!";
 
-            LanguageSelectorTitle1.Text = es ? "Cambiar Idioma de los Sims" : "Change Sims Language";
+            LanguageSelectorTitle1.Text = es ? "Cambiar Idioma" : "Change Language";
             LanguageSelectorDesc1.Text = es ? "Cambia el Idioma del juego" : "Change the sims 4 game language";
 
-            CrackingToolTitle1.Text = es ? "Crackear Juego" : "Cracking Tool";
-            CrackingToolDesc1.Text = es ? "Crackea tu juego original" : "Make a legit version a cracked version";
+            EventUnlockerTitle.Text = es ? "Desbloquear Eventos" : "Unlock Events";
+            EventUnlockerDesc.Text = es ? "Desbloquea los items de los eventos" : "Unlock items from events.";
+
+            FixStarIconTitle.Text = es ? "Arreglar Bug Icono" : "Fix Star Icon Bug";
+            FixStarIconDesc.Text = es ? "Arregla la estrella permanente de objetos nuevos en modo construcción" : "Fix the permanent star of new items in build mode";
             UpdateLessonUI();
         }
         #endregion
@@ -895,8 +898,8 @@ namespace ModernDesign.MVVM.View
                         new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6EE7B7"));
 
                     OverlayStatusText.Text = es
-                        ? $"✅ Se encontró una carpeta Mods válida:\n{_overlayModsFolderPath}\n\nTu juego puede usar mods sin problemas."
-                        : $"✅ A valid Mods folder was found:\n{_overlayModsFolderPath}\n\nYour game can use mods correctly.";
+                        ? $" Se encontró una carpeta Mods válida:\n{_overlayModsFolderPath}\n\nTu juego puede usar mods sin problemas."
+                        : $" A valid Mods folder was found:\n{_overlayModsFolderPath}\n\nYour game can use mods correctly.";
 
                     _overlayModsExists = true;
                     OverlayNextButton.IsEnabled = true;
@@ -1254,8 +1257,9 @@ namespace ModernDesign.MVVM.View
             {
                 Process.Start(new ProcessStartInfo
                 {
-                    FileName = url,
-                    UseShellExecute = true
+                    FileName = "explorer.exe",
+                    Arguments = url,
+                    UseShellExecute = false
                 });
             }
             catch (Exception ex)
@@ -1282,6 +1286,16 @@ namespace ModernDesign.MVVM.View
             win.ShowDialog();
         }
 
+        private void FixStarIconCard_Click(object sender, MouseButtonEventArgs e)
+        {
+            var win = new FixStarIconWindow
+            {
+                Owner = Window.GetWindow(this),
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            };
+            win.ShowDialog();
+            DeveloperModeManager.MarkFeatureAsVisited("fix_star_icon");
+        }
         private void InstallModsCard_Click(object sender, MouseButtonEventArgs e)
         {
             var win = new InstallModsCheckWindow
@@ -1295,7 +1309,12 @@ namespace ModernDesign.MVVM.View
 
         private void FindModsCard_Click(object sender, MouseButtonEventArgs e)
         {
-            OpenUrl("https://www.thesimsresource.com/");
+            var win = new ModManagerWindow
+            {
+                Owner = Window.GetWindow(this),
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
+            win.ShowDialog();
         }
 
         private void OrganizeCard_Click(object sender, MouseButtonEventArgs e)
@@ -1364,6 +1383,7 @@ namespace ModernDesign.MVVM.View
             };
             win.ShowDialog();
         }
+
         private void ScriptingCard_Click(object sender, MouseButtonEventArgs e)
         {
             OpenUrl("https://sims4studio.com/thread/15145/started-python-scripting");
@@ -1441,7 +1461,6 @@ namespace ModernDesign.MVVM.View
                 WindowStartupLocation = WindowStartupLocation.CenterScreen
             };
             win.ShowDialog();
-            DeveloperModeManager.MarkFeatureAsVisited("music_manager");
         }
 
         private void GameplayEnhancerCard_Click(object sender, MouseButtonEventArgs e)
@@ -1463,6 +1482,95 @@ namespace ModernDesign.MVVM.View
                 WindowStartupLocation = WindowStartupLocation.CenterScreen
             };
             win.ShowDialog();
+        }
+
+
+        private void UnlockEventsCard_Click(object sender, MouseButtonEventArgs e)
+        {
+            // Creamos la instancia de la ventana
+            var win = new EventRewardsWindow
+            {
+                // Esto asegura que la ventana aparezca centrada respecto a la app principal
+                // y que bloquee la interacción con la de atrás (ShowDialog)
+                Owner = Window.GetWindow(this),
+                WindowStartupLocation = WindowStartupLocation.CenterScreen
+            };
+
+            var parent = Window.GetWindow(this);
+            parent.Opacity = 0.7; 
+            win.ShowDialog();
+
+            // parent.Opacity = 1.0; // Restaurar opacidad al cerrar
+        }
+
+        private void ModRenamerCard_Click(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                bool es = LanguageManager.IsSpanish;
+
+                // Buscar carpeta Mods
+                string docs = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                string modsFolder = "";
+
+                // Intentar español primero
+                string sims4Folder = Path.Combine(docs, "Electronic Arts", "Los Sims 4", "Mods");
+                if (Directory.Exists(sims4Folder))
+                {
+                    modsFolder = sims4Folder;
+                }
+                else
+                {
+                    // Intentar inglés
+                    sims4Folder = Path.Combine(docs, "Electronic Arts", "The Sims 4", "Mods");
+                    if (Directory.Exists(sims4Folder))
+                    {
+                        modsFolder = sims4Folder;
+                    }
+                }
+
+                if (string.IsNullOrEmpty(modsFolder) || !Directory.Exists(modsFolder))
+                {
+                    MessageBox.Show(
+                        es
+                            ? "No se pudo encontrar la carpeta Mods.\n\nPor favor, selecciónala manualmente."
+                            : "Could not find Mods folder.\n\nPlease select it manually.",
+                        "Mod Renamer",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+
+                    // Abrir selector de carpeta
+                    using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
+                    {
+                        dialog.Description = es
+                            ? "Selecciona la carpeta Mods de The Sims 4"
+                            : "Select The Sims 4 Mods folder";
+
+                        if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                        {
+                            modsFolder = dialog.SelectedPath;
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
+                }
+
+                // Abrir Mod Renamer
+                var renamerWindow = new ModRenamerWindow(modsFolder)
+                {
+                    Owner = Window.GetWindow(this),
+                    WindowStartupLocation = WindowStartupLocation.CenterScreen
+                };
+                renamerWindow.ShowDialog();
+
+                DeveloperModeManager.MarkFeatureAsVisited("mod_renamer");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
         #endregion
     }

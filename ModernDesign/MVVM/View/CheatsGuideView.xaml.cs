@@ -862,7 +862,7 @@ namespace ModernDesign.MVVM.View
             try
             {
                 System.Windows.Clipboard.SetText(command);
-                btn.Content = "✅";
+                btn.Content = "";
 
                 // Reset after 2 seconds
                 System.Threading.Tasks.Task.Delay(2000).ContinueWith(_ =>
