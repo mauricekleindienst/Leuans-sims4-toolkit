@@ -12,6 +12,7 @@
       "price": 39.99,
       "isOfflineMode": false
     },
+    {
       "id": "EP21",
       "name": "Royalty Legacy",
       "description": "NEW - Royalty Legacy DLC + 3 Extra Items.",
@@ -23,6 +24,7 @@
       "price": 39.99,
       "isOfflineMode": false
     },
+    {
       "id": "SP77",
       "name": "Royalty Legacy - Extra Kit",
       "description": "SP 77 - Extra Kits for Royalty Legacy",
@@ -31,6 +33,7 @@
       "price": 4.99,
       "isOfflineMode": false
     },
+    {
       "id": "SP76",
       "name": "Royalty Legacy - Extra Kit",
       "description": "SP 76 - Extra Kits for Royalty Legacy",
